@@ -187,9 +187,9 @@ Since the TGT Ticket and the TGS Session Key have been cached, if a Network Logo
 <blockquote>
 <p>The PAC of the TGS Ticket is a copy of the PAC contained in the <a href="/posts/not_so_brief_overview_about_kerberos/#12">received TGT Ticket</a>.</p></blockquote>
 <ul>
-<li><strong>Other Data</strong>: A &ldquo;Service Session Key&rdquo;, together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.
-As <a href="/posts/not_so_brief_overview_about_kerberos/#18">already mentioned</a>, the TGS Ticket (also called Service Ticket), like the TGT Ticket, contains the PAC (Privilege Attribute Certificate), that is, a structure contained in every ticket which holds the characteristics of the user (SID, group, etc.); furthermore, it must be specified that the PAC is NOT encrypted but signed.</li>
+<li><strong>Other Data</strong>: A &ldquo;Service Session Key&rdquo;, together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.</li>
 </ul>
+<p>As <a href="/posts/not_so_brief_overview_about_kerberos/#18">already mentioned</a>, the TGS Ticket (also called Service Ticket), like the TGT Ticket, contains the PAC (Privilege Attribute Certificate), that is, a structure contained in every ticket which holds the characteristics of the user (SID, group, etc.); furthermore, it must be specified that the PAC is NOT encrypted but signed.</p>
 <ol start="5">
 <li>
 <h3 id="krb_-4"><strong>KRB_AP_REQ: The Client attempts to access the AP resource by providing its TGS Ticket</strong></h3>

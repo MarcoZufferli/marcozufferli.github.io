@@ -155,6 +155,7 @@ Once the verification is completed, the KDC sends to the Client the KRB_TGS_REP 
 > The PAC of the TGS Ticket is a copy of the PAC contained in the [received TGT Ticket](#12).
 
 - **Other Data**: A "Service Session Key", together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.
+
 As [already mentioned](#18), the TGS Ticket (also called Service Ticket), like the TGT Ticket, contains the PAC (Privilege Attribute Certificate), that is, a structure contained in every ticket which holds the characteristics of the user (SID, group, etc.); furthermore, it must be specified that the PAC is NOT encrypted but signed.
 
 5. ### **KRB_AP_REQ: The Client attempts to access the AP resource by providing its TGS Ticket**
