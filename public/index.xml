@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Marco Zufferli</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Marco Zufferli</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <copyright>&lt;a href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CC BY-NC 4.0&lt;/a&gt;</copyright>
+    <lastBuildDate>Mon, 15 Sep 2025 15:44:32 +0200</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Not_so_brief_overview_about_kerberos</title>
+      <link>http://localhost:1313/posts/not_so_brief_overview_about_kerberos/</link>
+      <pubDate>Mon, 15 Sep 2025 15:44:32 +0200</pubDate>
+      <guid>http://localhost:1313/posts/not_so_brief_overview_about_kerberos/</guid>
+      <description>&lt;p&gt;Hello-World!&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
