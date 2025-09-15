@@ -37,15 +37,15 @@ This protocol is called Kerberos, like the three-headed dog of Greek mythology, 
 <ol>
 <li>
 <h3 id="krb_"><strong>KRB_AS_REQ: Request of the TGT Token from the Authentication Server (AS)</strong></h3>
+</li>
+</ol>
 <p>The Kerberos protocol is (typically) initialized when a user needs to perform an <a href="https://learn.microsoft.com/en-us/windows-server/security/windows-authentication/windows-logon-scenarios#BKMK_InteractiveLogon">Interactive Logon</a> (<a href="https://zer1t0.gitlab.io/posts/attacking_ad/#interactive-logon">1</a>) within a Client using domain credentials, that is by filling in the traditional Windows credential form, also called WinLogon GUI.</p>
 
-        <img src="/not_so_brief_overview_about_kerberos/interactive_logon.png"  class="center"  style="border-radius: 8px;"  />
-    
+      <img src="/not_so_brief_overview_about_kerberos/interactive_logon.png"  class="center"  style="border-radius: 8px;"  />
+  
 
 <p>To authenticate, the user enters the credentials on the Client (DOMAIN\User &amp; Password) and everywhing will be shared in cleartext with the &ldquo;LSASS&rdquo; process.</p>
 <p><span id="6">After that, LSASS delegates the authentication to its SSPs, so some DLLs (APIs) that can be loaded within the &ldquo;lsass.exe&rdquo; process, consequently the LSASS process loads and shares in cleartext the credentials with all the SSPs dedicated to authentication (kerberos.dll - manage Kerberos, msv1_0.dll - manage NTLM Authentication, wdigest.dll - manage Digest); that said, since the LSASS process does NOT know which SSP to use, <a href="https://syfuhs.net/what-happens-when-you-type-your-password-into-windows">it will use them one by one in sequential order until a correct authentication takes place</a>, consequently, since Windows will recognize that it is a domain user entered, it will start with the &ldquo;kerberos.dll&rdquo; DLL, it then calculates the NT hash of the corresponding previously entered password (which it received in plaintext) and after that contacts the AS (Authentication Service which is a feature of the KDC, that is the DC) to request the issuance of a Ticket called &ldquo;TGT&rdquo; and a &ldquo;TGS Session Key&rdquo;, specifically the LSASS process sends a KRB_AS_REQ which contains:</p>
-</li>
-</ol>
 
       <img src="/not_so_brief_overview_about_kerberos/krb_as_req.png"  class="center"  style="border-radius: 8px;"  />
   
@@ -256,11 +256,8 @@ In the case where both the PAC verification and the Client request for Mutual Au
 
 
 <p>A traditional account performing Kerberos authentication, NOT knowing the hash to decrypt the TGT Ticket or the hash to decrypt the TGS Ticket, it means that the PAC could not be readable by a traditional user.</p>
-<ul>
-<li><strong><a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-pac/3122bf00-ea87-4c3f-92a0-91c0a99f5eec">KDC Signature</a></strong>: &ldquo;KDC Signature&rdquo; is a field contained in the PAC that holds a string representing the signature (also called checksum) created by signing the PAC content with the secret of the &ldquo;krbtgt&rdquo; account (default service account of the KDC).</li>
-</ul>
-<p><span id=11>Furthemore, i want to highlight that the PAC entity itself is issued by the DC in a &ldquo;signed&rdquo; way (not encrypted), meaning that inside it there will be several fields containing the signatures (checksums) calculated on the PAC content with a specific &ldquo;key&rdquo;; these signatures contained inside the PAC can potentially be used to verify the integrity of the PAC it self, below we see <a href="https://trustedsec.com/blog/red-vs-blue-kerberos-ticket-times-checksums-and-you">briefly</a>(<a href="https://www.youtube.com/watch?t=871&amp;v=Jaa2LmZaNeU&amp;feature=youtu.be&amp;themeRefresh=1">1</a>) what types of signatures it possesses:
-<strong>Ticket TGS</strong>:</p>
+<p><span id=11>Furthemore, i want to highlight that the PAC entity itself is issued by the DC in a &ldquo;signed&rdquo; way (not encrypted), meaning that inside it there will be several fields containing the signatures (checksums) calculated on the PAC content with a specific &ldquo;key&rdquo;; these signatures contained inside the PAC can potentially be used to verify the integrity of the PAC it self, below we see <a href="https://trustedsec.com/blog/red-vs-blue-kerberos-ticket-times-checksums-and-you">briefly</a>(<a href="https://www.youtube.com/watch?t=871&amp;v=Jaa2LmZaNeU&amp;feature=youtu.be&amp;themeRefresh=1">1</a>) what types of signatures it possesses:</p>
+<p><strong>Ticket TGS</strong>:</p>
 <ul>
 <li>
 <p><strong><a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-pac/a194aa34-81bd-46a0-a931-2e05b87d1098">Server Signature</a></strong>: &ldquo;Server Signature&rdquo; is a field contained in the PAC that holds a string representing the signature (also called checksum) calculated by signing the PAC content with the secrets of the service account against which authentication is attempted.</p>
