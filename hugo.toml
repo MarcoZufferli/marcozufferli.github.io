@@ -24,7 +24,7 @@ pagination.pagerSize     = 10
   enableGlobalLanguageMenu = false
 
   # Metadata mostly used in document's head
-  description = "My new homepage or blog"
+  description = "An Offensive Security Blog about Offensive Security Stuf"
   keywords = "homepage, blog"
   images = [""]
 
