@@ -92,8 +92,8 @@ The AS (a feature of the KDC) after having received such request, using the user
 <blockquote>
 <p>The AS will respond to the Client by sending a KRB_AS_REP with the TGS Session Key (plus other data) encrypted with the NTHash of the domain user regardless of whether it has the <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties">DONT_REQ_PREAUTH</a> flag enabled or not, such behavior will lead to an AS-REP Roasting type attack.</p></blockquote>
 <hr>
-<p><strong>So, what happens now?</strong>
-Below are the sequential steps that occur until the user’s home screen is loaded:</p>
+<p><strong>So, what happens now?</strong></p>
+<p>Below are the sequential steps that occur until the user’s home screen is loaded:</p>
 <ul>
 <li><span id="2"><strong>Authentication</strong>: The Client has now obtained the KRB_AS_REP packet, consequently the LSASS process (or rather its SSP that established the connection, namely &ldquo;Kerberos.dll&rdquo;) performs the decryption of the portion of the KRB_AS_REP packet encrypted with the NT Hash of the domain account performing the authentication (this is because the Client intrinsically knows this value); if this activity is done correctly it means that the authentication has succeeded and for this reason the Kerberos AUTHENTICATION process ends.</li>
 </ul>
@@ -118,22 +118,26 @@ Below are the sequential steps that occur until the user’s home screen is load
 <p>The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) creates a LogonSession (<a href="https://learn.microsoft.com/en-us/windows/win32/secauthn/lsa-logon-sessions">it is a data structure present in LSASS</a>) which will represent the domain account just authenticated (ex: ASTRO\Cosmo)</p>
 </li>
 <li>
-<p>Targetting the LogonSession of the user (e.g, ASTRO\Cosmo) just created, Windows (this action is not performed by Kerberos.dll) will associate to it all the previously loaded SSPs (even if only &ldquo;kerberos.dll&rdquo; was actively used for the authentication phase in this context), these SSPs, <a href="/posts/not_so_brief_overview_about_kerberos/#6">as already mentioned</a>, will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).</p>
-<p>This means that if an attacker is able to dump this Logon Session, they will see all the associated SSPs along with their stored credentials in plaintext (generally speaking since exist some feature that mitigate this logic); that said in reality the MSV SSP (1, 2) will instead provide the NT Hash of the password (dumpable with <a href="https://adsecurity.org/?page_id=1821">sekurlsa::logonpasswords</a>)</p>
-</li>
-<li>
-<p><span id="10">The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) caches the TGT Ticket + TGS Session key inside the Logon Session of the authenticated account (ex: ASTRO\Cosmo) (dumpable with <a href="https://adsecurity.org/?page_id=1821">sekurlsa::tickets</a>)</p>
-</li>
-<li>
-<p>The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) caches a hashed version (MSCACHEV2/MSCASH hashes) of the password of the authenticated account (ex: ASTRO\Cosmo) inside the Domain Credential Cached (DCC) (dumpable <a href="https://adsecurity.org/?page_id=1821">lsadump::cache</a>)</p>
+<p>Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only &ldquo;kerberos.dll&rdquo; was actively used for the authentication phase in this context, these SSPs <a href="/posts/not_so_brief_overview_about_kerberos/#6">as already mentioned</a>, will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).</p>
+<p>It means that if an attacker is able to dump a Logon Session, he will able to see ALL the associated SSPs along with their stored credentials in plaintext (generally speaking since exist some feature that mitigate this logic);</p>
 </li>
 </ol>
 <blockquote>
+<p>In reality the MSV SSP (<a href="https://zer1t0.gitlab.io/posts/attacking_ad/#ntlm-ssp">1</a>, <a href="https://www.praetorian.com/blog/inside-mimikatz-part1/">2</a>) will instead provide the NT Hash of the password (dumpable with <a href="https://adsecurity.org/?page_id=1821">sekurlsa::logonpasswords</a>)</p></blockquote>
+<ol start="3">
+<li><span id="10">The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) caches the TGT Ticket + TGS Session key inside the Logon Session of the authenticated account (ex: ASTRO\Cosmo) (dumpable with <a href="https://adsecurity.org/?page_id=1821">sekurlsa::tickets</a>)</li>
+</ol>
+<blockquote>
 <p>Since Logon Sessions are created and destroyed dynamically based on user logins and logoffs, an attacker could obtain the NT Hash of a user account (local or domain) only if it is currently logged on (or recently logged on) by dumping the corresponding Logon Session (sekurlsa::logonpasswords) (because the Logon Session still exists inside the memory); the same principle applies also to all the others secrets stored in the Logon Session like for example dumping the Kerberos tickets (sekurlsa::tickets).</p></blockquote>
-<ol start="5">
-<li>The domain user (e.g ASTRO\Cosmo) <strong>finally</strong> loads the home screen
+<ol start="4">
+<li>
+<p>The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) caches a hashed version (MSCACHEV2/MSCASH hashes) of the password of the authenticated account (ex: ASTRO\Cosmo) inside the Domain Credential Cached (DCC) (dumpable <a href="https://adsecurity.org/?page_id=1821">lsadump::cache</a>)</p>
+</li>
+<li>
+<p>The domain user (e.g ASTRO\Cosmo) <strong>finally</strong> loads the home screen
 Since the TGT Ticket and the TGS Session Key have been cached, if a Network Logon attempt occurs Kerberos will be used again.
-If a domain user already logged on to the Client (using Kerberos) needs to authenticate to a target network service and thus perform a &ldquo;Network Logon&rdquo; type login, since the Kerberos protocol is SSO (Single Sign On), the following steps are followed.</li>
+If a domain user already logged on to the Client (using Kerberos) needs to authenticate to a target network service and thus perform a &ldquo;Network Logon&rdquo; type login, since the Kerberos protocol is SSO (Single Sign On), the following steps are followed.</p>
+</li>
 </ol>
 <hr>
 <h2 id="kerberos-flow---network-logon"><strong>Kerberos Flow - Network Logon</strong></h2>
