@@ -9,7 +9,7 @@ pagination.pagerSize     = 10
   dateformShort   = "Jan 2"
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
-  EnableThemeToggle = true
+  
 
   # Subtitle for home
   homeSubtitle = "an Offensive Security blog about Offensive Security stuff"
@@ -24,6 +24,7 @@ pagination.pagerSize     = 10
   enableGlobalLanguageMenu = false
 
   # Metadata mostly used in document's head
+  description = "My new homepage or blog"
   keywords = "homepage, blog"
   images = [""]
 
