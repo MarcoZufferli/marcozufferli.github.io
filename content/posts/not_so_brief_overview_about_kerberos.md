@@ -8,7 +8,7 @@ toc: true
 
 {{< image src="/not_so_brief_overview_about_kerberos/immagine.jpg" position="center" style="border-radius: 8px;">}}
 
-# Kerberos Authentication Protocol 
+# **Kerberos Authentication Protocol**
 
 Kerberos is the Windows network authentication protocol present by default in versions after Windows 2000; it replaces the NTLM protocol (specifically, NTLMv2) but it should be noted that it can only operate in Active Directory contexts and NOT in Workgroup.
 
@@ -56,7 +56,7 @@ The Active Directory of a Domain Controller will act as the KDC and the listenin
       - **Authenticator**: the timestamp contained within it will be encrypted with the user’s hash, while other values such as the ‘username’ field, which contains the name of the domain user we are logging in with, will all be in plain-text.
         
       - <span id="5">**SPN - krbtgt**: It will be indicated in the dedicated field, the SPN related to the Kerberos service (KDC) of the Domain Controller which is equal to krbtgt/[\<domain\>].
-      
+
         A Service Principal Name (SPN), [as we explain later](#service-principal-name-spn) is a unique identifier for the instance of a service, SPNs are used by Kerberos authentication to associate the instance of a service (simplifying: the start & running of the service such as for example Microsoft SQL) with a so-called "Logon Account", so a domain user (which in this way it will becomes a Service Account); in other terms, (generically speaking) an SPN can be considered as a generic object that represents the association between a service and a domain user, that said, technically, [it is an attribute of the "Users" object](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc772815(v=ws.10)#service-principal-names) and in fact from it one can list the related SPNs; this essentially means that through an SPN it is possible to map the start & the running of a service present on a server with a domain user rather than associating it with a "Standard Service Account" such as [NetworkService Account](https://learn.microsoft.com/it-it/windows/win32/services/networkservice-account?redirectedfrom=MSDN); finally, it should be noted that also Computer Accounts have SPNs.
     > **Note 1**: If the DC is not accessible when a Client performs a domain authentication, the Client checks whether such credentials are present within the [Domain Credential Cached (DCC)](https://learn.microsoft.com/en-us/troubleshoot/windows-server/user-profiles-and-logon/cached-domain-logon-information) which stores the last domain users logged into the machine (only if a user authenticates correctly and has the permissions to access the Client), if they are also NOT present there then the login is rejected.
     
