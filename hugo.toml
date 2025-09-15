@@ -1,5 +1,5 @@
 baseURL = 'https://marcozufferli.github.io'
-title        = "My Blog"
+title        = "My Blog!"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
 pagination.pagerSize     = 10
