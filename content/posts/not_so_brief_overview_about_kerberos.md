@@ -63,7 +63,7 @@ The Active Directory of a Domain Controller will act as the KDC and the listenin
     
     > **Note 2**: As we will see later, if a domain user has the [DONT_REQ_PREAUTH](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties) flag enabled, the AS will respond with a valid KRB_AS_REP (response) even if the KRB_AS_REQ (request) packet does not have the "Timestamp" encrypted with the NTHash of the user’s password.
     
-    > <span id=32> **Note 3**: For simplicity of explanation everything has been described in this way, in reality, what will happen in reality is that the Client will first send a "KRB_AS_REQ" packet to the AS NOT encrypting the Timestamp with the NT Hash of the current user and only when the AS responds with an error "KDC_ERR_PREAUTH_REQUIRED" then the Client will send a new "KRB_AS_REQ" with the Timestamp encrypted, this is the reason why by analyzing everything with Wireshark in a traditional Kerberos authentication one can notice such error message.
+    > <span id=32> **Note 3**: For simplicity of explanation everything has been described in this way, in reality, what will happen in reality is that the Client will first send a "KRB_AS_REQ" packet to the AS NOT encrypting the Timestamp with the NT Hash of the current user and only when the AS responds with an error "KDC_ERR_PREAUTH_REQUIRED" then the Client will send a new "KRB_AS_REQ" with the Timestamp encrypted, this is the [reason](https://youtu.be/4LDpb1R3Ghg?t=3167) why by analyzing everything with Wireshark in a traditional Kerberos authentication one can notice such error message.
 
 2. ### **KRB_AS_REP: AS sends the TGT token to the Client**
 
