@@ -44,9 +44,11 @@ This protocol is called Kerberos, like the three-headed dog of Greek mythology, 
 
 <p>To authenticate, the user enters the credentials on the Client (DOMAIN\User &amp; Password) and everywhing will be shared in cleartext with the &ldquo;LSASS&rdquo; process.</p>
 <p><span id="6">After that, LSASS delegates the authentication to its SSPs, so some DLLs (APIs) that can be loaded within the &ldquo;lsass.exe&rdquo; process, consequently the LSASS process loads and shares in cleartext the credentials with all the SSPs dedicated to authentication (kerberos.dll - manage Kerberos, msv1_0.dll - manage NTLM Authentication, wdigest.dll - manage Digest); that said, since the LSASS process does NOT know which SSP to use, <a href="https://syfuhs.net/what-happens-when-you-type-your-password-into-windows">it will use them one by one in sequential order until a correct authentication takes place</a>, consequently, since Windows will recognize that it is a domain user entered, it will start with the &ldquo;kerberos.dll&rdquo; DLL, it then calculates the NT hash of the corresponding previously entered password (which it received in plaintext) and after that contacts the AS (Authentication Service which is a feature of the KDC, that is the DC) to request the issuance of a Ticket called &ldquo;TGT&rdquo; and a &ldquo;TGS Session Key&rdquo;, specifically the LSASS process sends a KRB_AS_REQ which contains:</p>
+</li>
+</ol>
 
-        <img src="/not_so_brief_overview_about_kerberos/krb_as_req.png"  class="center"  style="border-radius: 8px;"  />
-    
+      <img src="/not_so_brief_overview_about_kerberos/krb_as_req.png"  class="center"  style="border-radius: 8px;"  />
+  
 
 <ul>
 <li>
@@ -55,8 +57,6 @@ This protocol is called Kerberos, like the three-headed dog of Greek mythology, 
 <li>
 <p><span id="5"><strong>SPN - krbtgt</strong>: It will be indicated in the dedicated field, the SPN related to the Kerberos service (KDC) of the Domain Controller which is equal to krbtgt/[&lt;domain&gt;].</p>
 <p>A Service Principal Name (SPN), <a href="/posts/not_so_brief_overview_about_kerberos/#service-principal-name-spn">as we explain later</a> is a unique identifier for the instance of a service, SPNs are used by Kerberos authentication to associate the instance of a service (simplifying: the start &amp; running of the service such as for example Microsoft SQL) with a so-called &ldquo;Logon Account&rdquo;, so a domain user (which in this way it will becomes a Service Account); in other terms, (generically speaking) an SPN can be considered as a generic object that represents the association between a service and a domain user, that said, technically, <a href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2003/cc772815%28v=ws.10%29#service-principal-names">it is an attribute of the &ldquo;Users&rdquo; object</a> and in fact from it one can list the related SPNs; this essentially means that through an SPN it is possible to map the start &amp; the running of a service present on a server with a domain user rather than associating it with a &ldquo;Standard Service Account&rdquo; such as <a href="https://learn.microsoft.com/it-it/windows/win32/services/networkservice-account?redirectedfrom=MSDN">NetworkService Account</a>; finally, it should be noted that also Computer Accounts have SPNs.</p>
-</li>
-</ul>
 <blockquote>
 <p><strong>Note 1</strong>: If the DC is not accessible when a Client performs a domain authentication, the Client checks whether such credentials are present within the <a href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/user-profiles-and-logon/cached-domain-logon-information">Domain Credential Cached (DCC)</a> which stores the last domain users logged into the machine (only if a user authenticates correctly and has the permissions to access the Client), if they are also NOT present there then the login is rejected.</p></blockquote>
 <blockquote>
@@ -64,6 +64,8 @@ This protocol is called Kerberos, like the three-headed dog of Greek mythology, 
 <blockquote>
 <p><span id=32> <strong>Note 3</strong>: For simplicity of explanation everything has been described in this way, in reality, what will happen in reality is that the Client will first send a &ldquo;KRB_AS_REQ&rdquo; packet to the AS NOT encrypting the Timestamp with the NT Hash of the current user and only when the AS responds with an error &ldquo;KDC_ERR_PREAUTH_REQUIRED&rdquo; then the Client will send a new &ldquo;KRB_AS_REQ&rdquo; with the Timestamp encrypted, this is the reason why by analyzing everything with Wireshark in a traditional Kerberos authentication one can notice such error message.</p></blockquote>
 </li>
+</ul>
+<ol start="2">
 <li>
 <h3 id="krb_-1"><strong>KRB_AS_REP: AS sends the TGT token to the Client</strong></h3>
 </li>
