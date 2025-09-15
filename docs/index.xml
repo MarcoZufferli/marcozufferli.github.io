@@ -2,5 +2,5 @@
 
 
 &lt;h1 id="kerberos-authentication-protocol"&gt;&lt;strong&gt;Kerberos Authentication Protocol&lt;/strong&gt;&lt;/h1&gt;
-&lt;p&gt;Kerberos is the Windows network authentication protocol present by default in versions after Windows 2000; it replaces the NTLM protocol (specifically, NTLMv2) but it should be noted that it can only operate in Active Directory contexts and NOT in Workgroup.&lt;/p&gt;
+&lt;p&gt;Kerberos is the Windows network authentication protocol present by default in versions after Windows 2000; it replaces the NTLM protocol (specifically, &lt;a href="https://it.wikipedia.org/wiki/NTLM#NTLMv2"&gt;NTLMv2&lt;/a&gt;) but it should be noted that it can only operate in Active Directory contexts and NOT in &lt;a href="https://en.wikipedia.org/wiki/Workgroup_%28computer_networking%29"&gt;Workgroup&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In a traditional Active Directory authentication scenario, when a user performs a domain authentication on a WorkStation / Server (Interactive Logon) the Client uses the Kerberos protocol for authentication and if, subsequently, the domain user already logged into the Client needs to authenticate with their domain credentials towards a target network service such as SMB (Network Logon), the Kerberos protocol, having SSO capabilities, is used again by the Client.&lt;/p&gt;</description></item></channel></rss>
