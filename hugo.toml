@@ -12,7 +12,7 @@ pagination.pagerSize     = 10
   
 
   # Subtitle for home
-  homeSubtitle = "an Offensive Security blog about Offensive Security stuff"
+  homeSubtitle = "An Offensive Security Blog about Offensive Security Stuff"
 
   # Set disableReadOtherPosts to true in order to hide the links to other posts.
   disableReadOtherPosts = false
