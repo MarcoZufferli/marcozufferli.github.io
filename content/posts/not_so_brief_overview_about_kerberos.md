@@ -102,7 +102,7 @@ Below are the sequential steps that occur until the user’s home screen is load
 
 1. The SSP "Kerberos.dll" (so the LSASS process) creates a LogonSession ([it is a data structure present in LSASS](https://learn.microsoft.com/en-us/windows/win32/secauthn/lsa-logon-sessions)) which will represent the domain account just authenticated (ex: ASTRO\Cosmo)
 
-2. Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only "kerberos.dll" was actively used for the authentication phase in this context, these SSPs [as already mentioned](#6), will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).
+2. Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only "kerberos.dll" was actively used for the authentication phase in this context), these SSPs [as already mentioned](#6), will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).
 
     It means that if an attacker is able to dump a Logon Session, he will able to see ALL the associated SSPs along with their stored credentials in plaintext (generally speaking since exist some feature that mitigate this logic) (dumpable with [sekurlsa::logonpasswords](https://adsecurity.org/?page_id=1821)).
     
@@ -152,7 +152,7 @@ Once the verification is completed, the KDC sends to the Client the KRB_TGS_REP 
 
 > The KDC, being the DC, knows the hashes of all domain users, so also the service accounts (which are domain users) and also the hash of the service account that runs the service requested by the Client.
 
-> The PAC of the TGS Ticket is a copy of the PAC contained in the [received TGT Ticket](#12).
+> The PAC of the TGS Ticket is a copy of the PAC contained in the [received TGT Ticket](#12); this is one of the behavior that makes it possible to perform a Golden Ticket.
 
 - **Other Data**: A "Service Session Key", together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.
 

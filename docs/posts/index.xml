@@ -118,7 +118,7 @@ The AS (a feature of the KDC) after having received such request, using the user
 <p>The SSP &ldquo;Kerberos.dll&rdquo; (so the LSASS process) creates a LogonSession (<a href="https://learn.microsoft.com/en-us/windows/win32/secauthn/lsa-logon-sessions">it is a data structure present in LSASS</a>) which will represent the domain account just authenticated (ex: ASTRO\Cosmo)</p>
 </li>
 <li>
-<p>Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only &ldquo;kerberos.dll&rdquo; was actively used for the authentication phase in this context, these SSPs <a href="/posts/not_so_brief_overview_about_kerberos/#6">as already mentioned</a>, will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).</p>
+<p>Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only &ldquo;kerberos.dll&rdquo; was actively used for the authentication phase in this context), these SSPs <a href="/posts/not_so_brief_overview_about_kerberos/#6">as already mentioned</a>, will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).</p>
 <p>It means that if an attacker is able to dump a Logon Session, he will able to see ALL the associated SSPs along with their stored credentials in plaintext (generally speaking since exist some feature that mitigate this logic) (dumpable with <a href="https://adsecurity.org/?page_id=1821">sekurlsa::logonpasswords</a>).</p>
 </li>
 </ol>
@@ -185,7 +185,7 @@ Since the TGT Ticket and the TGS Session Key have been cached, if a Network Logo
 <blockquote>
 <p>The KDC, being the DC, knows the hashes of all domain users, so also the service accounts (which are domain users) and also the hash of the service account that runs the service requested by the Client.</p></blockquote>
 <blockquote>
-<p>The PAC of the TGS Ticket is a copy of the PAC contained in the <a href="/posts/not_so_brief_overview_about_kerberos/#12">received TGT Ticket</a>.</p></blockquote>
+<p>The PAC of the TGS Ticket is a copy of the PAC contained in the <a href="/posts/not_so_brief_overview_about_kerberos/#12">received TGT Ticket</a>; this is one of the behavior that makes it possible to perform a Golden Ticket.</p></blockquote>
 <ul>
 <li><strong>Other Data</strong>: A &ldquo;Service Session Key&rdquo;, together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.</li>
 </ul>
