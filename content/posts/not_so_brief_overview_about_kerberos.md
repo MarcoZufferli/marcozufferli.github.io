@@ -243,7 +243,7 @@ In reality the TGT Ticket also has a field dedicated to the "Server Signature" b
 
 As already seen, the Kerberos protocol allows the user to request a TGT Ticket from the Domain Controller by sending a KRB_AS_REQ encrypting the "Timestamp" field with the NT Hash of the account performing the authentication, if it is correct everything proceeds properly, that said, in reality, the Kerberos protocol also more generically accepts the entity called "Kerberos Keys".
 
-When a domain account is created, the Domain Controller will take as input the corresponding plain-text password and encrypt it using different algorithms, the output of these will be the entity called "Kerberos Keys":
+When a domain account is created, the Domain Controller takes the corresponding plaintext password as input and applies different hashing algorithms to it, the outputs of these algorithms are hash values called Kerberos Keys:
 
   - **AES 256 Key**: "AES 256 Key" is the output of the plain-text password using the "[AES256_HMAC_SHA1](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-security-configure-encryption-types-allowed-for-kerberos)" algorithm.
   
