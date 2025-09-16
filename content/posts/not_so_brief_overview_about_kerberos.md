@@ -20,7 +20,7 @@ Kerberos works over the TCP and UDP protocol in clear-text, in fact there is no 
 
 Kerberos is an authentication protocol, not an authorization protocol, this means that the Kerberos protocol, through the use of TGT, TGS tickets and other related data, is able both to prove to the remote service that the domain user trying to access is indeed a valid domain user, already authenticated and present in the AD (Network Logon) ([link](#1)), and to the Client when the user performs a standard login to the machine (Interactive Logon) ([link](#2)); instead, authorization, so the verification of the permissions in order to access to the target service is the responsibility of the AP, that is the server hosting the service (Network Logon) ([link](#3)), while to the Client it's the responsibility of the Client itself (Interactive Logon) ([link](#4)).
 
-Kerberos implements the concept of "Ticket", that's are "objects" that will be used to perform domain authentications.
+Kerberos implements the concept of "Ticket", they are "objects" that will be used to perform domain authentications.
 This protocol is called Kerberos, like the three-headed dog of Greek mythology, because in its complete operation (for example from Interactive Logon to Network Logon) it involves 3 distinct actors:
 
 - **Client / User**: The Client (it's also possible to say the user who has logged into the Client) wants to access a service that requires domain authentication.
@@ -63,7 +63,7 @@ The Active Directory of a Domain Controller will act as the KDC and the listenin
     
     > **Note 2**: As we will see later, if a domain user has the [DONT_REQ_PREAUTH](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties) flag enabled, the AS will respond with a valid KRB_AS_REP (response) even if the KRB_AS_REQ (request) packet does not have the "Timestamp" encrypted with the NTHash of the user’s password.
     
-    > <span id=32> **Note 3**: For simplicity of explanation everything has been described in this way, in reality, what will happen in reality is that the Client will first send a "KRB_AS_REQ" packet to the AS NOT encrypting the Timestamp with the NT Hash of the current user and only when the AS responds with an error "KDC_ERR_PREAUTH_REQUIRED" then the Client will send a new "KRB_AS_REQ" with the Timestamp encrypted, this is the [reason](https://youtu.be/4LDpb1R3Ghg?t=3167) why by analyzing everything with Wireshark in a traditional Kerberos authentication one can notice such error message.
+    > <span id=32> **Note 3**: For simplicity of explanation everything has been described in this way, what will happen in reality is that the Client will first send a "KRB_AS_REQ" packet to the AS NOT encrypting the Timestamp with the NT Hash of the current user and only when the AS responds with an error "KDC_ERR_PREAUTH_REQUIRED" then the Client will send a new "KRB_AS_REQ" with the Timestamp encrypted, this is the [reason](https://youtu.be/4LDpb1R3Ghg?t=3167) why by analyzing everything with Wireshark in a traditional Kerberos authentication one can notice such error message.
 
 2. ### **KRB_AS_REP: AS sends the TGT token to the Client**
 
@@ -104,7 +104,7 @@ Below are the sequential steps that occur until the user’s home screen is load
 
 2. Windows (this action is not performed by Kerberos.dll) will attach to the the LogonSession of the user just created ALL the previously loaded SSPs (even if only "kerberos.dll" was actively used for the authentication phase in this context), these SSPs [as already mentioned](#6), will contain the authenticated user’s credentials in plaintext; this happens to ensure Network Logon SSO functionality (Kerberos or NTLM) since these network protocol requires the use of the current account’s NT Hash (which is derivable from the plaintext password).
 
-    It means that if an attacker is able to dump a Logon Session, he will able to see ALL the associated SSPs along with their stored credentials in plaintext (generally speaking since exist some feature that mitigate this logic) (dumpable with [sekurlsa::logonpasswords](https://adsecurity.org/?page_id=1821)).
+    It means that if an attacker is able to dump a Logon Session, he will able to see ALL the associated SSPs along with their stored credentials in plaintext (generally speaking because exist some features that mitigate this logic) (dumpable with [sekurlsa::logonpasswords](https://adsecurity.org/?page_id=1821)).
     
   > In reality the MSV SSP ([1](https://zer1t0.gitlab.io/posts/attacking_ad/#ntlm-ssp), [2](https://www.praetorian.com/blog/inside-mimikatz-part1/)) will instead provide the NT Hash of the password.
 
@@ -138,7 +138,7 @@ The Client presents to the KDC (no longer to the AS functionality) a KRB_TGS_REQ
 
 - <span id=16> **SPN**: The SPN related to / pointing to the service the Client needs to connect to via SSO is sent in plain-text, such as the SPN "HTTP/Charlotte.medin.local" or "CIFS/SERV01" ([1](https://en.hackndo.com/kerberos/)); in the first, one wants to authenticate to the HTTP service present on the Hostname "Charlotte.medin.local" while in the second to the CIFS service present on the Hostname SERV01.
 
-<span id=18>I want to highlight that both TGT Ticket & TGS Ticket (also called Service Ticket / ST ) both contain the [Privilege Attribute Certificate (PAC)](#privilege-attribute-certificate-pac), that is, a data structure used by the Kerberos protocol to share with the other actors involved in the authentication the security information related to the domain user attempting the login, including: Username, ID, Group Membership and in general all security information; furthermore [the PAC is NOT encrypted but ONLY signed](#11).
+<span id=18>I want to highlight that both TGT Ticket & TGS Ticket (also called Service Ticket / ST ) contain the [Privilege Attribute Certificate (PAC)](#privilege-attribute-certificate-pac), that is, a data structure used by the Kerberos protocol to share with the other actors involved in the authentication the security information related to the domain user attempting the login, including: Username, ID, Group Membership and in general all security information; furthermore [the PAC is NOT encrypted but ONLY signed](#11).
 
 4. ### **KRB_TGS_REP: KDC sends the TGS Ticket to the client**
 
@@ -189,7 +189,7 @@ Due to how the Kerberos protocol works, the AP (the server hosting the service s
 ---
 <span id=33>**Optional**
 
-Although it is not the Kerberos protocol itself but the [NRPC (NetLogon) protocol](https://www.tarlogic.com/blog/how-kerberos-works/) ([1](https://adsecurity.org/?p=1515)), if the AP needs to verify whether the PAC received ([contained in the TGS Ticket](#26)) is valid, [a checks that it does not happen often](#28), it can verify it by sending a packet named [KERB_VERIFY_PAC_REQUEST](https://learn.microsoft.com/en-us/archive/blogs/openspecification/understanding-microsoft-kerberos-pac-validation#kerberos-pac-validation) as indicated later; furthermore, if the Client explicitly requests it ([flag "ap-options=1"](https://datatracker.ietf.org/doc/html/rfc1510#section-5.5.1) inside the [KRB_AP_REQ packet](#26)), the AP must also authenticate itself to the Client, this concent is called "Mutual Authentication"; if both activities are required, the following steps 6, 7, and 8 will take place, and only after their completion the AP (or rather its service) will grant access to the Client.
+Although it is not the Kerberos protocol itself but the [NRPC (NetLogon) protocol](https://www.tarlogic.com/blog/how-kerberos-works/) ([1](https://adsecurity.org/?p=1515)), if the AP needs to verify whether the PAC received ([contained in the TGS Ticket](#26)) is valid, [a check that it does not happen often](#28), it can verify it by sending a packet named [KERB_VERIFY_PAC_REQUEST](https://learn.microsoft.com/en-us/archive/blogs/openspecification/understanding-microsoft-kerberos-pac-validation#kerberos-pac-validation) as indicated later; furthermore, if the Client explicitly requests it ([flag "ap-options=1"](https://datatracker.ietf.org/doc/html/rfc1510#section-5.5.1) inside the [KRB_AP_REQ packet](#26)), the AP must also authenticate itself to the Client, this concent is called "Mutual Authentication"; if both activities are required, the following steps 6, 7, and 8 will take place, and only after their completion the AP (or rather its service) will grant access to the Client.
 
 > <span id=28>I want to highlight that the PAC contained in the TGT Ticket is ALWAYS validated (when the DC receives the KRB_TGS_REQ) while the PAC contained in the TGS Ticket is validated ONLY if properly configured (by configuring a registry which is disabled by default).
 In the case where both the PAC verification and the Client request for Mutual Authentication are present, the following steps occur:
@@ -275,7 +275,7 @@ If an attacker manages to obtain a Kerberos Key of a victim account, they would 
 
 A "[Service Account](https://en.wikipedia.org/wiki/Service_account)" is nothing more than an account created and used for the start & running of a specific service, furthermore, if this service needs to interact with other services it can do it using its own "Service Account".
 
-In a classic scenario when the local or domain user "BOB" starts the software "Notepad" application, the operating system runs "Notepad" using the account "BOB", when a Service Account is used, instead, the OS will start the service (for example MMSQL) using that specific Service Account, this will mean that viewing the running processes though Task Manager it will be possible to see that the service "Microsoft SQL" is running with the related "Service Account".
+In a classic scenario when the local or domain user "BOB" starts the software "Notepad" application, the operating system runs "Notepad" using the account "BOB", when a Service Account is used, instead, the OS will start the service (for example MSSQL) using that specific Service Account, this will mean that viewing the running processes though Task Manager it will be possible to see that the service "Microsoft SQL" is running with the related "Service Account".
 
 One type of "Service Account" are the "[Standard Service Account](https://learn.microsoft.com/en-us/windows/win32/services/service-user-accounts)", so "Service Accounts" that do NOT have passwords and they are used by Windows OS to start specific services usually system-related, the most common example is the "[NetworkService Account](https://learn.microsoft.com/it-it/windows/win32/services/networkservice-account?redirectedfrom=MSDN)" which is usually used to start the IIS or MSSQL Server service.
 
@@ -287,7 +287,7 @@ This essentially means that through an SPN it is possible to map the start & run
 
 Each service (hosted on a server joined into a domain) that wants a domain user to authenticate to it using the Kerberos protocol (Kerberos SSO) must necessarily have an SPN configured [so that the potential "Client" (so the actor involved in Kerberos Authentication) can uniquely identify the service within the network](#16); if no SPN is set for a service, then the Client has NO way to locate the service and consequently the Kerberos authentication is NOT possible.
 
-An SPN (so an attribute of the "user" object) is (usually, it's not mandatorylin) built using the name of the "service class" followed by the hostname that starts the service; finally, optionally, it can also include the port and an arbitrary name to associate:
+An SPN (so an attribute of the "user" object) is (usually, it's not mandatory) built using the name of the "service class" followed by the hostname that starts the service; finally, optionally, it can also include the port and an arbitrary name to associate:
 
 <span id="target-text2">{{< image src="/not_so_brief_overview_about_kerberos/spn1.png" position="center" 
 style="border-radius: 8px;" >}}
