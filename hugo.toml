@@ -10,6 +10,7 @@ pagination.pagerSize     = 10
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
   EnableThemeToggle = true
+  enableRobotsTXT = true
 
   # Subtitle for home
   homeSubtitle = "An Offensive Security Blog about Offensive Security Stuff"
