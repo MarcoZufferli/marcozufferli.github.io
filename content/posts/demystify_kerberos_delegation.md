@@ -1,7 +1,7 @@
 ---
 title: "Demystify Kerberos Delegation"
 date: 2025-09-16T14:50:00+02:00
-draft: true
+draft: false
 toc: false
 ---
 ---
@@ -378,8 +378,6 @@ The AP Front End (HTTP service), after the [usual checks](#2), in summary, sends
 
 - **The previously received TGS Ticket**: The previously received TGS Ticket, that is, the one belonging to the Client (containing the PAC of the domain user who authenticated to the AP Front End) and valid for the AP Back-End (CIFS/SQL01).
 
-([if the AUTHORIZATION phase goes correctly](./not_so_brief_overview_about_kerberos#3
-
 ### **8. KRB\_AP\_REP (Optional)**
 
 The AP Back-End, now having received the KRB\_AP\_REQ packet from the AP Front-End, in summary, after the [usual checks](#2) ([if the AUTHORIZATION phase goes correctly](./not_so_brief_overview_about_kerberos#3), will allow access by the AP Front End to the requested service (in this case the CIFS service hosted on the SQL01 machine); subsequently, depending on the requested service and if mutual authentication is required by the AP Front End (ex HTTP service), the AP Back-End (ex CIFS service) will send a KRB\_AP\_REP to the AP Front End (ex HTTP service).
@@ -398,7 +396,7 @@ The KDC, in order to use the "Constrained Delegation (Kerberos only)", requires 
 
 **1. Configure the "Constrained Delegation (Use any authentication protocol)" on the "Front-End" AP.**
 
-<span id=15>
+<span id=25>
 
 {{< image src="/demystify_kerberos_delegation/24.png" position="center" style="border-radius: 8px;">}}
 
@@ -414,7 +412,7 @@ This configuration sets in the [UserAccountControl](#11) property of the AP "Fro
 
 - The "msds-allowedtodelegateto" flag, which contains in the form of SPNs all the AP "Back End" services to which the AP "Front End" is allowed to authenticate on behalf of the Client;
 
-In our [example](#15), the Kerberos Delegation is configured on the Computer "WEB01" which will act as the Front-End AP, this modification is actually reflected on the related Computer Account since it is contained in the "Computer" object, so the Computer Account "WEB01\$" will have the "msds-allowedtodelegateto" & "TRUSTED_TO_AUTH_FOR_DELEGATION" property filled, this means that any service started by this computer with the Service Account WEB01\$ (Computer Account) will have "Constrained Delegation (Use any authentication protocol)" enabled ([so, all services started with the Local Service account such as by default the CIFS service or HTTP like in this example](./not_so_brief_overview_about_kerberos/#17)).
+In our [example](#25), the Kerberos Delegation is configured on the Computer "WEB01" which will act as the Front-End AP, this modification is actually reflected on the related Computer Account since it is contained in the "Computer" object, so the Computer Account "WEB01\$" will have the "msds-allowedtodelegateto" & "TRUSTED_TO_AUTH_FOR_DELEGATION" property filled, this means that any service started by this computer with the Service Account WEB01\$ (Computer Account) will have "Constrained Delegation (Use any authentication protocol)" enabled ([so, all services started with the Local Service account such as by default the CIFS service or HTTP like in this example](./not_so_brief_overview_about_kerberos/#17)).
 
 <span id=30>
 
