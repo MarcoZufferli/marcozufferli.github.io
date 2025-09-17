@@ -37,9 +37,11 @@ The Active Directory of a Domain Controller will act as the KDC and the listenin
 
 {{< image src="/not_so_brief_overview_about_kerberos/kerberos_flow.png" position="center" style="border-radius: 8px;" >}}
 
-> In the following sections we'll describe the traditional process where Kerberos is used, so from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, to a subsequent Network Logon (using the credentials cached) to authenticate to a target service; in reality, the Kerberos authentication process can actually also begin using other [Logon Type](https://www.alteredsecurity.com/post/fantastic-windows-logon-types-and-where-to-find-credentials-in-them) besides the traditional WinLOGON GUI (Interactive Logon), for example: performing a Kerberos authentication to a service (for instance the SMB service using the PsExec utility from Sysinternals) specifying domain credentials that are different from the ones currently in use; since the Client does NOT have the TGT Ticket of the requested credentials cached (because it logged into the Client with another account) a full Kerberos authentication will be performed.
+> <span id=40> In the following sections we'll describe the traditional process where Kerberos is used, so from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, to a subsequent Network Logon (using the credentials cached) to authenticate to a target service; in reality, the Kerberos authentication process can actually also begin using other [Logon Type](https://www.alteredsecurity.com/post/fantastic-windows-logon-types-and-where-to-find-credentials-in-them) besides the traditional WinLOGON GUI (Interactive Logon), for example: performing a Kerberos authentication to a service (for instance the SMB service using the PsExec utility from Sysinternals) specifying domain credentials that are different from the ones currently in use; since the Client does NOT have the TGT Ticket of the requested credentials cached (because it logged into the Client with another account) a full Kerberos authentication will be performed.
 
 ## **Kerberos Flow - Interactive Login**
+
+<span id=39>
 
 1. ### **KRB_AS_REQ: Request of the TGT Token from the Authentication Server (AS)**
 
@@ -152,7 +154,8 @@ Once the verification is completed, the KDC sends to the Client the KRB_TGS_REP 
 
 > The KDC, being the DC, knows the hashes of all domain users, so also the service accounts (which are domain users) and also the hash of the service account that runs the service requested by the Client.
 
-> The PAC of the TGS Ticket is a copy of the PAC contained in the [received TGT Ticket](#12); this is one of the behavior that makes it possible to perform a Golden Ticket.
+
+> <span id=42>The PAC of the TGS Ticket is a copy of the PAC contained in the [received TGT Ticket](#12); this is one of the behavior that makes it possible to perform a Golden Ticket.
 
 - **Other Data**: A "Service Session Key", together with other data, encrypted with the TGS Session Key; it will be used as the encryption key for the final packet exchanges.
 
@@ -202,8 +205,10 @@ In the case where both the PAC verification and the Client request for Mutual Au
   
   The DC will verify if the PAC is valid (for simplicity of explanation, we can say that the DC will calculate a "signature" on the PAC content and if this output matches the existing signature, then the PAC will be considered valid) and will respond with a code indicating if it is correct; this packet representing the response has no specific name, it is simply called "[PAC RESPONSE](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-apds/b27be921-39b3-4dff-af4a-b7b74deb33b5)".
   
+  <span id=37>
+
   8. ### **(Optional) KRB_AP_REP**
-  
+
   Finally, optionally, if the Client explicitly requests it, even the service itself (and NOT the related service account), so the AP, must authenticate itself performing a so-called "mutual authentication"; to do this, instead of contacting the AD, the AP responds directly to the Client by sending a [KRB_AP_REP](https://datatracker.ietf.org/doc/html/rfc4120#section-5.5.2) (as a response to the previous KRB_AP_REQ) [containing a TIMESTAMP encrypted](https://datatracker.ietf.org/doc/html/rfc4120#section-5.5.2) with the "[Service Session Key](#19)"; if the Client correctly decrypts the TIMESTAMP with the "Service Session Key" it possesses (the Client has the legitimate "Service Session Key" because it received it from the DC in the [KRB_TGS_REP](#19)), then it is demonstrated that the AP, having the correct "Service Session Key", is legitimate (this is because the AP, to have this legitimate "Service Session Key", would have had to extract the data from the TGS received from the Client - KRB_AP_REQ - which was encrypted with the "[Service Owner Hash](#29)", information that only the legitimate AP should know); in other words, [in this way the Client is sure it is connecting to the original service](https://www.educative.io/blog/kerberos-in-5-minutes#) and not to another service of a potential attacker pretending to be the original service.
 
 ## **Privilege Attribute Certificate (PAC)**
