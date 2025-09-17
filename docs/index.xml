@@ -1,25 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Marco Zufferli</title><link>https://marcozufferli.github.io/</link><description>Recent content on Marco Zufferli</description><generator>Hugo</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:50:00 +0200</lastBuildDate><atom:link href="https://marcozufferli.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation</title><link>https://marcozufferli.github.io/posts/demystify_kerberos_delegation/</link><pubDate>Tue, 16 Sep 2025 14:50:00 +0200</pubDate><guid>https://marcozufferli.github.io/posts/demystify_kerberos_delegation/</guid><description>&lt;hr&gt;
-&lt;h4 id="table-of-contents"&gt;Table of Contents:&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#whats-kerberos-delegation"&gt;What&amp;rsquo;s Kerberos Delegation&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#unconstrained-delegation"&gt;Unconstrained Delegation&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#constrained-delegation"&gt;Constrained Delegation&lt;/a&gt;&lt;/strong&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only"&gt;Constrained Delegation (Kerberos only)&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#constrained-delegation-use-any-authentication-protocol--protocol-transition"&gt;Constrained Delegation (Use any authentication Protocol) / Protocol Transition&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.github.io/posts/demystify_kerberos_delegation/#resource-based-constrained-delegation-rbcd"&gt;Resource Based Constrained Delegation (RBCD)&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;h1 id="kerberos-delegation"&gt;&lt;strong&gt;Kerberos Delegation&lt;/strong&gt;&lt;/h1&gt;
-
- &lt;img src="https://marcozufferli.github.io/demystify_kerberos_delegation/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
-
-
-&lt;h2 id="what"&gt;&lt;strong&gt;What&amp;rsquo;s Kerberos Delegation?&lt;/strong&gt;&lt;/h2&gt;
-&lt;p&gt;Before you begin, if you are not confident with Kerberos, i highly suggest you to start reading my other article called &amp;ldquo;&lt;a href="https://marcozufferli.github.io/posts/not_so_brief_overview_about_kerberos/"&gt;Not So Brief Overview about Kerberos&lt;/a&gt;&amp;rdquo;.&lt;/p&gt;
-&lt;p&gt;Let&amp;rsquo;s assume a scenario where a domain user authenticates via Kerberos to a &amp;ldquo;Front-End&amp;rdquo; AP (service) such as a Web Application, which, to operate correctly, must interact with a &amp;ldquo;Back-End&amp;rdquo; AP (service) such as a Database or a File Server.&lt;/p&gt;</description></item><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.github.io/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.github.io/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.github.io/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Marco Zufferli</title><link>https://marcozufferli.github.io/</link><description>Recent content on Marco Zufferli</description><generator>Hugo</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Thu, 11 Sep 2025 17:20:24 +0200</lastBuildDate><atom:link href="https://marcozufferli.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.github.io/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.github.io/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.github.io/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
 
 
 &lt;h1 id="kerberos-authentication-protocol"&gt;&lt;strong&gt;Kerberos Authentication Protocol&lt;/strong&gt;&lt;/h1&gt;
