@@ -3,6 +3,7 @@ title        = "My Blog!"
 languageCode = "en-us"
 theme        = "hello-friend-ng"
 pagination.pagerSize     = 10
+enableRobotsTXT = true
 
 [params]
   dateform        = "Jan 2, 2006"
@@ -10,7 +11,6 @@ pagination.pagerSize     = 10
   dateformNum     = "2006-01-02"
   dateformNumTime = "2006-01-02 15:04"
   EnableThemeToggle = true
-  enableRobotsTXT = true
 
   # Subtitle for home
   homeSubtitle = "An Offensive Security Blog about Offensive Security Stuff"
@@ -77,9 +77,3 @@ pagination.pagerSize     = 10
 [services]
   [services.googleAnalytics]
     id = "G-0CQPK6589P"
-
-enableRobotsTXT = true
-enableGitInfo   = false
-enableEmoji     = true
-disableSitemap = false
-disable404     = false
