@@ -50,10 +50,18 @@ pagination.pagerSize     = 10
     # alt = "Your example logo alt text"
 
   # And you can even create generic menu
+
+  [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "/about"
+
   [[menu.main]]
     identifier = "blog"
     name       = "Blog"
     url        = "/posts"
+  
+
 
 [[params.social]]
   name = "email"
@@ -69,3 +77,9 @@ pagination.pagerSize     = 10
 [services]
   [services.googleAnalytics]
     id = "G-0CQPK6589P"
+
+enableRobotsTXT = true
+enableGitInfo   = false
+enableEmoji     = true
+disableSitemap = false
+disable404     = false

@@ -521,6 +521,7 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
 - **The name of the domain user that the AP Front End wants to impersonate (e.g., CAPSULE.corp\vegeta).**
 
   The AP Front End needs to have a TGS Ticket valid for itself that belongs to the Client (e.g., CAPSULE.corp\vegeta), consequently the AP Front End will specify the name of the domain user it wants to impersonate, so the user who has connected to the AP Front End (e.g., CAPSULE.corp\vegeta):
+  <span id=111>
 
   > This data is inserted in both the "PA-S4U-X509-USER" & "PA-FOR-USER" structures (data structures added into Kerberos packet through the S4UProxy extension).
 
@@ -533,6 +534,8 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
   > By analyzing the packet on my home lab through S4U Request with Rubeus I do NOT find the "PA-S4U-X509-USER" data structure BUT I do find "PA-FOR-USER".
 
 ### **3. KRB\_TGS\_REP (S4U2Self) / S4USelf Response.**
+
+<span id=112>
 
 After performing the [usual checks](#2), the KDC retrieves from the [KRB\_TGS\_REQ (S4U2Self)](#2-krb_tgs_req-s4u2self--s4uself-request) packet the [Service Account contained in the SPN field (e.g., WEB01\$)](#31), then it will verify if this Service Account has the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" property enabled, [if as in this case the result is positive](#30) it will mean that the related service (e.g., HTTP) has the "Constrained Delegation (Use any authentication protocol)" enabled, consequently the KDC sends a KRB\_TGS\_REP (S4U2Self) packet to the AP Front End containing in summary:
 
@@ -561,6 +564,8 @@ After performing the [usual checks](#2), the KDC retrieves from the [KRB\_TGS\_R
 > **POST 2021:**
 >
 > **A note related to [RBCD that we'll analyze later](#resource-based-constrained-delegation-rbcd)**: [As previusly said](#75), in POST 2021 scenario if the Service Account specified in the SPN (WEB01\$) does NOT have the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag enabled the KDC will still issue a TGS Ticket with the FORWARDABLE flag set to 1. 
+
+<span id=118>
 
 ### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4UProxy Request**
 
@@ -640,7 +645,7 @@ The AP Back-End, now that it has received the [KRB\_AP\_REQ packet](#6-krb_ap_re
 
 **Finaly** the AP Front-End successfully authenticated to the AP Back-End on behalf of the Client.
 
-## **Resource Based Constrained Delegation" (RBCD)**
+## **Resource Based Constrained Delegation (RBCD)**
 
 Resource Based Constrained Delegation" (RBCD) operates in a similar way to the classic "Constrained Delegation" ("Kerberos Only" & "Use Any Authentication Protocol") with the difference that the configuration is done directly on the AP Back-End (ex CIFS) rather than on the AP Front End (ex HTTP); in this way the responsibility is shifted to the Back-End service.
 
@@ -666,7 +671,11 @@ PS C:> Set-ADComputer -Identity \<ComputerAccount\_APBackEnd> -PrincipalsAllowed
 <span id=45>
 {{< image src="/demystify_kerberos_delegation/44.png" position="center" style="border-radius: 8px;">}}
 
+<span id=123>
+
 To set the attribute "ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity" it is NOT necessary to have Domain Admin privileges as is required for the other Kerberos Delegations, instead, it is sufficient to have write rights (for ex GenericalAll, GenericWrite and so on) on that property.
+
+<span id=130>
 
 > In reality, also an object of type "User" (domain account) can be configured with the Kerberos Resource Based Constrained Delegation (RBCD), however, to do so it is necessary that such account has at least 1 SPN configured.
 
@@ -702,6 +711,7 @@ A domain account authenticates NOT using the Kerberos protocol (NTLM, Basic, etc
 
 If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will occur:
 <span id=47>
+
 ### **2. KRB\_TGS\_REQ (S4U2Self) / S4USelf Request**
 
 Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client's TGS Ticket and therefore CANNOT invoke S4U2Proxy as in the [Constrained Delegation (Kerberos Only) scenario](#constrained-delegation-kerberos-only), consequently the AP Front End will resort to the "S4U2Self" extension, that is, it will send to the KDC a "KRB\_TGS\_REQ" packet containing, in summary,:

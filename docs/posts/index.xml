@@ -296,7 +296,7 @@ In the case where both the PAC verification and the Client request for Mutual Au
 </li>
 <li>
 <p><strong>RC4 Key</strong>: &ldquo;RC4 Key&rdquo; is the output of the plain-text password using the now deprecated &ldquo;<a href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-security-configure-encryption-types-allowed-for-kerberos">RC4_HMAC_MD5</a>&rdquo; algorithm.</p>
-<p>This &ldquo;RC4 Key&rdquo; is nothing more than the NT Hash of the domain account password, consequently, being synonyms, it means that the term &ldquo;NT Hash&rdquo; used during the explanation of the Kerberos protocol is nothing more than the &ldquo;RC4 Key&rdquo;.</p>
+<p>This &ldquo;RC4 Key&rdquo; is nothing more than the NT Hash (<a href="https://zer1t0.gitlab.io/posts/attacking_ad/#lm-nt-hashes">in jargon, sometimes, it&rsquo;s called also NTLM Hash although it&rsquo;s less accurate</a>) of the domain account password, consequently, being synonyms, it means that the term &ldquo;NT Hash&rdquo; used during the explanation of the Kerberos protocol is nothing more than the &ldquo;RC4 Key&rdquo;.</p>
 </li>
 </ul>
 <p>An attacker is able to retrieve the Kerberos Keys for example by dumping the &ldquo;<a href="https://www.semperis.com/blog/ntds-dit-extraction-explained/">NTDS.dit</a>&rdquo; file from the Domain Controller, below there is an example using the <a href="https://github.com/fortra/impacket/blob/master/examples/secretsdump.py">Secretsdump</a> utility:</p>

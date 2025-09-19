@@ -259,7 +259,7 @@ When a domain account is created, the Domain Controller takes the corresponding 
   
   - **RC4 Key**: "RC4 Key" is the output of the plain-text password using the now deprecated "[RC4_HMAC_MD5](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-security-configure-encryption-types-allowed-for-kerberos)" algorithm.
   
-    This "RC4 Key" is nothing more than the NT Hash of the domain account password, consequently, being synonyms, it means that the term "NT Hash" used during the explanation of the Kerberos protocol is nothing more than the "RC4 Key".
+    This "RC4 Key" is nothing more than the NT Hash ([in jargon, sometimes, it's called also NTLM Hash although it's less accurate](https://zer1t0.gitlab.io/posts/attacking_ad/#lm-nt-hashes)) of the domain account password, consequently, being synonyms, it means that the term "NT Hash" used during the explanation of the Kerberos protocol is nothing more than the "RC4 Key".
 
 An attacker is able to retrieve the Kerberos Keys for example by dumping the "[NTDS.dit](https://www.semperis.com/blog/ntds-dit-extraction-explained/)" file from the Domain Controller, below there is an example using the [Secretsdump](https://github.com/fortra/impacket/blob/master/examples/secretsdump.py) utility:
 
