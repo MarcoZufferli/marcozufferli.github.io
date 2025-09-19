@@ -1,4 +1,3 @@
-
 ---
 title: "Not So Brief Overview about Kerberos"
 date: 2025-09-11T17:20:24+02:00

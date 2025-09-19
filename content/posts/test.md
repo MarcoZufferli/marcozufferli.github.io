@@ -1,5 +1,5 @@
 ---
-title: "Demystify Kerberos Delegation"
+title: "Demystify Kerberos Delegation BACKUP"
 date: 2025-09-16T14:50:00+02:00
 draft: true
 toc: false
@@ -13,9 +13,18 @@ toc: false
   - **[Constrained Delegation (Kerberos only)](#constrained-delegation-kerberos-only)**
   - **[Constrained Delegation (Use any authentication Protocol) / Protocol Transition](#constrained-delegation-use-any-authentication-protocol--protocol-transition)**
 - **[Resource Based Constrained Delegation (RBCD)](#resource-based-constrained-delegation-rbcd)**
-- **[Outro](#outro)**
-- **[References](#references)**
 ---
+
+<!--# **Kerberos Delegation**
+Se ti iteressa anche la parte degli attacchi, essendo tale articol scritto in combinazione con Kerersolasd attack, ti consiglio di procedere a una lettura piu organica passando prima sul teorico di sto articol oepoi al pratico dell'articolo articolo diviidendo per tipologie di delegation, di conseguenza:
+
+1-> Uncosntration deelgation -> abusec conetr
+2 -> beahvoru change , constrained, kerberos user any -> abuse protocol
+3) rbcs - abuse protocl
+4) abuse kerberos only
+do la scelta io
+# Kerberos Delegation Attacks
+-->
 
 # **Kerberos Delegation**
 
@@ -201,11 +210,11 @@ Finally, if the AP Front End requests mutual authentication, the AP Back End wil
 
 ## **Behaviour Change about Kerberos Delegation on Modern Windows System.**
 
-Microsoft has several bad habits: the first is continuously changing the names of their products (it's a serius issue 😭​), while the second is modifying the logic of some of its widely used features, including Kerberos Delegation, without notifying it to anyone (it's done intentionally).
+Microsoft has several bad habits: the first is continuously changing the names of their products (it's a serius issue 😭​), while the second is modifying the logic of some of its widely used features, including Kerberos Delegation, without notifying it to anyone (it's probably done intentionally).
 
 The first time i approached the topic of Kerberos Delegation, this was a problem because analyzing the traffic of the "Constrained Delegation" & "RBCD", the concepts i was studying online did not match; for this reason, I asked to Elad Shamir, the author of the [awesome article who discovered these attacks](https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html), and he confirmed that Microsoft changed the behavior of delegation in 2021.
 
-Since this article is for educational purposes, i decided to detail in the following sections both the Kerberos Delegation versions BEFORE-change and POST-change, highlighting at the key moments what modification was made; in this way, you will be able to orient yourself with the logic even when reading other guides on Kerberos Delegation.
+Since this article is for educational purposes, i decided to detail in the following sections both the Kerberos Delegation version BEFORE-change and POST-change, highlighting at the key moments what modification was made; in this way, you will be able to orient yourself with the logic even when reading other guides on Kerberos Delegation.
 
 Below, i'll detail what modification Microsoft made in 2021; for narrative reasons, i preferred to detail it before explaining the the "Constrained Delegation" & "RBCD" flow.
 
@@ -227,7 +236,7 @@ If BOTH checks are positive (so the AP Front End is configured in the context of
 
 This means that in a traditional "Resource Based Constrained Delegation (RBCD) scenario", the flow in POST 2021 will be slightly different:
 
-1\. <span id=75> In a traditional RBCD scenario the AP Front End is NOT configured with Kerberos Delegation, consequently the AP Front End will receive in an S4USelf Response a [TGS Ticket with the FORWARDABLE flag set to 1](#70) ([for the reason mentioned above](#71)) (instead, before 2021 the FORWARDABLE flag was set to 0)
+1\. In a traditional RBCD scenario the AP Front End is NOT configured with Kerberos Delegation, consequently the AP Front End will receive in an S4USelf Response a [TGS Ticket with the FORWARDABLE flag set to 1](#70) ([for the reason mentioned above](#71)) (instead, before 2021 the FORWARDABLE flag was set to 0)
 
 2\. When the KDC receives the KRB\_TGS\_REQ (S4U2Proxy) packet from the AP Front, [it will perform 2 checks **sequentially**](#64):
 
@@ -254,7 +263,6 @@ Below there is a diagram showing how the Constrained Delegation works:
 It is possible to configure Constrained Delegation on the AP Front End in 2 different modes:
 
 - **Trust this computer for delegation to specified service only (Kerberos only)**: The AP Front End is able to impersonate the Client only if the Client logs into it via Kerberos (it uses the S4U2Proxy extension);this scenario is also called **"Kerberos Only"**.
-<span id=100>
 
 - **Trust this computer for delegation to specified service only (Use any authentication protocol)**: The AP Front End is able to impersonate the Client if the Client logs into it with any type of protocol, such as NTLM (it uses the S4U2Self & S4U2Proxy extensions); this scenario is also called **"Protocol Transition"**.
 
@@ -427,7 +435,7 @@ The AP Back-End, now having received the KRB\_AP\_REQ packet from the AP Front-E
 
 > This is what happens in my home lab; [in this case](https://www.youtube.com/watch?t=1309&v=gzqq2r6cZjc&feature=youtu.be), however, the "KRB\_AP\_REP" packet is sent first by the AP Back-End to the AP Front-End and then  ([as already told](#12)) another "KRB\_AP\_REP" is sent from the AP Front End to the Client.
 
-**Finaly** the AP Front-End has successfully authenticated to the AP Back-End on behalf of the Client.
+In this way, the AP Front-End has successfully authenticated to the AP Back-End on behalf of the Client.
 
 ## **Constrained Delegation (Use any authentication Protocol) / Protocol Transition**
 
@@ -450,10 +458,8 @@ The KDC, in order to use the "Constrained Delegation (Kerberos only)", requires 
 Furthermore, it is mandatory to fill the section indicated just below; with it, the domain administrator is able to restrict (a.k.a constrain) which Back-End APs the Front-End AP can authenticate on behalf of the Client.
 
 This configuration sets in the [UserAccountControl](#11) property of the AP "Front End" object:
-<span id=102>
 
 - The "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag (it is different from [TRUSTED\_FOR\_DELEGATION of Unconstrained Delegation](#25))
-<span id=101>
 
 - The "msds-allowedtodelegateto" flag, which contains in the form of SPNs all the AP "Back End" services to which the AP "Front End" is allowed to authenticate on behalf of the Client;
 
@@ -538,31 +544,24 @@ After performing the [usual checks](#2), the KDC retrieves from the [KRB\_TGS\_R
 
   The KDC therefore sends within a "KRB\_TGS\_REP (S4U2Self)" a TGS Ticket belonging to the Client (it contains the PAC of the domain user who authenticated via NTLM or Basic to the Front End service, in this case CAPSULE.corp\vegeta) valid specifically for the AP Front End ([HTTP](#31)).
 
-  > In this specific case, since the requested service was identified through the SPN field with the Service Account, the corresponding TGS ticket generated will contain the Service Account within the SPN field.
-
   {{< image src="/demystify_kerberos_delegation/31.png" position="center" style="border-radius: 8px;">}}
+
+  > In this specific case, since the requested service was identified through the SPN field with the Service Account, the corresponding TGS ticket generated will contain the Service Account within the SPN field.
 
   <span id=40> Furthermore, i want to highlight that the TGS Ticket sent will have the "Forwardable" flag set to "1", by default all TGS Tickets have this characteristic, that said in this scenario such flag will be interpreted and therefore it is important to highlight it.
   
-  <span id=77>
   {{< image src="/demystify_kerberos_delegation/32.png" position="center" style="border-radius: 8px;">}}
 
   This TGS Ticket belonging to the Client (e.g., CAPSULE.corp\vegeta) valid for the AP Front End (e.g., HTTP) will be used exclusively by the AP Front End as "evidence" to subsequently invoke the S4U2Proxy extension.
-
-  <spain id=76>
-
-  **A note related to [RBCD that we'll analyze later](#resource-based-constrained-delegation-rbcd)**: I want to highlight that [if](https://www.youtube.com/watch?t=2326&v=gzqq2r6cZjc&feature=youtu.be) the Service Account specified in the SPN (WEB01\$) does NOT have the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag enabled, then the KDC would still respond by sending a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it would NOT have the "forwardable" flag set to "1".
-
 <span id=40>
 <span id=50>
-
-> **POST 2021:**
+> **The following statement will makes sense after reading the "Resource Based Constrained Delegation (RBCD)" phase that we'll see later:** 😄​
 >
-> **A note related to [RBCD that we'll analyze later](#resource-based-constrained-delegation-rbcd)**: [As previusly said](#75), in POST 2021 scenario if the Service Account specified in the SPN (WEB01\$) does NOT have the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag enabled the KDC will still issue a TGS Ticket with the FORWARDABLE flag set to 1. 
+> [If](https://www.youtube.com/watch?t=2326&v=gzqq2r6cZjc&feature=youtu.be) the Service Account specified in the SPN (WEB01\$) does NOT have the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag enabled, then the KDC would still respond by sending a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it would NOT have the "forwardable" flag set to "1", consequently in a RBCD scenario it would be a TGS Ticket NOT valid for the subsequent "KRB\_TGS\_REQ (S4U2Proxy)" packet (DA FARE LINK); that said, [as said here](#behaviour-change-about-kerberos-delegation-on-modern-windows-system), in POST 2021 scenario the KDC will still issue a TGS Ticket with the FORWARDABLE flag set to 1 [but since the second verification performed by the KDC in the "S4UProxy Response" phase will fail, the KDC will switch to RBCD anyway](#65)
 
 ### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4UProxy Request**
 
-Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional "S4UProxy", so, [as previously seen](#5-krb_tgs_req-s4u2proxy--s4uself-request), the AP Front End will send to the KDC a "KRB\_TGS\_REQ (S4U2Proxy)" packet containing, in summary:
+Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional "S4UProxy", so, [as previously seen](#5-krb_tgs_req-s4u2proxy--s4uself-request), the AP Front End will send to the KDC a "KRB\_TGS\_REQ (S4U2Proxy)" packet containing, in summary,:
 
 - **The AP Front End shares its own TGT Ticket**
 
@@ -636,7 +635,7 @@ The AP Back-End, now that it has received the [KRB\_AP\_REQ packet](#6-krb_ap_re
 
 > I This is what happens in my home lab,; [in another case](https://www.youtube.com/watch?t=2735&v=gzqq2r6cZjc&feature=youtu.be), instead, the "KRB\_AP\_REP" packet is first sent from the AP Back End to the AP Front End and then another "KRB\_AP\_REP" from the AP Front End to the Client.
 
-**Finaly** the AP Front-End successfully authenticated to the AP Back-End on behalf of the Client.
+In this way, the AP Front-End successfully authenticated to the AP Back-End on behalf of the Client.
 
 ## **Resource Based Constrained Delegation" (RBCD)**
 
@@ -688,6 +687,8 @@ Finally, it is possible to inspect this attribute also via CLI using the command
 
 The RBCD works similar to the classic "Constrained Delegation" ("Kerberos Only" & "Use Any Authentication Protocol") and it should be highlighted that **it intervenes exclusively in case of FallBack**, so when the "Constrained Delegation" fails, since this scenario is more common when a "Constrained Delegation (Use any authentication Protocol)" is initialized, we will analyze a Resource Based Constrained Delegation (RBCD) flow starting from a "Constrained Delegation (Use any authentication Protocol)" scenario.
 
+**I want to highlight that the following screenshots cover a scenario [BEFORE 2021, so when Microsoft did not applied the changes yet](#behaviour-change-about-kerberos-delegation-on-modern-windows-system), for this reason on the analyzed screenshot you will see the OLD behaviour but on the text i'll make clear how the NEW behaviour is applied.**
+
 > To analyze with Wireshark ALL the flows that occur during this RBCD, I would have had to create from scratch a laboratory composed of a Front End Service that accepts a Kerberos authentication and develop within it a logic that triggers a further Kerberos authentication towards the Back-End Server, since I did not find a quick method to do this, the screenshots you will see in this section come from this [guide](https://www.youtube.com/watch?v=vlKwCTvp5_w&t=1246s).
 
 > Generally, all the integrity and authenticity verification operations that occur within traditional Kerberos authentication (sending & analyzing the "Authenticator" along with the relevant "Session Key" used to encrypt & decrypt parts of the packet) are also present with Kerberos Delegation enabled but in this case will NOT be mentioned, this is both because they have already been described  [previously](./not_so_brief_overview_about_kerberos) and because it was preferred to instead emphasize the unique characteristics of RBCD.
@@ -738,9 +739,7 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
 
 ### **3. KRB\_TGS\_REP (S4U2Self) / S4USelf Response**
 
-<span id=80>
-
-The KDC, after performing the [usual checks](#2), retrieves within the [KRB\_TGS\_REQ (S4U2Self)](#47) packet the Service Account contained in the [SPN field](#48) (ex WEB01\$), then it will verify if this Service Account has the property "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" enabled; since in this case the [result will be negative](#49) as only RBCD was configured, [as previously mentioned](#76), the KDC will still issue a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it will NOT have the "forwardable" flag set to 1.
+The KDC, after performing the [usual checks](#2), retrieves within the [KRB\_TGS\_REQ (S4U2Self)](#47) packet the Service Account contained in the [SPN field](#48) (ex WEB01\$), then it will verify if this Service Account has the property "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" enabled; since in this case the [result will be negative](#49) as only RBCD was configured, [as previously mentioned](#50), the KDC will still issue a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it will NOT have the "forwardable" flag set to 1.
 
 <span id=70>
 
@@ -758,7 +757,7 @@ Knowing this, therefore, the KDC sends a KRB\_TGS\_REP (S4U2Self) packet to the 
 
   <span id=53>
 
-  [As already said](#80) the TGS Ticket issued will NOT have the "forwardable" flag set to 1.
+  Since the Service Account of the AP Front End does NOT have the "TRUSTED\_TO\_AUTH\_FOR\_DELEGATION" flag, this TGS Ticket issued will NOT have the "forwardable" flag set to 1, consequently it would be a TGS Ticket NOT valid for the subsequent "KRB\_TGS\_REQ (S4U2Proxy)" packet.
 
   {{< image src="/demystify_kerberos_delegation/52.png" position="center" style="border-radius: 8px;">}}
 
@@ -800,7 +799,6 @@ Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that th
   <span id=58>
 
   I want to highlight that [this TGS Ticket does NOT have the "FORWARDABLE" flag set](#53).
-  
 <span id=61>
 
 - **The flags "Resource-Based Constrained-Delegation" & "Constrained-Delegation" both set to "1" / "TRUE":**
@@ -817,61 +815,19 @@ Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that th
 
 The KDC, after performing the [usual checks](#2), analyzing the [KRB\_TGS\_REQ (S4U2Proxy)](#56) packet received from the AP Front End, will carry out further verifications **sequentially**:
 
-<span id=90>
-
-1. The KDC verifies if the ["TGS Ticket"](#57) that the Client used to access the AP Front End (HTTP/WEB01) is present in the received [KRB\_TGS\_REQ (S4U2Proxy) packet](#56) (in this example it was obtained via the S4USelf extension), this would provide evidence to the KDC that the Client has actually authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); furthermore, it is necessary that this TGS Ticket has the "FORWARDABLE" flag set to "1" (NEGATIVE outcome in this case - [1](#53), [2](#58)).
+1. <span id=70> The KDC verifies if the ["TGS Ticket"](#57) that the Client used to access the AP Front End (HTTP/WEB01) is present in the received [KRB\_TGS\_REQ (S4U2Proxy) packet](#56) (in this example it was obtained via the S4USelf extension), this would provide evidence to the KDC that the Client has actually authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); furthermore, [it is necessary that this TGS Ticket has the "FORWARDABLE" flag set to "1"](#50) ([NEGATIVE outcome in this case](#58)).
 
 2. The KDC, inspecting the [SPN contained in the KRB\_TGS\_REQ (S4U2Proxy) packet](#59), will understand that the AP Front End (ex HTTP/WEB01) wants to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client, consequently the KDC retrieves the Service Account of the AP Front End (WEB01\$) and verifies if within its property "msds-allowedtodelegateto" the SPN of the requested AP Back End (in this case CIFS/SQL01) is present ([NEGATIVE outcome in this case](#60)).
 
-Since in this scenario the [1](#90) verification FAILS (The KDC performs the verification sequentially, consequently, although the 2nd step also fails, the KDC makes the decision on how to proceed immediately because step 1 fails) and in the "KRB\_TGS\_REQ (S4UProxy)" [the RBDC flag was configured to use this Kerberos Delegation in case of FallBack](#61), the KDC proceeds to use the "Resource Based Constrained Delegation (RBCD)", consequently, the KDC retrieves the Service Account (SQL01\$) of the requested Back-End Service (CIFS) and verifies if it has the flag "ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity" containing the Service Account (WEB01\$) of the Front End Service (HTTP) that is attempting authentication on behalf of the Client (vegeta); if, as in this case, the outcome [is positive](#63), then the KDC sends a "KRB\_TGS\_REP (S4U2Proxy)" packet to the AP Front End containing, in summary:
+Since in this scenario the [1](#70) verification FAILS (The KDC performs the verification sequentially, consequently, although the 2nd step also fails, the KDC makes the decision on how to proceed immediately because step 1 fails) and in the ["KRB\_TGS\_REQ (S4UProxy)" the RBDC flag was configured to use this Kerberos Delegation in case of FallBack](#61), the KDC proceeds to use the "Resource Based Constrained Delegation (RBCD)", consequently, the KDC retrieves the Service Account (SQL01\$) of the requested Back-End Service (CIFS) and verifies if it has the flag "ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity" containing the Service Account (WEB01\$) of the Front End Service (HTTP) that is attempting authentication on behalf of the Client (vegeta); if, as in this case, the outcome [is positive](#63), then the KDC sends a "KRB\_TGS\_REP (S4U2Proxy)" packet to the AP Front End containing, in summary:
 
 <span id=65>
 
 > **POST 2021**:
 >
-> [As explained before](#behaviour-change-about-kerberos-delegation-on-modern-windows-system), in POST 2021 scenario, the KDC will receive a TGS Ticket issued by the S4USelf Response with the FORWARDABLE flag set to 1, so when the KDC start to do [its check](#64), the first verification will succeed BUT the second verification will FAIL because the AP Front End does NOT have Kerberos Delegation enabled, for this reason although the internals has been changed the KDC will switch to RBCD anyway.
+> As explained before ([1](#70), [2](#50), [3](#behaviour-change-about-kerberos-delegation-on-modern-windows-system)), in POST 2021 scenario, the KDC will receive a TGS Ticket issued by the S4USelf Response with the FORWARDABLE flag set to 1, so when the KDC start to do [its check](#64), the first verification will succeed BUT with the second verification will FAIL the AP Front End does NOT have Kerberos Delegation enabled, for this reason although the internal has been changed the KDC will switch to RBCD anyway.
 
-<span id=91>
 
-- **A Client TGS Ticket to access the AP in Back-End**
 
-The KDC then sends within a "KRB\_TGS\_REP (S4U2Proxy)" a TGS Ticket belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) valid for the AP Back-End (CIFS/SQL01)
 
-  {{< image src="/demystify_kerberos_delegation/58.png" position="center" style="border-radius: 8px;">}}
 
-Furthermore, i want to highlight that this TGS Ticket issued through the RBCD will have the "Forwardable" flag set to "1", meaning it will be valid and equivalent to any other TGS Ticket normally issued by the KDC.
-
-  {{< image src="/demystify_kerberos_delegation/58.png" position="center" style="border-radius: 8px;">}}
-
-### **6. KRB\_AP\_REQ**:
-
-The AP Front End (HTTP service), after the [usual checks](#2), in summary, sends a "KRB\_AP\_REQ" packet to the AP Back-End (CIFS service) containing in summary:
-
-  - The [previously received](#91) TGS Ticket, namely the one belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) and valid for the AP Back-End (CIFS/SQL01).
-
-### **7. KRB\_AP\_REP (Optional)** 
-
-The AP Back-End, now that it has received the KRB\_AP\_REQ packet from the AP Front End, in summary, after the necessary checks, will allow ([if the AUTHORIZATION phase goes correctly](./not_so_brief_overview_about_kerberos#3)) the AP Front End to access the requested service (in this case the CIFS service hosted on the SQL01 machine), subsequently, depending on the requested service and if mutual authentication is required by the AP Front End (e.g. HTTP service), the AP Back-End (e.g. CIFS service) will send a KRB\_AP\_REP to the AP Front End (e.g. HTTP service).
-
-> I This is what happens in my home lab; [in another case](https://www.youtube.com/watch?t=2735&v=gzqq2r6cZjc&feature=youtu.be), instead, the "KRB\_AP\_REP" packet is first sent from the AP Back End to the AP Front End and then another "KRB\_AP\_REP" from the AP Front End to the Client.
-
-**Finaly** the AP Front End has succeeded in authenticating itself to the AP Back-End on behalf of the Client.
-
-## **Outro**
-
-Kerberos Delegation is a beast to understand, and for this reason, if it's the first time you are studying this topic, take your time and re-read the article several times.
-
-Furthermore, i hope Microsoft will NOT change the Kerberos Delegation Internals anymore, but who knows 🤞​
-
-This article was written in synergy with "Demystify Kerberos Delegation Attacks", so if you have understood everything and you are interested about how to abuse it go and check it! If you have made it this far, congratulations!
-
-## **References**
-
-- [1 - [English] You Do (Not) Understand Kerberos Delegation - Introduction](https://www.youtube.com/watch?v=p9QFdITuvgU)
-- [2 - [English] You Do (Not) Understand Kerberos Delegation - Unconstrained Delegation](https://www.youtube.com/watch?v=xDFRUYv1-eU)
-- [3 - [English] You Do (Not) Understand Kerberos Delegation ](https://www.youtube.com/watch?v=gzqq2r6cZjc)
-- [4 - [English] You Do (Not) Understand Kerberos Delegation - RBCD](https://www.youtube.com/watch?v=vlKwCTvp5_w&t=799s)
-- https://labs.lares.com/fear-kerberos-pt4/
-- https://zer1t0.gitlab.io/posts/attacking_ad/#kerberos-delegation
-- https://adsecurity.org/?p=1667
-- https://en.hackndo.com/constrained-unconstrained-delegation/

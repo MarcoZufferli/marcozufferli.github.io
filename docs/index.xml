@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Marco Zufferli</title><link>https://marcozufferli.com/</link><description>Recent content on Marco Zufferli</description><generator>Hugo</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Thu, 11 Sep 2025 17:20:24 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.com/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Marco Zufferli</title><link>https://marcozufferli.com/</link><description>Recent content on Marco Zufferli</description><generator>Hugo</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation Attacks</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</link><pubDate>Tue, 16 Sep 2025 14:56:19 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</guid><description>&lt;hr&gt;
+&lt;h4 id="table-of-contents"&gt;Table of Contents:&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Abuse Unconstrained Delegation
+&lt;ul&gt;
+&lt;li&gt;Abuse Unconstrained Delegation (Computer) (1 method) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Unconstrained Delegation (Computer) (2 method) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Unconstrained Delegation - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition
+&lt;ul&gt;
+&lt;li&gt;Abuse Protocol Transition (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (User) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (Computer)- Linux&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (User) - Linux&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL
+&lt;ul&gt;
+&lt;li&gt;Abuse RBCD via DACL (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL (Computer) - Linux&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only
+&lt;ul&gt;
+&lt;li&gt;Abuse Kerberos Only (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only (User) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id="kerberos-delegation-attacks"&gt;&lt;strong&gt;Kerberos Delegation Attacks&lt;/strong&gt;&lt;/h1&gt;
+
+ &lt;img src="https://marcozufferli.com/demystify_kerberos_delegation_attacks/immagine.png" class="center" style="border-radius: 8px;" /&gt;
+
+
+&lt;h2 id="let"&gt;&lt;strong&gt;Let&amp;rsquo;s start with the Kerberos Delegation Attacks!&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Before you begin, if you are not confident with Kerberos Delegation, i highly suggest you to start reading my other article called &amp;ldquo;&lt;a href="./demystify_kerberos_delegation.md"&gt;Demystify Kerberos Delegation&lt;/a&gt;&amp;rdquo;.&lt;/p&gt;</description></item><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.com/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
 
 
 &lt;h1 id="kerberos-authentication-protocol"&gt;&lt;strong&gt;Kerberos Authentication Protocol&lt;/strong&gt;&lt;/h1&gt;

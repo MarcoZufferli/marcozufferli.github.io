@@ -1,4 +1,172 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.com/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation Attacks</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</link><pubDate>Tue, 16 Sep 2025 14:56:19 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</guid><description>&lt;hr&gt;
+&lt;h4 id="table-of-contents"&gt;Table of Contents:&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Abuse Unconstrained Delegation
+&lt;ul&gt;
+&lt;li&gt;Abuse Unconstrained Delegation (Computer) (1 method) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Unconstrained Delegation (Computer) (2 method) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Unconstrained Delegation - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition
+&lt;ul&gt;
+&lt;li&gt;Abuse Protocol Transition (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (User) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (Computer)- Linux&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition (User) - Linux&lt;/li&gt;
+&lt;li&gt;Abuse Protocol Transition - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL
+&lt;ul&gt;
+&lt;li&gt;Abuse RBCD via DACL (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL (Computer) - Linux&lt;/li&gt;
+&lt;li&gt;Abuse RBCD via DACL - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only
+&lt;ul&gt;
+&lt;li&gt;Abuse Kerberos Only (Computer) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only (User) - Windows&lt;/li&gt;
+&lt;li&gt;Abuse Kerberos Only - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id="kerberos-delegation-attacks"&gt;&lt;strong&gt;Kerberos Delegation Attacks&lt;/strong&gt;&lt;/h1&gt;
+&lt;img src="https://marcozufferli.com/demystify_kerberos_delegation_attacks/immagine.png" class="center" style="border-radius: 8px;" /&gt;
+&lt;h2 id="let"&gt;&lt;strong&gt;Let&amp;rsquo;s start with the Kerberos Delegation Attacks!&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Before you begin, if you are not confident with Kerberos Delegation, i highly suggest you to start reading my other article called &amp;ldquo;&lt;a href="./demystify_kerberos_delegation.md"&gt;Demystify Kerberos Delegation&lt;/a&gt;&amp;rdquo;.&lt;/p&gt;</description><content type="html"><![CDATA[<hr>
+<h4 id="table-of-contents">Table of Contents:</h4>
+<ul>
+<li>Abuse Unconstrained Delegation
+<ul>
+<li>Abuse Unconstrained Delegation (Computer) (1 method) - Windows</li>
+<li>Abuse Unconstrained Delegation (Computer) (2 method) - Windows</li>
+<li>Abuse Unconstrained Delegation - Detect &amp; Mitigation</li>
+</ul>
+</li>
+<li>Abuse Protocol Transition
+<ul>
+<li>Abuse Protocol Transition (Computer) - Windows</li>
+<li>Abuse Protocol Transition (User) - Windows</li>
+<li>Abuse Protocol Transition (Computer)- Linux</li>
+<li>Abuse Protocol Transition (User) - Linux</li>
+<li>Abuse Protocol Transition - Detect &amp; Mitigation</li>
+</ul>
+</li>
+<li>Abuse RBCD via DACL
+<ul>
+<li>Abuse RBCD via DACL (Computer) - Windows</li>
+<li>Abuse RBCD via DACL (Computer) - Linux</li>
+<li>Abuse RBCD via DACL - Detect &amp; Mitigation</li>
+</ul>
+</li>
+<li>Abuse Kerberos Only
+<ul>
+<li>Abuse Kerberos Only (Computer) - Windows</li>
+<li>Abuse Kerberos Only (User) - Windows</li>
+<li>Abuse Kerberos Only - Detect &amp; Mitigation</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="kerberos-delegation-attacks"><strong>Kerberos Delegation Attacks</strong></h1>
+
+    <img src="/demystify_kerberos_delegation_attacks/immagine.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<h2 id="let"><strong>Let&rsquo;s start with the Kerberos Delegation Attacks!</strong></h2>
+<p>Before you begin, if you are not confident with Kerberos Delegation, i highly suggest you to start reading my other article called &ldquo;<a href="./demystify_kerberos_delegation.md">Demystify Kerberos Delegation</a>&rdquo;.</p>
+<p>In this article i&rsquo;ll describe the most common abuse about Kerberos Delegation, specificaly, my home lab is build with:</p>
+<ul>
+<li>1 Domain Controller: Windows Server 2022 (<a href="https://www.microsoft.com/it-it/evalcenter/download-windows-server-2022">fresh installation</a>)</li>
+<li>2 Windows Client: Windows 10 (<a href="https://www.microsoft.com/it-it/evalcenter/download-windows-10-enterprise">fresh installation</a>)</li>
+</ul>
+<p>So, let&rsquo;s start!</p>
+<h2 id="abuse-protocol-transition"><strong>Abuse Protocol Transition</strong></h2>
+<p>If an attacker compromises a Service Account with &ldquo;<a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a>&rdquo; enabled (a.k.a Protocol Transition), so, in most scenarios a Computer Account (usually by compromising the corresponding machine), the attacker, by impersonating the machine, could invoke the <a href="./demystify_kerberos_delegation.md#100">&ldquo;S4U2Self&rdquo; &amp; &ldquo;S4U2Proxy&rdquo;</a> extensions and thus obtain a TGS Ticket belonging to a certain user valid to access the Back-End service that the compromised machine is authorized to access on behalf of the Client (so the services indicated in the &ldquo;<a href="./demystify_kerberos_delegation.md#101">msds-allowedtodelegateto</a>&rdquo; flag).</p>
+<p>That said, there are two other extremely useful pieces of information to consider:</p>
+<ol>
+<li>
+<p><a href="./demystify_kerberos_delegation.md#31">As already mentioned</a>, when the <a href="./demystify_kerberos_delegation.md#2-krb_tgs_req-s4u2self--s4uself-request">S4U2Self</a> extension is invoked, it is necessary to specify which domain user will be the owner of the TGS Ticket that will be issued, in this step i want to highlight that the KDC will performs NO checks about that so it will issue the TGS Ticket for ANY specified domain user.</p>
+<p>Knowing this the attacker can invoke the <a href="./demystify_kerberos_delegation.md#2-krb_tgs_req-s4u2self--s4uself-request">S4U2Self</a> extension for ANY domain user and thus obtain a TGS Ticket belonging to an arbitrary domain user, so the attacker will be able to authenticate to the Back-End service impersonating ANY domain user.</p>
+</li>
+<li>
+<p>The TGS Ticket always consists of two parts: a NON encrypted part containing the SPN of the requested service (e.g: CIFS/WORKSTATION01) and an &ldquo;encrypted&rdquo; part containing other information.</p>
+<p>Since the SPN contained in the TGS Ticket is NOT encrypted, an attacker could modify it (it would still be a valid TGS Ticket) by replacing the service of the target machine with another service also exposed on the target machine, thus, an attacker could for example obtain a valid TGS Ticket for the CIFS service on the SQL01 machine (CIFS\SQL01) and modify it to make it valid for the HTTP service on the same SQL01 machine (HTTP/SQL01) before sending it in a KRB_AP_REQ.</p>
+</li>
+</ol>
+<span id=1>
+<blockquote>
+<p>The service that is inserted must have the same Service Account as the replaced service (since the Service Account is often the Computer Account this requirement will be usually satisfied - <a href="/posts/not_so_brief_overview_about_kerberos/#17">because the Computer Account is the Service Account in the Kerberos context of ANY service running under the LocalSystem account, including usually CIFS, HTTP, etc; so a lot of services</a>), only in this way will the TGS Ticket with the modified SPN be valid.</p></blockquote>
+<p>With this information in mind we figure out the following conclusion:</p>
+<p><strong>If an attacker compromises a Service Account with &ldquo;<a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a>&rdquo; enabled (a.k.a Protocol Transition), so, in most scenarios a Computer Account (usually by compromising the related machine), the attacker impersonating the machine could invoke the <a href="./demystify_kerberos_delegation.md#100">&ldquo;S4U2Self&rdquo; &amp; &ldquo;S4U2Proxy&rdquo;</a> extension and thus obtain a TGS Ticket belonging to ANY domain user and valid to access ANY (<a href="/posts/demystify_kerberos_delegation_attacks/#1">usually</a>) Back-End service that the compromised machine is authorized to access on behalf of the Client (indicated in the &ldquo;<a href="./demystify_kerberos_delegation.md#101">msds-allowedtodelegateto</a>&rdquo; flag).</strong></p>
+<p>By exploiting this attack, the attacker will therefore be able to authenticate with administrative privileges (since they can impersonate ANY domain user) to certain services; depending on the type of service accessed, the attacker could perform <a href="https://zer1t0.gitlab.io/posts/attacking_ad/#s4u-attacks">various malicious activities</a>, for example:</p>
+<ul>
+<li><strong>LDAP on a Domain Controller</strong>: As described by Microsoft (<a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/06205d97-30da-4fdc-a276-3fd831b272e0">1</a>, <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/0597aff6-0177-4d52-99f2-14a5441bc3c1">2</a>), some functionalities provided by the MDRS protocol (the protocol used to perform a DC Sync Attack) are also accessible via the LDAP protocol; this overlap of functionalities, broadly speaking, allows an attacker who obtains a valid TGS Ticket for the LDAP service (impersonating an administrative user, e.g., Domain Admin) to perform a <a href="https://adsecurity.org/?p=1729">DC Sync Attack</a> against the DC.</li>
+</ul>
+<blockquote>
+<p>I don’t fully understand how this happens under-the-hood; sniffing with Wireshark shows that the LDAP service is not actually queried, instead, packet exchanges occur exclusively with the services used by the MDRS protocol.</p></blockquote>
+<ul>
+<li>
+<p><strong>SMB</strong>: If the attacker impersonates an administrative user (e.g., Domain Admin) to the SMB service (CIFS in SPN context) of a computer, the attacker could authenticate using tools like &ldquo;psexec&rdquo; (depending on the PsExec tool used, it will impersonate the LocalSystem / Local Administrator user).</p>
+</li>
+<li>
+<p><strong>MSSQL</strong>: If the attacker impersonates an administrative user (e.g., Domain Admin) to the MSSQL service, the attacker, in addition to potentially obtaining sensitive data contained within, can exploit the MSSQL service to execute local commands on the machine via &ldquo;xp_cmdshell,&rdquo;, use &ldquo;<a href="https://www.netspi.com/blog/technical-blog/network-pentesting/sql-server-link-crawling-powerupsql/">SQL Server Link</a>&rdquo; and etc.</p>
+</li>
+<li>
+<p><strong>HTTP</strong>: Since the <a href="https://blog.scalefusion.com/it/windows-remote-management-guide/">WinRM</a> service uses the HTTP service, if the attacker impersonates an administrative user (e.g., Domain Admin) to the HTTP service of a computer, and the machine has WinRM enabled, the attacker could authenticate to it.</p>
+</li>
+</ul>
+<blockquote>
+<p>Often an error related to <a href="https://sensepost.com/blog/2022/constrained-delegation-considerations-for-lateral-movement/">a missing &ldquo;Logon Session&rdquo; occurs</a>; in that case, retry the attack ensuring that the command exploiting Kerberos Delegation is executed from a shell with a High Integrity Level Token and that no additional Tickets have been previously injected into that Logon Session; after that, try logging in both via PowerShell Remoting (Enter-PSSession, New-PSSession, and Invoke-Command) and WinRS; using this method, logging in usually succeeds.</p></blockquote>
+<p><strong>In conclusion, broadly speaking, if an attacker compromises a machine (or a domain user acting as a Service Account) with &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; enabled, they can also compromise the machine (usually via CIFS) that the compromised system is authorized (via the &ldquo;msds-allowedtodelegateto&rdquo; flag) to access on behalf of the Client.</strong></p>
+<h2 id="abuse-protocol-transition-computer---windows"><strong>Abuse Protocol Transition (Computer) - Windows</strong></h2>
+<p>In this scenario, we will see how to exploit a <strong>Constrained Delegation (Use any authentication Protocol) (also called Protocol Transition)</strong> from a Windows machine.</p>
+<ol>
+<li>
+<p>Identify which Service Accounts have &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; enabled (in this scenario, we are looking for Computer Accounts acting as Service Accounts).</p>
+<p>There are different methods to identify which Service Accounts have &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo;; on Windows, one of the most common is using &ldquo;PowerView&rdquo;:</p>
+<p>PS C:&gt; Get-DomainComputer &ndash;TrustedToAuth
+<span id=2></p>
+
+        <img src="/demystify_kerberos_delegation_attacks/1.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>As you can see, the Computer Account THEPUNISHER$ has the &ldquo;<a href="./demystify_kerberos_delegation.md#102">TRUSTED_TO_AUTH_FOR_DELEGATION</a>&rdquo; flag and therefore has <a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a> enabled; specifically, this account (so THEPUNISHER$) and therefore ALL services running under it will be able to authenticate on behalf of the Client exclusively to the SPN &ldquo;HTTP/SPIDERMAN,&rdquo; so to the HTTP service of the SPIDERMAN machine.</p>
+<p>Indeed, inspecting the &ldquo;Delegation&rdquo; tab of the THEPUNISHER computer via ADUC, we will find this     configuration.</p>
+
+        <img src="/demystify_kerberos_delegation_attacks/2.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+<li>
+<p>The attacker compromises the Service Account with Constrained Delegation (Use any authentication Protocol) enabled.</p>
+<p>In this scenario, the attacker managed to authenticate with administrative privileges to the THEPUNISHER machine and, by dumping LSASS, obtained the credentials of the Computer Account THEPUNISHER$, so the Service Account with the Constrained Delegation (Use any authentication Protocol) enabled.</p>
+
+        <img src="/demystify_kerberos_delegation_attacks/3.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+<li>
+<p>The attacker obtains a valid TGS Ticket (for Domain Admin) to authenticate to the CIFS service hosted on the SPIDERMAN machine (that is, the machine authorized in the &ldquo;msds-allowedtodelegateto&rdquo; flag).</p>
+<p>The attacker, now possessing the credentials of the Service Account THEPUNISHER$, since this account has &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo;, can abuse it to invoke the S4U2Self &amp; S4U2Proxy extensions and thus obtain a TGS Ticket belonging to a Domain Admin user valid to access the HTTP service of the SPIDERMAN machine (<a href="/posts/demystify_kerberos_delegation_attacks/#2">so, the service specified in the &ldquo;msds-allowedtodelegateto&rdquo; flag</a>); furthermore, in this scenario the attacker decides to replace the SPN &ldquo;HTTP/SPIDERMAN&rdquo; with the SPN &ldquo;CIFS/SPIDERMAN&rdquo;, managing in this way to authenticate via PsExec to the SPIDERMAN machine.</p>
+<p>Since we will inject the desired TGS Ticket into memory, first of all we use the so-called Sacrificial Process.</p>
+<p>C:&gt; Rubeus.exe createnetonly /program:&ldquo;C:\Windows\System32\cmd.exe&rdquo; /show</p>
+
+        <img src="/demystify_kerberos_delegation_attacks/4.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>Then execute the following Rubeus command within the Sacrificial Process.</p>
+<p>C:&gt; Rubeus.exe s4u /impersonateuser:&lt;User_To_Impersonate&gt; /msdsspn:&lt;SPN_content_in_msds-allowedtodelegateto&gt; /altservice:&lt;Desired_SPN&gt; /user:&lt;Service_Account&gt; /rc4:&lt;NTLM_Service_Account&gt; /nowrap /ptt</p>
+<p>Let&rsquo;s analyze ALL the operations performed by Rubeus.</p>
+<ol>
+<li>Rubeus sent a &ldquo;<a href="/posts/not_so_brief_overview_about_kerberos/#39">KRB_AS_REQ</a>&rdquo; to obtain the TGT Ticket of the Computer Account THEPUNISHER$, information necessary to invoke the &ldquo;KRB_TGS_REQ (S4USelf)&rdquo;</li>
+</ol>
+</li>
+</ol>
+]]></content></item><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.com/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
 &lt;h1 id="kerberos-authentication-protocol"&gt;&lt;strong&gt;Kerberos Authentication Protocol&lt;/strong&gt;&lt;/h1&gt;
 &lt;p&gt;Kerberos is the Windows network authentication protocol present by default in versions after Windows 2000; it replaces the NTLM protocol (specifically, &lt;a href="https://it.wikipedia.org/wiki/NTLM#NTLMv2"&gt;NTLMv2&lt;/a&gt;) but it should be noted that it can only operate in Active Directory contexts and NOT in &lt;a href="https://en.wikipedia.org/wiki/Workgroup_%28computer_networking%29"&gt;Workgroup&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;In a traditional Active Directory authentication scenario, when a user performs a domain authentication on a WorkStation / Server (Interactive Logon) the Client uses the Kerberos protocol for authentication and if, subsequently, the domain user already logged into the Client needs to authenticate with their domain credentials towards a target network service such as SMB (Network Logon), the Kerberos protocol, having SSO capabilities, is used again by the Client.&lt;/p&gt;</description><content type="html"><![CDATA[
