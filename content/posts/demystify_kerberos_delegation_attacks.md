@@ -1,7 +1,7 @@
 ---
 title: "Demystify Kerberos Delegation Attacks"
 date: 2025-09-16T14:56:19+02:00
-draft: false
+draft: true
 toc: false
 ---
 ---
@@ -120,7 +120,7 @@ In this scenario, we will see how to exploit a **Constrained Delegation (Use any
 
     Let's analyze ALL the operations performed by Rubeus.
 
-    1. Rubeus sent a "[KRB\_AS\_REQ](./not_so_brief_overview_about_kerberos.md#39)" to obtain the TGT Ticket of the Computer Account THEPUNISHER\$, information necessary to invoke the "KRB\_TGS\_REQ (S4USelf)"
+    1. Rubeus sent a "[KRB\_AS\_REQ](./not_so_brief_overview_about_kerberos.md#39)" to obtain the TGT Ticket of the Computer Account THEPUNISHER\$, [information necessary](./demystify_kerberos_delegation.md#109)) to invoke the "KRB\_TGS\_REQ (S4USelf)"
 
 
 

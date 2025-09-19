@@ -1,7 +1,7 @@
 ---
 title: "Demystify Kerberos Delegation"
 date: 2025-09-16T14:50:00+02:00
-draft: true
+draft: false
 toc: false
 ---
 ---
@@ -499,6 +499,8 @@ A domain user authenticates to an AP Front End NOT using the Kerberos protocol (
 Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client’s TGS Ticket and therefore will NOT be able to invoke S4U2Proxy as in the [Constrained Delegation (Kerberos Only)](#constrained-delegation-kerberos-only) scenario, consequently the AP Front End will use the "S4U2Self" extension, so it will send to the KDC a "KRB\_TGS\_REQ" packet containing, in summary:
 
 > The S4U2Self extension, in summary, is used to obtain a TGS Ticket belonging to a specific Client (e.g., CAPSULE.corp\vegeta) valid only for the service itself, so for the AP Front End (e.g., HTTP).
+
+<span id=109>
 
 - **The AP Front End shares its own TGT Ticket**
 

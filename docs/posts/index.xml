@@ -1,171 +1,901 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation Attacks</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</link><pubDate>Tue, 16 Sep 2025 14:56:19 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</guid><description>&lt;hr&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Tue, 16 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation/</link><pubDate>Tue, 16 Sep 2025 14:50:00 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation/</guid><description>&lt;hr&gt;
 &lt;h4 id="table-of-contents"&gt;Table of Contents:&lt;/h4&gt;
 &lt;ul&gt;
-&lt;li&gt;Abuse Unconstrained Delegation
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#whats-kerberos-delegation"&gt;What&amp;rsquo;s Kerberos Delegation&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#unconstrained-delegation"&gt;Unconstrained Delegation&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#behaviour-change-about-kerberos-delegation-on-modern-windows-system"&gt;Behaviour Change about Kerberos Delegation on Modern Windows System&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#constrained-delegation"&gt;Constrained Delegation&lt;/a&gt;&lt;/strong&gt;
 &lt;ul&gt;
-&lt;li&gt;Abuse Unconstrained Delegation (Computer) (1 method) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Unconstrained Delegation (Computer) (2 method) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Unconstrained Delegation - Detect &amp;amp; Mitigation&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only"&gt;Constrained Delegation (Kerberos only)&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#constrained-delegation-use-any-authentication-protocol--protocol-transition"&gt;Constrained Delegation (Use any authentication Protocol) / Protocol Transition&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;Abuse Protocol Transition
-&lt;ul&gt;
-&lt;li&gt;Abuse Protocol Transition (Computer) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Protocol Transition (User) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Protocol Transition (Computer)- Linux&lt;/li&gt;
-&lt;li&gt;Abuse Protocol Transition (User) - Linux&lt;/li&gt;
-&lt;li&gt;Abuse Protocol Transition - Detect &amp;amp; Mitigation&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Abuse RBCD via DACL
-&lt;ul&gt;
-&lt;li&gt;Abuse RBCD via DACL (Computer) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse RBCD via DACL (Computer) - Linux&lt;/li&gt;
-&lt;li&gt;Abuse RBCD via DACL - Detect &amp;amp; Mitigation&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;Abuse Kerberos Only
-&lt;ul&gt;
-&lt;li&gt;Abuse Kerberos Only (Computer) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Kerberos Only (User) - Windows&lt;/li&gt;
-&lt;li&gt;Abuse Kerberos Only - Detect &amp;amp; Mitigation&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#resource-based-constrained-delegation-rbcd"&gt;Resource Based Constrained Delegation (RBCD)&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#outro"&gt;Outro&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;a href="https://marcozufferli.com/posts/demystify_kerberos_delegation/#references"&gt;References&lt;/a&gt;&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1 id="kerberos-delegation-attacks"&gt;&lt;strong&gt;Kerberos Delegation Attacks&lt;/strong&gt;&lt;/h1&gt;
-&lt;img src="https://marcozufferli.com/demystify_kerberos_delegation_attacks/immagine.png" class="center" style="border-radius: 8px;" /&gt;
-&lt;h2 id="let"&gt;&lt;strong&gt;Let&amp;rsquo;s start with the Kerberos Delegation Attacks!&lt;/strong&gt;&lt;/h2&gt;
-&lt;p&gt;Before you begin, if you are not confident with Kerberos Delegation, i highly suggest you to start reading my other article called &amp;ldquo;&lt;a href="./demystify_kerberos_delegation.md"&gt;Demystify Kerberos Delegation&lt;/a&gt;&amp;rdquo;.&lt;/p&gt;</description><content type="html"><![CDATA[<hr>
+&lt;h1 id="kerberos-delegation"&gt;&lt;strong&gt;Kerberos Delegation&lt;/strong&gt;&lt;/h1&gt;
+&lt;img src="https://marcozufferli.com/demystify_kerberos_delegation/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
+&lt;h2 id="what"&gt;&lt;strong&gt;What&amp;rsquo;s Kerberos Delegation?&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Before you begin, if you are not confident with Kerberos, i highly suggest you to start reading my other article called &amp;ldquo;&lt;a href="https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/"&gt;Not So Brief Overview about Kerberos&lt;/a&gt;&amp;rdquo;.&lt;/p&gt;</description><content type="html"><![CDATA[<hr>
 <h4 id="table-of-contents">Table of Contents:</h4>
 <ul>
-<li>Abuse Unconstrained Delegation
+<li><strong><a href="/posts/demystify_kerberos_delegation/#whats-kerberos-delegation">What&rsquo;s Kerberos Delegation</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#unconstrained-delegation">Unconstrained Delegation</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#behaviour-change-about-kerberos-delegation-on-modern-windows-system">Behaviour Change about Kerberos Delegation on Modern Windows System</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#constrained-delegation">Constrained Delegation</a></strong>
 <ul>
-<li>Abuse Unconstrained Delegation (Computer) (1 method) - Windows</li>
-<li>Abuse Unconstrained Delegation (Computer) (2 method) - Windows</li>
-<li>Abuse Unconstrained Delegation - Detect &amp; Mitigation</li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only">Constrained Delegation (Kerberos only)</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol) / Protocol Transition</a></strong></li>
 </ul>
 </li>
-<li>Abuse Protocol Transition
-<ul>
-<li>Abuse Protocol Transition (Computer) - Windows</li>
-<li>Abuse Protocol Transition (User) - Windows</li>
-<li>Abuse Protocol Transition (Computer)- Linux</li>
-<li>Abuse Protocol Transition (User) - Linux</li>
-<li>Abuse Protocol Transition - Detect &amp; Mitigation</li>
-</ul>
-</li>
-<li>Abuse RBCD via DACL
-<ul>
-<li>Abuse RBCD via DACL (Computer) - Windows</li>
-<li>Abuse RBCD via DACL (Computer) - Linux</li>
-<li>Abuse RBCD via DACL - Detect &amp; Mitigation</li>
-</ul>
-</li>
-<li>Abuse Kerberos Only
-<ul>
-<li>Abuse Kerberos Only (Computer) - Windows</li>
-<li>Abuse Kerberos Only (User) - Windows</li>
-<li>Abuse Kerberos Only - Detect &amp; Mitigation</li>
-</ul>
-</li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#resource-based-constrained-delegation-rbcd">Resource Based Constrained Delegation (RBCD)</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#outro">Outro</a></strong></li>
+<li><strong><a href="/posts/demystify_kerberos_delegation/#references">References</a></strong></li>
 </ul>
 <hr>
-<h1 id="kerberos-delegation-attacks"><strong>Kerberos Delegation Attacks</strong></h1>
+<h1 id="kerberos-delegation"><strong>Kerberos Delegation</strong></h1>
 
-    <img src="/demystify_kerberos_delegation_attacks/immagine.png"  class="center"  style="border-radius: 8px;"  />
+    <img src="/demystify_kerberos_delegation/immagine.jpg"  class="center"  style="border-radius: 8px;"  />
 
 
-<h2 id="let"><strong>Let&rsquo;s start with the Kerberos Delegation Attacks!</strong></h2>
-<p>Before you begin, if you are not confident with Kerberos Delegation, i highly suggest you to start reading my other article called &ldquo;<a href="./demystify_kerberos_delegation.md">Demystify Kerberos Delegation</a>&rdquo;.</p>
-<p>In this article i&rsquo;ll describe the most common abuse about Kerberos Delegation, specificaly, my home lab is build with:</p>
+<h2 id="what"><strong>What&rsquo;s Kerberos Delegation?</strong></h2>
+<p>Before you begin, if you are not confident with Kerberos, i highly suggest you to start reading my other article called &ldquo;<a href="/posts/not_so_brief_overview_about_kerberos/">Not So Brief Overview about Kerberos</a>&rdquo;.</p>
+<p>Let&rsquo;s assume a scenario where a domain user authenticates via Kerberos to a &ldquo;Front-End&rdquo; AP (service) such as a Web Application, which, to operate correctly, must interact with a &ldquo;Back-End&rdquo; AP (service) such as a Database or a File Server.</p>
+<p>In this scenario, when the domain user authenticated via Kerberos performs a particular action on the Web Application, the Web Application will need to authenticate to the Database to retrieve some personal user data, instead of creating (if possible) an application user with extremely specific permissions for the Web Application to use for the Back-End service (in this case the Database), the issue would be resolved if the Web Application itself were able to authenticate via Kerberos to the &ldquo;Back-End&rdquo; service on behalf of the user; in this way, access could be granted exclusively and automatically to a specific portion of data; the Kerberos protocol allows this behavior and this is called Kerberos Delegation.</p>
+<p>We know that the domain user &ldquo;ASTRO\Cosmo&rdquo; will present a TGS Ticket (<a href="/posts/not_so_brief_overview_about_kerberos/#37">KRB_AP_REP</a>) to authenticate to the Web Server, consequently, in a traditional Kerberos scenario, the Web Server CANNOT obtain a TGS Ticket on behalf of the domain user &ldquo;ASTRO\Cosmo&rdquo; to access the SQL Server service, because by design, the Web Server, not knowing the NT Hash (or a secrets) of the &ldquo;ASTRO\Cosmo&rdquo; account, CANNOT request a TGT (<a href="/posts/not_so_brief_overview_about_kerberos/#39">KRB_AS_REQ</a>) from the KDC on behalf of the user to then exchange it for a TGS Ticket specific to the SQL Server service.</p>
+<blockquote>
+<p>The traditional TGS Ticket that the Web Server receives from the &ldquo;ASTRO\Cosmo&rdquo; user is valid exclusively for the Web Server service (as it will contain the SPN HTTP/Web-Server and not a potential SPN SQL\SQLServer).</p></blockquote>
+<p>Below is a diagram representing this situation:</p>
+
+    <img src="/demystify_kerberos_delegation/1.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>The &ldquo;Kerberos Delegation&rdquo; feature alters the traditional Kerberos authentication flow to allow the Web Server to authenticate to the Database service on behalf of the domain user.</p>
+<p>There are 3 types of Kerberos Delegation:</p>
 <ul>
-<li>1 Domain Controller: Windows Server 2022 (<a href="https://www.microsoft.com/it-it/evalcenter/download-windows-server-2022">fresh installation</a>)</li>
-<li>2 Windows Client: Windows 10 (<a href="https://www.microsoft.com/it-it/evalcenter/download-windows-10-enterprise">fresh installation</a>)</li>
+<li>Unconstrained Delegation</li>
+<li>Constrained Delegation (1, 2)</li>
+<li>Resource-Based Constrained (RBCD) Delegation</li>
 </ul>
-<p>So, let&rsquo;s start!</p>
-<h2 id="abuse-protocol-transition"><strong>Abuse Protocol Transition</strong></h2>
-<p>If an attacker compromises a Service Account with &ldquo;<a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a>&rdquo; enabled (a.k.a Protocol Transition), so, in most scenarios a Computer Account (usually by compromising the corresponding machine), the attacker, by impersonating the machine, could invoke the <a href="./demystify_kerberos_delegation.md#100">&ldquo;S4U2Self&rdquo; &amp; &ldquo;S4U2Proxy&rdquo;</a> extensions and thus obtain a TGS Ticket belonging to a certain user valid to access the Back-End service that the compromised machine is authorized to access on behalf of the Client (so the services indicated in the &ldquo;<a href="./demystify_kerberos_delegation.md#101">msds-allowedtodelegateto</a>&rdquo; flag).</p>
-<p>That said, there are two other extremely useful pieces of information to consider:</p>
+<p>I want to highlight that the Kerberos Delegation feature allows solving the &ldquo;<a href="https://techcommunity.microsoft.com/blog/askds/understanding-kerberos-double-hop/395463">Double Hop Problem</a>&rdquo;.</p>
+<blockquote>
+<p>In a internet-facing web services scenario, the user will generally NOT login via the Kerberos protocol to the Web Application, consequently the Web Application will necessarily need to authenticate to a potential Database using only an dedicated application user; furthermore, depending on the permissions and how it has been configured, the Web Application may have access to the database with administrative or limited permissions; in specific scenarios this could lead to issues.</p></blockquote>
+<h2 id="unconstrained-delegation"><strong>Unconstrained Delegation</strong></h2>
+<p>The oldest and most dangerous version of Kerberos Delegation is the &ldquo;Unconstrained Kerberos Delegation&rdquo;.</p>
+<p>The &ldquo;Unconstrained Kerberos Delegation&rdquo;, in summary, alters the Kerberos protocol by making the Client send to the AP Front End a &ldquo;KRB_AP_REQ&rdquo; packet containing both the TGS Ticket (to access the same AP Front-End that receives this packet) and the TGT Ticket, in this way the &ldquo;Front-End&rdquo; AP will be able to use the domain user’s TGT Ticket to impersonate it in a further Kerberos authentication towards potentially ANY AP in the &ldquo;Back-End&rdquo;.</p>
+
+    <img src="/demystify_kerberos_delegation/2.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>The KDC, in order to use the &ldquo;Unconstrained Kerberos Delegation&rdquo;, requires 2 prerequisites:</p>
+<p><strong>1. Configure the &ldquo;Unconstrained Kerberos Delegation&rdquo; on the &ldquo;Front-End&rdquo; AP.</strong></p>
+<p><span id =1>
+    <img src="/demystify_kerberos_delegation/3.png"  class="center"  style="border-radius: 8px;"  />
+
+</p>
+<p>The &ldquo;Unconstrained Kerberos Delegation&rdquo; is configured via <a href="https://serveracademy.com/blog/active-directory-users-and-computers-aduc-installation-and-tutorial/">ADUC</a> by enabling the property &ldquo;Trust this computer for delegation to any service (Kerberos only)&rdquo; on the &ldquo;Computer&rdquo; object that acts as the &ldquo;Front-End&rdquo; AP; since this configuration is potentially dangerous, such action can only be performed by a Domain Admin account or an account with the &ldquo;<a href="https://harmj4.rssing.com/chan-30881824/article60.html">SeEnableDelegationPrivilege</a>&rdquo; permission.</p>
+<blockquote>
+<p>In reality, even an object of type &ldquo;user&rdquo; (domain account) can be configured with the Kerberos Unconstrained Delegation, in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the &ldquo;Delegation&rdquo; tab will appear inside the property of the user object.</p></blockquote>
+<p><span id=25> This configuration sets in the &ldquo;UserAccountControl&rdquo; property of the object in question the flag &ldquo;TRUSTED_FOR_DELEGATION&rdquo; to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo;.</p>
+<blockquote>
+<p><span id=11>Every object of type &ldquo;User&rdquo; and type &ldquo;Computer&rdquo; has an attribute called &ldquo;<a href="https://activedirectorypro.com/useraccountcontrol-check-and-manage-attribute-value/">UserAccountControl</a>&rdquo;, this attribute is a value that represents the set of <a href="https://learn.microsoft.com/en-us/windows/win32/adschema/a-useraccountcontrol?redirectedfrom=MSDN">flags</a> (configurations) set on the object (the most common are DONT_REQUIRE_PREAUTH, NOT_DELEGATE, etc.), for example 514 indicates that the domain user is disabled.</p></blockquote>
+<p>In our <a href="/posts/demystify_kerberos_delegation/#1">example</a> the Kerberos Delegation is configured on the Computer &ldquo;THEPUNISHER&rdquo; which will act as the &ldquo;Front-End&rdquo; AP, this modification is actually reflected on the related Computer Account since it is contained in the &ldquo;Computer&rdquo; object (therefore the Computer Account THEPUNISHER$ will have the flag &ldquo;TRUSTED_FOR_DELEGATION&rdquo; set to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo;), this means that any service started by this computer with the Service Account THEPUNISHER$ (Computer Account) will have the Kerberos Unconstrained Delegation enabled (<a href="/posts/not_so_brief_overview_about_kerberos/#17">so, all services started with the Local Service account such as by default the CIFS service</a>).</p>
+<p><span id=4>
+    <img src="/demystify_kerberos_delegation/4.png"  class="center"  style="border-radius: 8px;"  />
+
+</p>
+<blockquote>
+<p>By default ALL Domain Controllers have the Kerberos Unconstrained Delegation enabled.</p></blockquote>
+<p><strong>2. Configure the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP as &ldquo;relayable&rdquo;.</strong></p>
+<p>It is necessary that the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP does NOT have the &ldquo;NOT_DELEGATED&rdquo; flag set to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo; in the &ldquo;UserAccountControl&rdquo; property; if it is, then that user is NOT delegable, by default ALL domain users do NOT have this flag enabled and are therefore relayable.</p>
+
+      <img src="/demystify_kerberos_delegation/5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+<hr>
+<br>
+<p><strong>Below we see the flow of a Kerberos authentication with &ldquo;Unconstrained Delegation&rdquo; enabled:</strong></p>
+<blockquote>
+<p>To simplify the creation of the lab, even though this would hardly happen in reality, in the following screenshots the Front-End AP will be the CIFS service hosted on the THEPUNISHER computer (this service, having &ldquo;Local System&rdquo; as Service Account, <a href="/posts/not_so_brief_overview_about_kerberos/#17">in a Kerberos context the Service Account will be the Computer Account THEPUNISHER$</a>), in reality, usually, a Front-End AP could be a Web Application.</p></blockquote>
+
+    <img src="/demystify_kerberos_delegation/6.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>The &ldquo;KRB_AP_REP&rdquo; packet (<a href="/posts/demystify_kerberos_delegation/#9">&ldquo;AP Front-End&rdquo; -&gt; &ldquo;Client&rdquo;</a> &amp; &ldquo;<a href="/posts/demystify_kerberos_delegation/#10">AP Back-End&rdquo; -&gt; &ldquo;AP Front End</a>&rdquo;) required by the Mutual Authentication could be sent in different times based on the Windows machine version used inside the infrastructure, this is the reason why i have not putted them on the image.</p></blockquote>
+<blockquote>
+<p><span id=2> Integrity and authenticity verification operations that occur within traditional Kerberos authentication (sending &amp; analyzing the &ldquo;Authenticator&rdquo; along with the related &ldquo;Session Key&rdquo; used to encrypt &amp; decrypt parts of the packet) are also present with Unconstrained Delegation enabled, but in this case they will NOT be mentioned, because they have already been generally described <a href="/posts/not_so_brief_overview_about_kerberos/">previously</a> (for a complete analysis in the context of Unconstrained Delegation see <a href="https://www.youtube.com/watch?v=xDFRUYv1-eU&amp;t=326s">this guide</a>) and because it was preferred to instead emphasize the unique characteristics of Kerberos Unconstrained Delegation.</p></blockquote>
+<blockquote>
+<p><a href="/posts/not_so_brief_overview_about_kerberos/#40">As already mentioned previously</a>, below we will describe the traditional process where Kerberos with Unconstrained Delegation enabled is used, that is, from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, and then subsequently uses Kerberos again in a Network Logon (roughly using cached credentials) to authenticate to a target service with Kerberos Unconstrained Delegation enabled; that said, in reality, the authentication process can also start in other types of authentications besides the traditional WinLOGON GUI (Interactive Logon).</p></blockquote>
+<hr>
+<br>
+<p><strong>Introduction: Initially, the Client (after the domain user has entered their credentials for an Interactive Logon) makes a request for a TGT Ticket &amp; TGS Session Key (KRB_AS_REQ) to the KDC and it responds (KRB_AS_REP) providing the requested data (if positive, in summary, the Client grants access to the domain user).</strong></p>
+<h3 id="1-krb_tgs_req-the-client-provides-its-own-tgt-ticket-to-the-kdc-to-request-the-tgs-ticket"><strong>1. KRB_TGS_REQ The Client provides its own TGT Ticket to the KDC to request the TGS Ticket.</strong></h3>
+<p>Now that a domain user has already authenticated to a Client (using Kerberos) and already possesses the TGT with a TGS Session Key, if they need to perform a &ldquo;Network Logon&rdquo; the Kerberos protocol comes into play again, specifically the Client will use the TGT and the TGS Session Key to request another type of ticket called the TGS Ticket.</p>
+<p>The Client presents to the KDC (no longer to the AS feature) a KRB_TGS_REQ which in summary contains:</p>
+
+    <img src="/demystify_kerberos_delegation/7.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li>
+<p><strong>Ticket TGT</strong>: The previously received TGT ticket (to exchange it for a TGS Ticket)</p>
+</li>
+<li>
+<p><strong>SPN</strong>: The SPN related to / pointing to the service the Client needs to connect to via SSO is sent in plain-text, in this case it refers to the AP Front-End, such as the SPN &ldquo;HTTP/Charlotte.medin.local&rdquo; or &ldquo;CIFS/THEPUNISHER&rdquo;, in the first one the authentication will be to the HTTP service on the Hostname &ldquo;Charlotte.medin.local&rdquo; while in the second one to the CIFS service on the Hostname THEPUNISHER.</p>
+</li>
+</ul>
+<h3 id="2-krb_tgs_rep-the-kdc-sends-the-tgs-ticket-to-the-client-but-specifying-that-the-requested-service-has-the-kerberos-unconstrained-delegation-enabled"><strong>2. KRB_TGS_REP: The KDC sends the TGS Ticket to the Client BUT specifying that the requested service has the Kerberos Unconstrained Delegation enabled.</strong></h3>
+<p>The KDC receives the <a href="/posts/demystify_kerberos_delegation/#1-krb_tgs_req-the-client-provides-its-own-tgt-ticket-to-the-kdc-to-request-the-tgs-ticket">KRB_TGS_REQ</a> packet and after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a> sees that the SPN contained within, in this example &ldquo;CIFS\THEPUNISHER&rdquo;, points to the CIFS service hosted on the computer THEPUNISHER which has as Service Account the &ldquo;Computer Account&rdquo; THEPUNISHER$ (<a href="/posts/not_so_brief_overview_about_kerberos/#17">in Kerberos context</a>), since this &ldquo;Computer Account&rdquo; has the <a href="/posts/demystify_kerberos_delegation/#4">TRUSTED_FOR_DELEGATION flag enabled</a>, it means the CIFS service on the computer THEPUNISHER has Kerberos Unconstrained Delegation, consequently the KDC responds to the Client with a &ldquo;KRB_TGS_REP&rdquo; containing, in summary:</p>
+
+    <img src="/demystify_kerberos_delegation/8.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li><strong>Ticket TGS</strong>: The TGS Ticket for the AP &ldquo;Front-End&rdquo; (CIFS Service hosted on &ldquo;THEPUNISHER&rdquo;) BUT with the flag &ldquo;OK-AS-DELEGATE&rdquo; set to TRUE</li>
+</ul>
+<blockquote>
+<p>The &ldquo;FORWARDABLE&rdquo; flag is also set to TRUE
+<span id=6></p></blockquote>
+<h3 id="3-krb_tgs_req-the-client-requests-a"><strong>3. KRB_TGS_REQ: The Client requests a &ldquo;Ticket TGT Forwarded&rdquo; from the KDC.</strong></h3>
+<p>The Client receives the packet and after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a> sees that the TGS Ticket received has the &ldquo;OK-AS-DELEGATE&rdquo; flag set to TRUE, this flag indicates to the Client that the service the domain user needs to access, namely the AP Front End, has Kerberos Unconstrained Delegation enabled, consequently the Client sends again a &ldquo;KRB_TGS_REQ&rdquo; containing, in summary:</p>
+
+    <img src="/demystify_kerberos_delegation/9.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li>
+<p><strong>Previously received TGT Ticket</strong>: The previously received TGT Ticket (to exchange it this time for a &ldquo;Forwarded TGT Ticket&rdquo;)</p>
+</li>
+<li>
+<p><strong>Other Data</strong>: Since the Client knows that the AP Front End has &ldquo;Kerberos Unconstrained Delegation&rdquo; configured, it choose to requests a so-called &ldquo;Forwarded TGT Ticket&rdquo;, for this purpose inside this Kerberos packet the Client specifies:</p>
+<ul>
+<li>
+<p>The SPN related to the Kerberos service (KDC) of the Domain Controller which is &ldquo;krbtgt/&lt;domain&gt;&rdquo; (analogous to what happens in a <a href="/posts/not_so_brief_overview_about_kerberos/#39">KRB_AS_REQ</a> but this time in a KRB_TGS_REQ)</p>
+</li>
+<li>
+<p>The &ldquo;FORWARDED&rdquo; flag set to TRUE</p>
+</li>
+</ul>
+</li>
+</ul>
+<span id=8>
+<h3 id="4-krb_tgs_rep-the-kdc-sends-a"><strong>4. KRB_TGS_REP: The KDC sends a &ldquo;Ticket TGT Forwarded&rdquo; to the Client</strong></h3>
+<p>The KDC, after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, since it previously sent a <a href="/posts/demystify_kerberos_delegation/#2-krb_tgs_rep-the-kdc-sends-the-tgs-ticket-to-the-client-but-specifying-that-the-requested-service-has-the-kerberos-unconstrained-delegation-enabled">KRB_TGS_REP</a> specifying that the service requested by the Client supports Kerberos Unconstrained Delegation, verifies if within the new <a href="/posts/demystify_kerberos_delegation/#6">KRB_TGS_REQ</a> received the &ldquo;FORWARDED&rdquo; flag is set to TRUE, if positive, the KDC responds to the Client with a &ldquo;KRB_TGS_REP&rdquo; containing, in summary:</p>
+
+    <img src="/demystify_kerberos_delegation/10.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li><strong>The &ldquo;Forwarded TGT Ticket&rdquo;</strong>: The KDC sends to the Client a so-called &ldquo;Forwarded TGT Ticket&rdquo;, that is a TGT Ticket with the &ldquo;FORWARDED&rdquo; flag set to True (which contains like always the PAC of the Client&rsquo;s domain user).</li>
+</ul>
+<blockquote>
+<p>I want to highlight that the KDC sent a &ldquo;Forwarded TGT Ticket&rdquo; within the encrypted part of a KRB_TGS_REP, in a traditional Kerberos authentication the KDC would issue a TGT Ticket exclusively in a <a href="/posts/not_so_brief_overview_about_kerberos/#9">KRB_AS_REP</a>.</p></blockquote>
+<span id=7>
+<h3 id="5-krb_ap_req-the-client-attempts-to-access-the-front-end-ap-by-providing-its-own-tgs-ticket-but-also-sharing-the-so-called"><strong>5. KRB_AP_REQ: The Client attempts to access the Front-End AP by providing its own TGS Ticket BUT also sharing the so-called &ldquo;Ticket TGT Forwarded&rdquo;.</strong></h3>
+<p>The Client, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, in summary, sends a &ldquo;KRB_AP_REQ&rdquo; packet to the AP Front-End (in this case to the CIFS service hosted on the computer THEPUNISHER) containing:</p>
+
+    <img src="/demystify_kerberos_delegation/11.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<ul>
+<li>
+<p><strong>Ticket TGS</strong>: A TGS Ticket that points via SPN to the AP Front End (in this example CIFS\THEPUNISHER)</p>
+</li>
+<li>
+<p><strong>Forwarded TGT Ticket</strong>: The &ldquo;Forwarded TGT Ticket&rdquo; that the Client received in the previous &ldquo;<a href="/posts/demystify_kerberos_delegation/#8">KRB_TGS_REP&rdquo;</a>.</p>
+</li>
+</ul>
+<blockquote>
+<p>I want to highlight that the &ldquo;Forwarded TGT Ticket&rdquo; sent is contained within the &ldquo;authenticator&rdquo; field of the &ldquo;TGS Ticket&rdquo;.</p></blockquote>
+<hr>
+<p><strong>So, what happens now?</strong></p>
+<p>The AP Front End, now having received the <a href="/posts/demystify_kerberos_delegation/#7">KRB_AP_REQ</a> packet, in summary, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, performs the following actions:</p>
+<ol>
+<li>The AP Front End will allow (<a href="/posts/not_so_brief_overview_about_kerberos/#3">if the AUTHORIZATION phase goes correctly</a>) the Client access to the requested service (in this case the CIFS service hosted on the computer THEPUNISHER), subsequently, depending on the requested service and if mutual authentication is required by the Client, the AP Front End will send a KRB_AP_REP to the Client.</li>
+</ol>
+<blockquote>
+<p><span id=9> In my home lab the KRB_AP_REP packet was sent in this scenario, <a href="https://www.youtube.com/watch?v=xDFRUYv1-eU&amp;t=326s">in this other case</a>, however, the KRB_AP_REP packet was delivered to the Client only at the end of the entire process.</p></blockquote>
+<ol start="2">
+<li>The AP Front End will now extract the &ldquo;Forwarded TGT Ticket&rdquo; contained within the TGS Ticket and cache it locally to potentially impersonate the Client in future interactions.</li>
+</ol>
+<hr>
+<p><strong>If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will occur:</strong></p>
+<h3 id="6-krb_tgs_req-the-front-end-ap-provides-the-clients"><strong>6. KRB_TGS_REQ: The Front-End AP provides the Client’s &ldquo;Ticket TGT Forwarded&rdquo; to the KDC to request a TGS Ticket.</strong></h3>
+<p>Occasionally, when the AP Front End will need to authenticate to the AP Back End on behalf of the Client, the AP Front End will send to the KDC a &ldquo;KRB_TGS_REQ&rdquo; packet built <a href="/posts/demystify_kerberos_delegation/#1-krb_tgs_req-the-client-provides-its-own-tgt-ticket-to-the-kdc-to-request-the-tgs-ticket">as already indicated previously</a>, with the only difference that the Client’s &ldquo;Ticket TGT Forwarded&rdquo; will be shared instead (it contains the domain user’s PAC), in this way the AP Front End will be able to obtain a valid TGS Ticket to authenticate to the AP in the Back-End on behalf of the Client.</p>
+<h3 id="7-krb_tgs_rep-the-kdc-sends-the-tgs-ticket-to-the-front-end-ap"><strong>7. KRB_TGS_REP: The KDC sends the TGS Ticket to the Front-End AP.</strong></h3>
+<p>The KDC, in summary, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, will provide the AP Front End with a TGS Ticket specific for the AP in the Back End.</p>
+<blockquote>
+<p><a href="/posts/not_so_brief_overview_about_kerberos/#42">As already said</a>, the PAC of the TGS Ticket is a copy of the PAC contained in the provided TGT Ticket, consequently the TGS Ticket that the KDC will provide to the AP Front End will still belong to the Client.</p></blockquote>
+<h3 id="8-krb_ap_req-the-ap-front-end-presents-the-tgs-ticket-to-the-ap-back-end-to-authenticate-on-behalf-of-the-client"><strong>8. KRB_AP_REQ: The AP Front End presents the TGS Ticket to the AP Back End to authenticate on behalf of the Client.</strong></h3>
+<p>The AP Front End will send a &ldquo;KRB_AP_REQ&rdquo; packet to the AP Back End, authenticating by essentially sharing the previously received TGS Ticket, since this TGS Ticket belongs to the Client (it contains the domain user’s PAC), the AP Front End will authenticate to the AP Back End on behalf of the Client.</p>
+<p>Finally, if the AP Front End requests mutual authentication, the AP Back End will reply to the AP Front End with a &ldquo;KRB_AP_REP&rdquo;.</p>
+<blockquote>
+<p><span id=10> This is what happens in my home lab, <a href="https://www.youtube.com/watch?t=326&amp;v=xDFRUYv1-eU&amp;feature=youtu.be">in this other case</a> instead, the &ldquo;KRB_AP_REP&rdquo; packet is first sent from the AP Back End to the AP Front End and then <a href="/posts/demystify_kerberos_delegation/#9">as already told</a> another &ldquo;KRB_AP_REP&rdquo; from the AP Front End to the Client.</p></blockquote>
+<h2 id="behaviour-change-about-kerberos-delegation-on-modern-windows-system"><strong>Behaviour Change about Kerberos Delegation on Modern Windows System.</strong></h2>
+<p>Microsoft has several bad habits: the first is continuously changing the names of their products (it&rsquo;s a serius issue 😭​), while the second is modifying the logic of some of its widely used features, including Kerberos Delegation, without notifying it to anyone (it&rsquo;s done intentionally).</p>
+<p>The first time i approached the topic of Kerberos Delegation, this was a problem because analyzing the traffic of the &ldquo;Constrained Delegation&rdquo; &amp; &ldquo;RBCD&rdquo;, the concepts i was studying online did not match; for this reason, I asked to Elad Shamir, the author of the <a href="https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html">awesome article who discovered these attacks</a>, and he confirmed that Microsoft changed the behavior of delegation in 2021.</p>
+<p>Since this article is for educational purposes, i decided to detail in the following sections both the Kerberos Delegation versions BEFORE-change and POST-change, highlighting at the key moments what modification was made; in this way, you will be able to orient yourself with the logic even when reading other guides on Kerberos Delegation.</p>
+<p>Below, i&rsquo;ll detail what modification Microsoft made in 2021; for narrative reasons, i preferred to detail it before explaining the the &ldquo;Constrained Delegation&rdquo; &amp; &ldquo;RBCD&rdquo; flow.</p>
+<p><strong>So, if you do not understand what is written below it&rsquo;s normal, you can skip it and come back later 😉​</strong>.</p>
+<blockquote>
+<p>I asked the permission to take the screenshot 😃​</p></blockquote>
+
+    <img src="/demystify_kerberos_delegation/41.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>In 2021 Microsoft changed the conditions under which the KDC issues inside an S4USelf Response a TGS Ticket with the FORWARDABLE flag set to 1.</p>
+<p>Instead of exclusively verifying the presence of the &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; flag, the KDC will instead perform two checks:</p>
+<ol>
+<li>The KDC verifies if the Service Account of the AP Front End has the &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; flag set</li>
+<li>The KDC verifies if  the Service Account of the AP Front End has the &ldquo;msds-allowedtodelegateto&rdquo; property NOT empty (i.e., there are entries)</li>
+</ol>
+<span id=71>
+If BOTH checks are positive (so the AP Front End is configured in the context of Constrained Delegation (Kerberos Only) - or - the Client's domain user has the "Not Delegate" flag - or - is a member of the "Protected Users Group") then the issued TGS Ticket will have the FORWARDABLE flag set to 0 (otherwise the FORWARDABLE flag will always be 1).
+<p>This means that in a traditional &ldquo;Resource Based Constrained Delegation (RBCD) scenario&rdquo;, the flow in POST 2021 will be slightly different:</p>
+<p>1. <span id=75> In a traditional RBCD scenario the AP Front End is NOT configured with Kerberos Delegation, consequently the AP Front End will receive in an S4USelf Response a <a href="/posts/demystify_kerberos_delegation/#70">TGS Ticket with the FORWARDABLE flag set to 1</a> (<a href="/posts/demystify_kerberos_delegation/#71">for the reason mentioned above</a>) (instead, before 2021 the FORWARDABLE flag was set to 0)</p>
+<p>2. When the KDC receives the KRB_TGS_REQ (S4U2Proxy) packet from the AP Front, <a href="/posts/demystify_kerberos_delegation/#64">it will perform 2 checks <strong>sequentially</strong></a>:</p>
 <ol>
 <li>
-<p><a href="./demystify_kerberos_delegation.md#31">As already mentioned</a>, when the <a href="./demystify_kerberos_delegation.md#2-krb_tgs_req-s4u2self--s4uself-request">S4U2Self</a> extension is invoked, it is necessary to specify which domain user will be the owner of the TGS Ticket that will be issued, in this step i want to highlight that the KDC will performs NO checks about that so it will issue the TGS Ticket for ANY specified domain user.</p>
-<p>Knowing this the attacker can invoke the <a href="./demystify_kerberos_delegation.md#2-krb_tgs_req-s4u2self--s4uself-request">S4U2Self</a> extension for ANY domain user and thus obtain a TGS Ticket belonging to an arbitrary domain user, so the attacker will be able to authenticate to the Back-End service impersonating ANY domain user.</p>
+<p>The KDC verifies if the TGS Ticket has the FORWARDABLE flag set to 1, in this case the result is POSITIVE (before 2021 this check would fail and here the KDC would switch to RBCD)</p>
 </li>
 <li>
-<p>The TGS Ticket always consists of two parts: a NON encrypted part containing the SPN of the requested service (e.g: CIFS/WORKSTATION01) and an &ldquo;encrypted&rdquo; part containing other information.</p>
-<p>Since the SPN contained in the TGS Ticket is NOT encrypted, an attacker could modify it (it would still be a valid TGS Ticket) by replacing the service of the target machine with another service also exposed on the target machine, thus, an attacker could for example obtain a valid TGS Ticket for the CIFS service on the SQL01 machine (CIFS\SQL01) and modify it to make it valid for the HTTP service on the same SQL01 machine (HTTP/SQL01) before sending it in a KRB_AP_REQ.</p>
+<p>The KDC verifies if in the Service Account of the AP Front End there is the &ldquo;msds-allowedtodelegateto&rdquo; property containing the SPN of the requested AP Back End; in this case the result is NEGATIVE because the AP Front End does NOT have Kerberos Delegation enabled and for this reason it this property is NOT present, so the results is NEGATIVE  and switch here to RBCD.</p>
 </li>
 </ol>
-<span id=1>
-<blockquote>
-<p>The service that is inserted must have the same Service Account as the replaced service (since the Service Account is often the Computer Account this requirement will be usually satisfied - <a href="/posts/not_so_brief_overview_about_kerberos/#17">because the Computer Account is the Service Account in the Kerberos context of ANY service running under the LocalSystem account, including usually CIFS, HTTP, etc; so a lot of services</a>), only in this way will the TGS Ticket with the modified SPN be valid.</p></blockquote>
-<p>With this information in mind we figure out the following conclusion:</p>
-<p><strong>If an attacker compromises a Service Account with &ldquo;<a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a>&rdquo; enabled (a.k.a Protocol Transition), so, in most scenarios a Computer Account (usually by compromising the related machine), the attacker impersonating the machine could invoke the <a href="./demystify_kerberos_delegation.md#100">&ldquo;S4U2Self&rdquo; &amp; &ldquo;S4U2Proxy&rdquo;</a> extension and thus obtain a TGS Ticket belonging to ANY domain user and valid to access ANY (<a href="/posts/demystify_kerberos_delegation_attacks/#1">usually</a>) Back-End service that the compromised machine is authorized to access on behalf of the Client (indicated in the &ldquo;<a href="./demystify_kerberos_delegation.md#101">msds-allowedtodelegateto</a>&rdquo; flag).</strong></p>
-<p>By exploiting this attack, the attacker will therefore be able to authenticate with administrative privileges (since they can impersonate ANY domain user) to certain services; depending on the type of service accessed, the attacker could perform <a href="https://zer1t0.gitlab.io/posts/attacking_ad/#s4u-attacks">various malicious activities</a>, for example:</p>
-<ul>
-<li><strong>LDAP on a Domain Controller</strong>: As described by Microsoft (<a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/06205d97-30da-4fdc-a276-3fd831b272e0">1</a>, <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-drsr/0597aff6-0177-4d52-99f2-14a5441bc3c1">2</a>), some functionalities provided by the MDRS protocol (the protocol used to perform a DC Sync Attack) are also accessible via the LDAP protocol; this overlap of functionalities, broadly speaking, allows an attacker who obtains a valid TGS Ticket for the LDAP service (impersonating an administrative user, e.g., Domain Admin) to perform a <a href="https://adsecurity.org/?p=1729">DC Sync Attack</a> against the DC.</li>
-</ul>
-<blockquote>
-<p>I don’t fully understand how this happens under-the-hood; sniffing with Wireshark shows that the LDAP service is not actually queried, instead, packet exchanges occur exclusively with the services used by the MDRS protocol.</p></blockquote>
-<ul>
-<li>
-<p><strong>SMB</strong>: If the attacker impersonates an administrative user (e.g., Domain Admin) to the SMB service (CIFS in SPN context) of a computer, the attacker could authenticate using tools like &ldquo;psexec&rdquo; (depending on the PsExec tool used, it will impersonate the LocalSystem / Local Administrator user).</p>
-</li>
-<li>
-<p><strong>MSSQL</strong>: If the attacker impersonates an administrative user (e.g., Domain Admin) to the MSSQL service, the attacker, in addition to potentially obtaining sensitive data contained within, can exploit the MSSQL service to execute local commands on the machine via &ldquo;xp_cmdshell,&rdquo;, use &ldquo;<a href="https://www.netspi.com/blog/technical-blog/network-pentesting/sql-server-link-crawling-powerupsql/">SQL Server Link</a>&rdquo; and etc.</p>
-</li>
-<li>
-<p><strong>HTTP</strong>: Since the <a href="https://blog.scalefusion.com/it/windows-remote-management-guide/">WinRM</a> service uses the HTTP service, if the attacker impersonates an administrative user (e.g., Domain Admin) to the HTTP service of a computer, and the machine has WinRM enabled, the attacker could authenticate to it.</p>
-</li>
-</ul>
-<blockquote>
-<p>Often an error related to <a href="https://sensepost.com/blog/2022/constrained-delegation-considerations-for-lateral-movement/">a missing &ldquo;Logon Session&rdquo; occurs</a>; in that case, retry the attack ensuring that the command exploiting Kerberos Delegation is executed from a shell with a High Integrity Level Token and that no additional Tickets have been previously injected into that Logon Session; after that, try logging in both via PowerShell Remoting (Enter-PSSession, New-PSSession, and Invoke-Command) and WinRS; using this method, logging in usually succeeds.</p></blockquote>
-<p><strong>In conclusion, broadly speaking, if an attacker compromises a machine (or a domain user acting as a Service Account) with &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; enabled, they can also compromise the machine (usually via CIFS) that the compromised system is authorized (via the &ldquo;msds-allowedtodelegateto&rdquo; flag) to access on behalf of the Client.</strong></p>
-<h2 id="abuse-protocol-transition-computer---windows"><strong>Abuse Protocol Transition (Computer) - Windows</strong></h2>
-<p>In this scenario, we will see how to exploit a <strong>Constrained Delegation (Use any authentication Protocol) (also called Protocol Transition)</strong> from a Windows machine.</p>
+<p><strong>In summary, although Microsoft has changed their internals, the same previously discovered Kerberos Delegation attacks will keep to shine!</strong></p>
+<h2 id="constrained-delegation"><strong>Constrained Delegation</strong></h2>
+<p>As we have seen, the &ldquo;Unconstrained Kerberos Delegation&rdquo; can be extremely dangerous since the AP Front End caches the Client’s TGT Ticket and can also impersonate the user towards ANY AP in the Back End, for this reason Microsoft developed a more restrictive (a.k.a &ldquo;Constrained&rdquo;) version of Kerberos Delegation called &ldquo;Constrained Delegation&rdquo;, specifically it supports 2 Kerberos extensions known as <a href="https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sfu/3bff5864-8135-400e-bdd9-33b552051d94">Service For User (S4U)</a>:</p>
 <ol>
 <li>
-<p>Identify which Service Accounts have &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; enabled (in this scenario, we are looking for Computer Accounts acting as Service Accounts).</p>
-<p>There are different methods to identify which Service Accounts have &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo;; on Windows, one of the most common is using &ldquo;PowerView&rdquo;:</p>
-<p>PS C:&gt; Get-DomainComputer &ndash;TrustedToAuth
-<span id=2></p>
-
-        <img src="/demystify_kerberos_delegation_attacks/1.png"  class="center"  style="border-radius: 8px;"  />
-    
-
-<p>As you can see, the Computer Account THEPUNISHER$ has the &ldquo;<a href="./demystify_kerberos_delegation.md#102">TRUSTED_TO_AUTH_FOR_DELEGATION</a>&rdquo; flag and therefore has <a href="./demystify_kerberos_delegation.md#constrained-delegation-use-any-authentication-protocol--protocol-transition">Constrained Delegation (Use any authentication Protocol)</a> enabled; specifically, this account (so THEPUNISHER$) and therefore ALL services running under it will be able to authenticate on behalf of the Client exclusively to the SPN &ldquo;HTTP/SPIDERMAN,&rdquo; so to the HTTP service of the SPIDERMAN machine.</p>
-<p>Indeed, inspecting the &ldquo;Delegation&rdquo; tab of the THEPUNISHER computer via ADUC, we will find this     configuration.</p>
-
-        <img src="/demystify_kerberos_delegation_attacks/2.png"  class="center"  style="border-radius: 8px;"  />
-    
-
+<p>Service for User to Proxy (S4U2Proxy): Allows the AP Front End to obtain a TGS Ticket on behalf of the Client in order to use it in an authentication to the AP in the Back End.</p>
 </li>
 <li>
-<p>The attacker compromises the Service Account with Constrained Delegation (Use any authentication Protocol) enabled.</p>
-<p>In this scenario, the attacker managed to authenticate with administrative privileges to the THEPUNISHER machine and, by dumping LSASS, obtained the credentials of the Computer Account THEPUNISHER$, so the Service Account with the Constrained Delegation (Use any authentication Protocol) enabled.</p>
+<p>Service for User to Self (S4U2Self): Allows the AP Front End to obtain a TGS Ticket valid for itself on behalf of any Client, such Ticket can be used by the AP Front End as evidence that the Client has authenticated to it.</p>
+</li>
+</ol>
+<p>By using these Kerberos extensions it is possible to restrict (Constrained) the functionality of Kerberos Delegation by ensuring that the AP Front End can authenticate on behalf of the Client exclusively to a predefined set of APs in the Back End, furthermore, to achieve this, the Client’s TGT Ticket is NOT required and therefore there is no risk of it being cached.</p>
+<p>Below there is a diagram showing how the Constrained Delegation works:</p>
 
-        <img src="/demystify_kerberos_delegation_attacks/3.png"  class="center"  style="border-radius: 8px;"  />
-    
+    <img src="/demystify_kerberos_delegation/12.png"  class="center"  style="border-radius: 8px;"  />
 
+
+<p>It is possible to configure Constrained Delegation on the AP Front End in 2 different modes:</p>
+<ul>
+<li>
+<p><strong>Trust this computer for delegation to specified service only (Kerberos only)</strong>: The AP Front End is able to impersonate the Client only if the Client logs into it via Kerberos (it uses the S4U2Proxy extension);this scenario is also called <strong>&ldquo;Kerberos Only&rdquo;</strong>.
+<span id=100></p>
 </li>
 <li>
-<p>The attacker obtains a valid TGS Ticket (for Domain Admin) to authenticate to the CIFS service hosted on the SPIDERMAN machine (that is, the machine authorized in the &ldquo;msds-allowedtodelegateto&rdquo; flag).</p>
-<p>The attacker, now possessing the credentials of the Service Account THEPUNISHER$, since this account has &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo;, can abuse it to invoke the S4U2Self &amp; S4U2Proxy extensions and thus obtain a TGS Ticket belonging to a Domain Admin user valid to access the HTTP service of the SPIDERMAN machine (<a href="/posts/demystify_kerberos_delegation_attacks/#2">so, the service specified in the &ldquo;msds-allowedtodelegateto&rdquo; flag</a>); furthermore, in this scenario the attacker decides to replace the SPN &ldquo;HTTP/SPIDERMAN&rdquo; with the SPN &ldquo;CIFS/SPIDERMAN&rdquo;, managing in this way to authenticate via PsExec to the SPIDERMAN machine.</p>
-<p>Since we will inject the desired TGS Ticket into memory, first of all we use the so-called Sacrificial Process.</p>
-<p>C:&gt; Rubeus.exe createnetonly /program:&ldquo;C:\Windows\System32\cmd.exe&rdquo; /show</p>
+<p><strong>Trust this computer for delegation to specified service only (Use any authentication protocol)</strong>: The AP Front End is able to impersonate the Client if the Client logs into it with any type of protocol, such as NTLM (it uses the S4U2Self &amp; S4U2Proxy extensions); this scenario is also called <strong>&ldquo;Protocol Transition&rdquo;</strong>.</p>
+</li>
+</ul>
+<p>To analyze with Wireshark ALL the flows that occur during this Constrained Delegation I would have had to create from scratch a lab composed of a Front End Service that accepts a Kerberos authentication and develop within it a logic that triggers an additional Kerberos authentication towards the Back-End Server, since I did not find a quick method on how to do this, the screenshots you will see in this section come from this <a href="https://www.youtube.com/watch?v=gzqq2r6cZjc&amp;t=2779s">awesome guide</a>.</p>
+<h2 id="constrained-delegation-kerberos-only"><strong>Constrained Delegation (Kerberos only)</strong></h2>
+<p>The KDC, in order to use the &ldquo;Constrained Delegation (Kerberos only)&rdquo;, requires 2 prerequisites:</p>
+<p><strong>1. Configure the &ldquo;Constrained Delegation (Kerberos only)&rdquo; on the &ldquo;Front-End&rdquo; AP.</strong></p>
+<span id=15>
 
-        <img src="/demystify_kerberos_delegation_attacks/4.png"  class="center"  style="border-radius: 8px;"  />
-    
+    <img src="/demystify_kerberos_delegation/13.png"  class="center"  style="border-radius: 8px;"  />
 
-<p>Then execute the following Rubeus command within the Sacrificial Process.</p>
-<p>C:&gt; Rubeus.exe s4u /impersonateuser:&lt;User_To_Impersonate&gt; /msdsspn:&lt;SPN_content_in_msds-allowedtodelegateto&gt; /altservice:&lt;Desired_SPN&gt; /user:&lt;Service_Account&gt; /rc4:&lt;NTLM_Service_Account&gt; /nowrap /ptt</p>
-<p>Let&rsquo;s analyze ALL the operations performed by Rubeus.</p>
+
+<p>The &ldquo;Constrained Delegation (Kerberos only)&rdquo; is configured via <a href="https://serveracademy.com/blog/active-directory-users-and-computers-aduc-installation-and-tutorial/">ADUC</a> by enabling the property &ldquo;Trust this computer for delegation to specified service only (Kerberos only)&rdquo; on the &ldquo;Computer&rdquo; object that acts as the &ldquo;Front-End&rdquo; AP; since this configuration is potentially dangerous, such action can only be performed by a Domain Admin account or an account with the &ldquo;<a href="https://harmj4.rssing.com/chan-30881824/article60.html">SeEnableDelegationPrivilege</a>&rdquo; permission.</p>
+<blockquote>
+<p>In reality, even an object of type &ldquo;user&rdquo; (domain account) can be configured with the Kerberos Constrained Delegation (Kerberos only), in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the &ldquo;Delegation&rdquo; tab will appear inside the property of the user object; specifically, the &ldquo;Kerberos Only&rdquo; flow described later will remain unchanged with the only difference that when referring to the Service Account &ldquo;Computer Account,&rdquo; the Service Account &ldquo;User&rdquo; will be used instead.</p></blockquote>
+<p>Furthermore, it is mandatory to fill the section indicated just below; with it, the domain administrator is able to restrict (a.k.a constrain) which Back-End APs the Front-End AP can authenticate on behalf of the Client.</p>
+<p>This configuration sets in the <a href="/posts/demystify_kerberos_delegation/#11">UserAccountControl</a> property of the AP &ldquo;Front End&rdquo; object the flag &ldquo;msds-allowedtodelegateto&rdquo;, which contains in the form of SPNs all the &ldquo;Back End&rdquo; APs for which the &ldquo;Front End&rdquo; AP has permission to authenticate on behalf of the Client.</p>
+<p>In our <a href="/posts/demystify_kerberos_delegation/#15">example</a>, the Kerberos Delegation is configured on the Computer &ldquo;WEB01&rdquo; which will act as the Front-End AP, this modification is actually reflected on the related Computer Account since it is contained in the &ldquo;Computer&rdquo; object, so the Computer Account &ldquo;WEB01$&rdquo; will have the &ldquo;msds-allowedtodelegateto&rdquo; property filled, this means that any service started by this computer with the Service Account WEB01$ (Computer Account) will have &ldquo;Kerberos Constrained Delegation (Kerberos Only)&rdquo; enabled (<a href="/posts/not_so_brief_overview_about_kerberos/#17">so, all services started with the Local Service account such as by default the CIFS service or HTTP like in this example</a>).</p>
+<span id=25>
+
+    <img src="/demystify_kerberos_delegation/14.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>In conclusion, all services started with the WEB01$ user, such as in this case the HTTP service (AP Front End), will have &ldquo;Constrained Delegation (Kerberos only)&rdquo; enabled; so, in this scenario, they will be able to authenticate on behalf of the Client exclusively on the CIFS service of the SQL01 computer (AP Back-End).</p>
+<p><strong>2. Configure the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP as &ldquo;relayable&rdquo;.</strong></p>
+<p>It is necessary that the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP does NOT have the &ldquo;NOT_DELEGATED&rdquo; flag set to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo; in the &ldquo;UserAccountControl&rdquo; property; if it is, then that user is NOT delegable, by default ALL domain users do NOT have this flag enabled and are therefore relayable.</p>
+
+      <img src="/demystify_kerberos_delegation/5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+<hr>
+<br>
+<p><strong>Below we see the flow of a Kerberos authentication with &ldquo;Constrained Delegation (Kerberos only)&rdquo; enabled:</strong></p>
+
+    <img src="/demystify_kerberos_delegation/15.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>The &ldquo;KRB_AP_REP&rdquo; packet (&quot;<a href="/posts/demystify_kerberos_delegation/#12">AP Front-End&quot; -&gt; &ldquo;Client&rdquo;</a>) &amp; &ldquo;AP Back-End&rdquo; -&gt; &ldquo;AP Front End&rdquo;) required by the Mutual Authentication could be sent in different times based on the Windows computer version used inside the infrastructure, with this flow i choose to put down the most common scenario.</p></blockquote>
+<blockquote>
+<p><span id=2> Integrity and authenticity verification operations that occur within traditional Kerberos authentication (sending &amp; analyzing the &ldquo;Authenticator&rdquo; along with the related &ldquo;Session Key&rdquo; used to encrypt &amp; decrypt parts of the packet) are also present with Unconstrained Delegation enabled, but in this case they will NOT be mentioned, because they have already been generally described <a href="/posts/not_so_brief_overview_about_kerberos/">previously</a> (for a complete analysis in the context of Unconstrained Delegation see <a href="https://www.youtube.com/watch?v=xDFRUYv1-eU&amp;t=326s">this guide</a>) and because it was preferred to instead emphasize the unique characteristics of Kerberos Unconstrained Delegation.</p></blockquote>
+<blockquote>
+<p><a href="/posts/not_so_brief_overview_about_kerberos/#40">As already mentioned previously</a>, below we will describe the traditional process where Kerberos with Unconstrained Delegation enabled is used, that is, from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, and then subsequently uses Kerberos again in a Network Logon (roughly using cached credentials) to authenticate to a target service with Kerberos Unconstrained Delegation enabled; that said, in reality, the authentication process can also start in other types of authentications besides the traditional WinLOGON GUI (Interactive Logon).</p></blockquote>
+<hr>
+<br>
+<p><strong>Introduction: Initially, the Client (after the domain user has entered their credentials for an Interactive Logon) makes a request for a TGT Ticket &amp; TGS Session Key (KRB_AS_REQ) to the KDC and it responds (KRB_AS_REP) providing the requested data (if positive, in summary, the Client grants access to the domain user).</strong></p>
+<h3 id="1-krb_tgs_req-the-client-provides-its-tgt-ticket-to-the-kdc-to-request-the-tgs-ticket"><strong>1. KRB_TGS_REQ: The Client provides its TGT Ticket to the KDC to request the TGS Ticket.</strong></h3>
+<p>Now that a domain user has already authenticated to a Client (using Kerberos) and already holds the TGT Ticket with a TGS Session Key, if there is a need to perform a &ldquo;Network Logon&rdquo; login, the Kerberos protocol comes into play again, specifically the Client will use the TGT Ticket and the TGS Session Key to request another type of ticket called the TGS Ticket.</p>
+<p>The Client presents to the KDC (no longer to the AS functionality) a KRB_TGS_REQ which in summary contains:</p>
+<ul>
+<li>
+<p><strong>The Client shares its previously received TGT Ticket</strong> (to exchange it for a TGS Ticket)</p>
+</li>
+<li>
+<p><strong>SPN</strong>: The SPN related to / pointing to the service that the Client needs to connect to via SSO is sent in plain text, in this case it refers to the AP Front-End, such as the SPN &ldquo;HTTP/WEB01&rdquo;, that is, a request for authentication to the HTTP service present on the hostname &ldquo;WEB01&rdquo; is made.
+<span id=23></p>
+</li>
+</ul>
+<h3 id="2-krb_tgs_rep-the-kdc-sends-the-tgs-ticket-to-the-client"><strong>2. KRB_TGS_REP: The KDC sends the TGS Ticket to the Client.</strong></h3>
+<p>The KDC receives the KRB_TGS_REQ packet and, after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, sends a &ldquo;KRB_TGS_REP&rdquo; packet containing in summary:</p>
+<ul>
+<li><strong>The TGS Ticket for the &ldquo;Front End&rdquo; AP (HTTP Service hosted on &ldquo;WEB01&rdquo;)</strong></li>
+</ul>
+<h3 id="3-krb_ap_req-the-client-attempts-to-access-the-front-end-ap-by-providing-its-tgs-ticket"><strong>3. KRB_AP_REQ: The Client attempts to access the Front-End AP by providing its TGS Ticket</strong></h3>
+<p>After the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, the Client, in summary, sends a &ldquo;KRB_AP_REQ&rdquo; packet to the Front-End AP (HTTP service) containing in summary:</p>
+<ul>
+<li><strong>Ticket TGS: Its own TGS Ticket (<a href="/posts/demystify_kerberos_delegation/#2-krb_tgs_rep-the-kdc-sends-the-tgs-ticket-to-the-client">previously received</a>)</strong></li>
+</ul>
+<h3 id="4-krb_ap_rep-optional-the-ap-front-end-http-will-allow-the-client-access-to-the-requested-service"><strong>4. KRB_AP_REP (Optional): The AP Front End (HTTP) will allow the Client access to the requested service:</strong></h3>
+<p>The AP Front End, now that it has received the KRB_AP_REQ packet, in summary, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, will allow (<a href="/posts/not_so_brief_overview_about_kerberos/#3">if the AUTHORIZATION phase goes correctly</a>) the Client access to the requested service (in this case the HTTP service hosted on the WEB01 computer), subsequently, depending on the requested service and if mutual authentication is required by the Client, the AP Front End will send a &ldquo;KRB_AP_REP&rdquo; to the Client.</p>
+<blockquote>
+<p><span id=12> In my home lab the KRB_AP_REP packet was sent in this way, <a href="https://youtu.be/gzqq2r6cZjc?t=1309">in this other case</a>, however, the KRB_AP_REP packet was delivered to the Client only at the end of the entire process.</p></blockquote>
+<hr>
+<p><strong>If the AP Front End needs to authenticate to a Back End AP on behalf of the Client, the following actions will take place:</strong></p>
+<hr>
+<h3 id="5-krb_tgs_req-s4u2proxy--s4uself-request"><strong>5. KRB_TGS_REQ (S4U2Proxy) / S4USelf Request</strong></h3>
+<p>Occasionally, when the AP Front End (so the HTTP service) needs to authenticate to the Back End AP (so the CIFS service) on behalf of the Client, the AP Front End will send to the KDC a &ldquo;KRB_TGS_REQ (S4U2Proxy)&rdquo; packet containing, in summary:</p>
+<ul>
+<li>
+<p><strong>The AP Front End shares its own TGT Ticket</strong>:</p>
+<p>Every computer joined in a domain, during its startup, will perform a Kerberos authentication using its corresponding Computer Account; consequently the WEB01 computer will also have stored in memory the TGT Ticket of the WEB01$ account.</p>
+<p>In this scenario, the AP Front End will send the TGT Ticket of its Computer Account.</p>
+
+      <img src="/demystify_kerberos_delegation/16.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<span id=24>
+<ul>
+<li>
+<p><strong>SPN of the Back-End service:</strong></p>
+<p>The SPN related to / pointing to the Back-End service that the Front-End service needs to connect to on behalf of the Client is sent, in this case, it refers to the Back-End AP identified by the SPN &ldquo;CIFS/SQL01&rdquo;, so the CIFS service hosted on the &ldquo;SQL01&rdquo; computer.</p>
+
+      <img src="/demystify_kerberos_delegation/17.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<span id=20>
+<ul>
+<li>
+<p><strong>Client&rsquo;s TGS Ticket:</strong></p>
+<p>The TGS Ticket that the Client used to access the AP Front End (HTTP service on the WEB01 computer) will be sent.</p>
+<p>This TGS Ticket is contained within the &ldquo;Additional Ticket&rdquo; field:</p>
+
+      <img src="/demystify_kerberos_delegation/18.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p><span id=21> Additionally, it should be noted that the sent TGS Ticket will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;; by default, all TGS Tickets have this characteristic, that said, in this scenario this flag will be interpreted and therefore it is important to specify it.</p>
+
+      <img src="/demystify_kerberos_delegation/19.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<span id=22>
+<ul>
+<li>
+<p><strong>The flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both set to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;:</strong></p>
+<p>The AP Front End, within the KRB_TGS_REQ packet, will set the flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;; this is done because in case of a FallBack, so if the &ldquo;Constrained Delegation (Kerberos only)&rdquo; fails, the Delegation can proceed with &ldquo;Resource-Based Constrained Delegation (RBCD) flow&rdquo;.</p>
+<p>
+      <img src="/demystify_kerberos_delegation/20.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+
+      <img src="/demystify_kerberos_delegation/21.png"  class="center"  style="border-radius: 8px;"  />
+  
+</p>
+</li>
+</ul>
+<h3 id="6-krb_"><strong>6. KRB_TGS_REP (S4U2Proxy) / S4USelf Response</strong></h3>
+<p>The KDC, after performing authenticity checks and analyzing the KRB_TGS_REQ (S4U2Proxy) packet received from the AP Front, will perform further verifications <strong>sequentially</strong>:</p>
 <ol>
-<li>Rubeus sent a &ldquo;<a href="/posts/not_so_brief_overview_about_kerberos/#39">KRB_AS_REQ</a>&rdquo; to obtain the TGT Ticket of the Computer Account THEPUNISHER$, information necessary to invoke the &ldquo;KRB_TGS_REQ (S4USelf)&rdquo;</li>
+<li>The KDC verifies if the <a href="/posts/demystify_kerberos_delegation/#20">&ldquo;TGS Ticket&rdquo; used by the Client to access the AP Front End (HTTP/WEB01)</a> is inside in the received <a href="/posts/demystify_kerberos_delegation/#5-krb_tgs_req-s4u2proxy--s4uself-request">KRB_TGS_REQ (S4U2Proxy)</a> packet, which would provide to the KDC the evidence that the Client has indeed authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and therefore that the AP Front End can potentially impersonate the Client); it also checks that this TGS Ticket has the &ldquo;FORWARDABLE&rdquo; flag set to &ldquo;1&rdquo;) (<a href="/posts/demystify_kerberos_delegation/#21">positive result in this case</a>)</li>
 </ol>
+<blockquote>
+<p>As detailed by <a href="https://www.youtube.com/watch?t=2487&amp;v=gzqq2r6cZjc&amp;feature=youtu.be">Microsoft&rsquo;s wiki</a>, if the TGS Ticket does NOT have the <a href="/posts/demystify_kerberos_delegation/#21">&ldquo;FORWARDABLE&rdquo; flag</a> set &amp; <a href="/posts/demystify_kerberos_delegation/#22">if the RBDC flag was NOT configured in the KRB_TGS_REQ (S4U2Proxy)</a>, then the KDC would respond with an error (KRB_ERRBADOPTION); instead, if the RBDC flag is set (by default it is), the KDC will attempt to use RBCD Delegation.</p>
+<p>In the typical scenario, like the used in our example, the TGS Ticket sent in the KRB_TGS_REQ (S4U2Proxy) will always have the FORWARDABLE flag TRUE, because it was received by a traditionally <a href="/posts/demystify_kerberos_delegation/#23">&ldquo;KRB_TGS_REP&rdquo;</a>, consequently Kerberos Constrained Delegation (Kerberos Only) practically NEVER  fails and so the fallback case where &ldquo;Resource Based Constrained Delegation (RBCD&rdquo;) would be used is extremely rare.</p></blockquote>
+<ol start="2">
+<li>The KDC, inspecting the <a href="/posts/demystify_kerberos_delegation/#24">SPN contained in the KRB_TGS_REQ (S4U2Proxy) packet</a>, will understand that the AP Front End (ex HTTP/WEB01) intends to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client; consequently, the KDC retrieves the Service Account of the AP Front End (WEB01$) and checks if the SPN of the requested AP Back End (in this case CIFS/SQL01) is present in its &ldquo;msds-allowedtodelegateto&rdquo; property (<a href="/posts/demystify_kerberos_delegation/#25">positive result in this case</a>)</li>
+</ol>
+<p>If both verifications are positive, as in our case, then the KDC sends a KRB_TGS_REP (S4U2Proxy) packet to the AP Front End containing, in summary:</p>
+<ul>
+<li>
+<p><strong>A TGS Ticket of the Client to access the AP Back-End</strong>:</p>
+<p>The KDC then sends within a &ldquo;KRB_TGS_REP (S4U2Proxy)&rdquo; a TGS Ticket belonging to the Client (containing the PAC of the domain user who authenticated to the AP Front End - inside the image, in the field dedicated to the user name i just wrote a placeholder to avoid a screenshot madness) valid for the AP Back-End (CIFS/SQL01)</p>
+
+      <img src="/demystify_kerberos_delegation/22.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, i want to highlight that the TGS Ticket sent will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;, by default this characteristic is present in ALL TGS Tickets; that said, in this scenario the flag will be interpreted and therefore it is important to clarify.</p>
+
+      <img src="/demystify_kerberos_delegation/23.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<h3 id="7-krb_ap_req"><strong>7. KRB_AP_REQ:</strong></h3>
+<p>The AP Front End (HTTP service), after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, in summary, sends a &ldquo;KRB_AP_REQ&rdquo; packet to the AP Back-End (CIFS service) containing, in summary:</p>
+<ul>
+<li><strong>The previously received TGS Ticket</strong>: The previously received TGS Ticket, that is, the one belonging to the Client (containing the PAC of the domain user who authenticated to the AP Front End) and valid for the AP Back-End (CIFS/SQL01).</li>
+</ul>
+<h3 id="8-krb_ap_rep-optional"><strong>8. KRB_AP_REP (Optional)</strong></h3>
+<p>The AP Back-End, now having received the KRB_AP_REQ packet from the AP Front-End, in summary, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a> (<a href="/posts/not_so_brief_overview_about_kerberos/#3">if the AUTHORIZATION phase goes correctly</a>, will allow access by the AP Front End to the requested service (in this case the CIFS service hosted on the SQL01 machine); subsequently, depending on the requested service and if mutual authentication is required by the AP Front End (ex HTTP service), the AP Back-End (ex CIFS service) will send a KRB_AP_REP to the AP Front End (ex HTTP service).</p>
+<blockquote>
+<p>This is what happens in my home lab; <a href="https://www.youtube.com/watch?t=1309&amp;v=gzqq2r6cZjc&amp;feature=youtu.be">in this case</a>, however, the &ldquo;KRB_AP_REP&rdquo; packet is sent first by the AP Back-End to the AP Front-End and then  (<a href="/posts/demystify_kerberos_delegation/#12">as already told</a>) another &ldquo;KRB_AP_REP&rdquo; is sent from the AP Front End to the Client.</p></blockquote>
+<p><strong>Finaly</strong> the AP Front-End has successfully authenticated to the AP Back-End on behalf of the Client.</p>
+<h2 id="constrained-delegation-use-any-authentication-protocol--protocol-transition"><strong>Constrained Delegation (Use any authentication Protocol) / Protocol Transition</strong></h2>
+<p>In a &ldquo;<a href="/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only">Constrained Delegation (Kerberos Only)</a>&rdquo; the AP Front End (ex HTTP) can use the S4U2Proxy extension to obtain from the KDC the Client’s TGS Ticket (ex MARVEL\pparker) to access the AP Back End (ex CIFS); to do this, the AP Front End (ex HTTP) must share the TGS Ticket that the Client (ex MARVEL\pparker) used to authenticate to it, that said, if the AP Front End (ex HTTP) does NOT have such TGS Ticket because the Client authenticated using, for example, NTLM or Basic authentication, this method cannot be used, and for this reason the &ldquo;S4USelf&rdquo; extension was created.</p>
+<p>In this scenario the AP Front End (ex HTTP) can invoke the S4U2Self extension, in other words, it requests from the KDC a TGS Ticket of a specific Client (ex MARVEL\pparker) valid exclusively for itself (ex HTTP), this can then be used by the AP Front End as &ldquo;evidence&rdquo; to subsequently invoke the S4U2Proxy extension; this scenario is called &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo;.</p>
+<p>The KDC, in order to use the &ldquo;Constrained Delegation (Kerberos only)&rdquo;, requires 2 prerequisites:</p>
+<p><strong>1. Configure the &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo; on the &ldquo;Front-End&rdquo; AP.</strong></p>
+<span id=25>
+
+    <img src="/demystify_kerberos_delegation/24.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>The &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo; is configured via <a href="https://serveracademy.com/blog/active-directory-users-and-computers-aduc-installation-and-tutorial/">ADUC</a> by enabling the property &ldquo;Trust this computer for delegation to specified service only (Use any authentication protocol)&rdquo; on the &ldquo;Computer&rdquo; object that acts as the &ldquo;Front-End&rdquo; AP; since this configuration is potentially dangerous, such action can only be performed by a Domain Admin account or an account with the &ldquo;<a href="https://harmj4.rssing.com/chan-30881824/article60.html">SeEnableDelegationPrivilege</a>&rdquo; permission.</p>
+<blockquote>
+<p>In reality, even an object of type &ldquo;user&rdquo; (domain account) can be configured with the &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo;, in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the &ldquo;Delegation&rdquo; tab will appear inside the property of the user object; specifically, the &ldquo;Kerberos Only&rdquo; flow described later will remain unchanged with the only difference that when referring to the Service Account &ldquo;Computer Account,&rdquo; the Service Account &ldquo;User&rdquo; will be used instead.</p></blockquote>
+<p>Furthermore, it is mandatory to fill the section indicated just below; with it, the domain administrator is able to restrict (a.k.a constrain) which Back-End APs the Front-End AP can authenticate on behalf of the Client.</p>
+<p>This configuration sets in the <a href="/posts/demystify_kerberos_delegation/#11">UserAccountControl</a> property of the AP &ldquo;Front End&rdquo; object:
+<span id=102></p>
+<ul>
+<li>
+<p>The &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; flag (it is different from <a href="/posts/demystify_kerberos_delegation/#25">TRUSTED_FOR_DELEGATION of Unconstrained Delegation</a>)
+<span id=101></p>
+</li>
+<li>
+<p>The &ldquo;msds-allowedtodelegateto&rdquo; flag, which contains in the form of SPNs all the AP &ldquo;Back End&rdquo; services to which the AP &ldquo;Front End&rdquo; is allowed to authenticate on behalf of the Client;</p>
+</li>
+</ul>
+<p>In our <a href="/posts/demystify_kerberos_delegation/#25">example</a>, the Kerberos Delegation is configured on the Computer &ldquo;WEB01&rdquo; which will act as the Front-End AP, this modification is actually reflected on the related Computer Account since it is contained in the &ldquo;Computer&rdquo; object, so the Computer Account &ldquo;WEB01$&rdquo; will have the &ldquo;msds-allowedtodelegateto&rdquo; &amp; &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; property filled, this means that any service started by this computer with the Service Account WEB01$ (Computer Account) will have &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo; enabled (<a href="/posts/not_so_brief_overview_about_kerberos/#17">so, all services started with the Local Service account such as by default the CIFS service or HTTP like in this example</a>).</p>
+<span id=30>
+
+      <img src="/demystify_kerberos_delegation/25.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>In conclusion, all services started with the WEB01$ user, such as in this case the HTTP service (AP Front End), will have &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo; enabled; so, in this scenario, they will be able to authenticate on behalf of the Client exclusively on the CIFS service of the SQL01 computer (AP Back-End).</p>
+<p><strong>2. Configure the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP as &ldquo;relayable&rdquo;.</strong></p>
+<p>It is necessary that the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP does NOT have the &ldquo;NOT_DELEGATED&rdquo; flag set to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo; in the &ldquo;UserAccountControl&rdquo; property; if it is, then that user is NOT delegable, by default ALL domain users do NOT have this flag enabled and are therefore relayable.</p>
+
+      <img src="/demystify_kerberos_delegation/5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+<hr>
+<br>
+<p><strong>Below we see the flow of a Kerberos authentication with Constrained Delegation (Use any authentication protocol) enabled:</strong></p>
+
+    <img src="/demystify_kerberos_delegation/26.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>The &ldquo;KRB_AP_REP&rdquo; packet (<a href="/posts/demystify_kerberos_delegation/#9">&ldquo;AP Front-End&rdquo; -&gt; &ldquo;Client&rdquo;</a> &amp; &ldquo;<a href="/posts/demystify_kerberos_delegation/#10">AP Back-End&rdquo; -&gt; &ldquo;AP Front End</a>&rdquo;) required by the Mutual Authentication could be sent in different times based on the Windows machine version used inside the infrastructure, this is the reason why i have not putted them on the image.</p></blockquote>
+<blockquote>
+<p><span id=2> Integrity and authenticity verification operations that occur within traditional Kerberos authentication (sending &amp; analyzing the &ldquo;Authenticator&rdquo; along with the related &ldquo;Session Key&rdquo; used to encrypt &amp; decrypt parts of the packet) are also present with Unconstrained Delegation enabled, but in this case they will NOT be mentioned, because they have already been generally described <a href="/posts/not_so_brief_overview_about_kerberos/">previously</a> (for a complete analysis in the context of Unconstrained Delegation see <a href="https://www.youtube.com/watch?v=xDFRUYv1-eU&amp;t=326s">this guide</a>) and because it was preferred to instead emphasize the unique characteristics of Kerberos Unconstrained Delegation.</p></blockquote>
+<blockquote>
+<p><a href="/posts/not_so_brief_overview_about_kerberos/#40">As already mentioned previously</a>, below we will describe the traditional process where Kerberos with Unconstrained Delegation enabled is used, that is, from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, and then subsequently uses Kerberos again in a Network Logon (roughly using cached credentials) to authenticate to a target service with Kerberos Unconstrained Delegation enabled; that said, in reality, the authentication process can also start in other types of authentications besides the traditional WinLOGON GUI (Interactive Logon).</p></blockquote>
+<hr>
+<br>
+<h3 id="1-client-authenticates-to-an-ap-front-end-not-using-kerberos"><strong>1. Client authenticates to an AP Front End NOT using Kerberos.</strong></h3>
+<p>A domain user authenticates to an AP Front End NOT using the Kerberos protocol (NTLM, Basic, etc).</p>
+<p><strong>If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will take place:</strong></p>
+<h3 id="2-krb_tgs_req-s4u2self--s4uself-request"><strong>2. KRB_TGS_REQ (S4U2Self) / S4USelf Request.</strong></h3>
+<p>Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client’s TGS Ticket and therefore will NOT be able to invoke S4U2Proxy as in the <a href="/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only">Constrained Delegation (Kerberos Only)</a> scenario, consequently the AP Front End will use the &ldquo;S4U2Self&rdquo; extension, so it will send to the KDC a &ldquo;KRB_TGS_REQ&rdquo; packet containing, in summary:</p>
+<blockquote>
+<p>The S4U2Self extension, in summary, is used to obtain a TGS Ticket belonging to a specific Client (e.g., CAPSULE.corp\vegeta) valid only for the service itself, so for the AP Front End (e.g., HTTP).</p></blockquote>
+<span id=109>
+<ul>
+<li>
+<p><strong>The AP Front End shares its own TGT Ticket</strong></p>
+<p>Every computer joined in a domain, during its startup, will perform a Kerberos authentication using its corresponding Computer Account; consequently the WEB01 computer will also have stored in memory the TGT Ticket of the WEB01$ account.</p>
+<p>In this scenario the AP Front End will send the TGT Ticket of its Computer Account.</p>
+
+      <img src="/demystify_kerberos_delegation/27.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<span id=31>
+<ul>
+<li>
+<p><strong>SPN containing the Service Account of the AP Front End (WEB01$)</strong></p>
+<p>The SPN field can accept different valid types of data <a href="https://swarm.ptsecurity.com/kerberoasting-without-spns/">including also the insertion of the Service Account instead of an SPN</a>, in this case the Service Account of the AP Front End will be specified (for example HTTP), in this way the TGS Ticket issued will be valid for the AP Front End, so for itself; in this case it is the Computer Account WEB01$.</p>
+
+      <img src="/demystify_kerberos_delegation/28.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+<li>
+<p><strong>The name of the domain user that the AP Front End wants to impersonate (e.g., CAPSULE.corp\vegeta).</strong></p>
+<p>The AP Front End needs to have a TGS Ticket valid for itself that belongs to the Client (e.g., CAPSULE.corp\vegeta), consequently the AP Front End will specify the name of the domain user it wants to impersonate, so the user who has connected to the AP Front End (e.g., CAPSULE.corp\vegeta):</p>
+<blockquote>
+<p>This data is inserted in both the &ldquo;PA-S4U-X509-USER&rdquo; &amp; &ldquo;PA-FOR-USER&rdquo; structures (data structures added into Kerberos packet through the S4UProxy extension).</p></blockquote>
+<p>
+      <img src="/demystify_kerberos_delegation/29.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+
+      <img src="/demystify_kerberos_delegation/30.png"  class="center"  style="border-radius: 8px;"  />
+  
+</p>
+<p>In this way the TGS Ticket valid for the AP Front End will belong to the user specified here, so in this case to CAPSULE.corp\vegeta.</p>
+<blockquote>
+<p>By analyzing the packet on my home lab through S4U Request with Rubeus I do NOT find the &ldquo;PA-S4U-X509-USER&rdquo; data structure BUT I do find &ldquo;PA-FOR-USER&rdquo;.</p></blockquote>
+</li>
+</ul>
+<h3 id="3-krb_tgs_rep-s4u2self--s4uself-response"><strong>3. KRB_TGS_REP (S4U2Self) / S4USelf Response.</strong></h3>
+<p>After performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, the KDC retrieves from the <a href="/posts/demystify_kerberos_delegation/#2-krb_tgs_req-s4u2self--s4uself-request">KRB_TGS_REQ (S4U2Self)</a> packet the <a href="/posts/demystify_kerberos_delegation/#31">Service Account contained in the SPN field (e.g., WEB01$)</a>, then it will verify if this Service Account has the &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; property enabled, <a href="/posts/demystify_kerberos_delegation/#30">if as in this case the result is positive</a> it will mean that the related service (e.g., HTTP) has the &ldquo;Constrained Delegation (Use any authentication protocol)&rdquo; enabled, consequently the KDC sends a KRB_TGS_REP (S4U2Self) packet to the AP Front End containing in summary:</p>
+<ul>
+<li>
+<p><strong>A TGS Ticket of the Client (e.g., CAPSULE.corp\vegeta) to access the AP Front End (HTTP)</strong></p>
+<p>The KDC therefore sends within a &ldquo;KRB_TGS_REP (S4U2Self)&rdquo; a TGS Ticket belonging to the Client (it contains the PAC of the domain user who authenticated via NTLM or Basic to the Front End service, in this case CAPSULE.corp\vegeta) valid specifically for the AP Front End (<a href="/posts/demystify_kerberos_delegation/#31">HTTP</a>).</p>
+<blockquote>
+<p>In this specific case, since the requested service was identified through the SPN field with the Service Account, the corresponding TGS ticket generated will contain the Service Account within the SPN field.</p></blockquote>
+
+      <img src="/demystify_kerberos_delegation/31.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p><span id=40> Furthermore, i want to highlight that the TGS Ticket sent will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;, by default all TGS Tickets have this characteristic, that said in this scenario such flag will be interpreted and therefore it is important to highlight it.</p>
+<span id=77>
+
+      <img src="/demystify_kerberos_delegation/32.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>This TGS Ticket belonging to the Client (e.g., CAPSULE.corp\vegeta) valid for the AP Front End (e.g., HTTP) will be used exclusively by the AP Front End as &ldquo;evidence&rdquo; to subsequently invoke the S4U2Proxy extension.</p>
+<spain id=76>
+<p><strong>A note related to <a href="/posts/demystify_kerberos_delegation/#resource-based-constrained-delegation-rbcd">RBCD that we&rsquo;ll analyze later</a></strong>: I want to highlight that <a href="https://www.youtube.com/watch?t=2326&amp;v=gzqq2r6cZjc&amp;feature=youtu.be">if</a> the Service Account specified in the SPN (WEB01$) does NOT have the &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; flag enabled, then the KDC would still respond by sending a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it would NOT have the &ldquo;forwardable&rdquo; flag set to &ldquo;1&rdquo;.</p>
+</li>
+</ul>
+<span id=40>
+<span id=50>
+<blockquote>
+<p><strong>POST 2021:</strong></p>
+<p><strong>A note related to <a href="/posts/demystify_kerberos_delegation/#resource-based-constrained-delegation-rbcd">RBCD that we&rsquo;ll analyze later</a></strong>: <a href="/posts/demystify_kerberos_delegation/#75">As previusly said</a>, in POST 2021 scenario if the Service Account specified in the SPN (WEB01$) does NOT have the &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; flag enabled the KDC will still issue a TGS Ticket with the FORWARDABLE flag set to 1.</p></blockquote>
+<h3 id="4-krb_tgs_req-s4u2proxy--s4uproxy-request"><strong>4. KRB_TGS_REQ (S4U2Proxy) / S4UProxy Request</strong></h3>
+<p>Now that the AP Front End has a TGS Ticket to use as &ldquo;evidence&rdquo; to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional &ldquo;S4UProxy&rdquo;, so, <a href="/posts/demystify_kerberos_delegation/#5-krb_tgs_req-s4u2proxy--s4uself-request">as previously seen</a>, the AP Front End will send to the KDC a &ldquo;KRB_TGS_REQ (S4U2Proxy)&rdquo; packet containing, in summary:</p>
+<ul>
+<li>
+<p><strong>The AP Front End shares its own TGT Ticket</strong></p>
+<p>Every computer joined in a domain, during its startup, will perform a Kerberos authentication using its corresponding Computer Account; consequently the WEB01 computer will also have stored in memory the TGT Ticket of the WEB01$ account.</p>
+<p>In this scenario the AP Front End will send the TGT Ticket of its Computer Account.</p>
+
+      <img src="/demystify_kerberos_delegation/33.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+<li>
+<p><strong>SPN of the Back-End service</strong></p>
+<p><span id=42> The SPN related to / pointing to the Back-End service that the Front-End service needs to connect to on behalf of the Client is sent in plain-text, in this case it refers to the AP Back-End identified by the SPN &ldquo;CIFS/SQL01&rdquo;, that is, the CIFS service present on the &ldquo;SQL01&rdquo; machine.</p>
+
+      <img src="/demystify_kerberos_delegation/34.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<span id=37>
+<ul>
+<li>
+<p><strong>Client&rsquo;s TGS Ticket (obtained via S4USelf)</strong></p>
+<p>The TGS Ticket that the AP Front End previously received from the KDC using the &ldquo;S4USelf&rdquo; extension will be sent; it&rsquo;s the evidence that the Client (ex CAPSULE.corp\vegeta) has successfully accessed the AP Front End (HTTP service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client)</p>
+<p>This TGS Ticket is contained within the &ldquo;Additional Ticket&rdquo; field:</p>
+
+      <img src="/demystify_kerberos_delegation/35.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, since this Kerberos Ticket was obtained through the <a href="/posts/demystify_kerberos_delegation/#3-krb_tgs_rep-s4u2self--s4uself-response">S4USelf extension</a>, i want to highlight that in the SPN field, instead of actually pointing to the SPN of the AP Front End, so HTTP/WEB01, it points to the related Service Account, that is WEB01$.</p>
+
+      <img src="/demystify_kerberos_delegation/36.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+<li>
+<p><strong>The flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both set to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;:</strong></p>
+<p>The AP Front End within the KRB_TGS_REQ packet will set the flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;, this is done because in case of a FallBack, that is, if the &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; fails, the Delegation can proceed with Resource Based Constrained Delegation - RBCD.</p>
+
+      <img src="/demystify_kerberos_delegation/37.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, i want to highlight that the TGS Ticket sent will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;, by default this characteristic is present in ALL TGS Tickets; that said, in this scenario the flag will be interpreted and therefore it is important to clarify.</p>
+
+      <img src="/demystify_kerberos_delegation/38.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+</ul>
+<h3 id="5-krb_tgs_rep-s4u2proxy--s4uproxy-response"><strong>5. KRB_TGS_REP (S4U2Proxy) / S4UProxy Response</strong></h3>
+<p>The KDC, after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, analyzing the <a href="/posts/demystify_kerberos_delegation/#4-krb_tgs_req-s4u2proxy--s4uproxy-request">KRB_TGS_REQ (S4U2Proxy)</a> packet received from the AP Front End, will perform further verifications <strong>sequentially</strong>:
+<span id=51></p>
+<ol>
+<li>
+<p>The KDC checks whether the <a href="/posts/demystify_kerberos_delegation/#37">&ldquo;TGS Ticket&rdquo;</a> used by the Client to access the AP Front End (HTTP/WEB01) is present in the received <a href="/posts/demystify_kerberos_delegation/#4-krb_tgs_req-s4u2proxy--s4uproxy-request">KRB_TGS_REQ (S4U2Proxy)</a> packet (in this example it was obtained via the S4USelf extension); this would provide evidence to the KDC that the Client has indeed authenticated to the AP Front End (HTTP service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); additionally, <a href="/posts/demystify_kerberos_delegation/#40">it is necessary that this TGS Ticket has the &ldquo;FORWARDABLE&rdquo; flag set to &ldquo;1&rdquo;</a> (<a href="/posts/demystify_kerberos_delegation/#40">positive outcome in this case</a>).</p>
+</li>
+<li>
+<p>The KDC, <a href="/posts/demystify_kerberos_delegation/#42">inspecting the SPN contained in the KRB_TGS_REQ (S4U2Proxy) packet</a>, will understand that the AP Front End (ex HTTP/WEB01) wants to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client; consequently, the KDC retrieves the Service Account of the AP Front End (WEB01$) and will verify whether the &ldquo;msds-allowedtodelegateto&rdquo; property contains the SPN of the requested AP Back End (in this case CIFS/SQL01) (<a href="/posts/demystify_kerberos_delegation/#30">positive outcome in this case</a>).</p>
 </li>
 </ol>
+<p>Since the 1 verification and the 2 verification are positive (The KDC performs the verification sequentially, so, for example, if 1nd step fails the KDC makes the decision on how to proceed immediately) as in our case, then the KDC sends a KRB_TGS_REP (S4U2Proxy) packet to the AP Front End containing, in summary:</p>
+<span id=41>
+<ul>
+<li>
+<p><strong>A Client TGS Ticket to access the AP Back-End</strong>:</p>
+<p>The KDC then sends within a &ldquo;KRB_TGS_REP (S4U2Proxy)&rdquo; a TGS Ticket belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) valid for the AP Back-End (CIFS/SQL01)</p>
+
+      <img src="/demystify_kerberos_delegation/39.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, i want to highlight that the TGS Ticket sent will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;; by default, this feature is present in ALL TGS Tickets, that said in this scenario this flag will be interpreted and therefore it is important to specify it.</p>
+
+        <img src="/demystify_kerberos_delegation/40.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ul>
+<h3 id="6-krb_ap_req"><strong>6. KRB_AP_REQ:</strong></h3>
+<p>The AP Front End (HTTP service) after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, in summary, sends a &ldquo;KRB_AP_REQ&rdquo; packet to the AP Back-End (CIFS service) containing, in summary:</p>
+<ul>
+<li>The <a href="/posts/demystify_kerberos_delegation/#41">previously received TGS Ticket</a>, that is, the one belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) and is valid for the AP Back-End (CIFS/SQL01).</li>
+</ul>
+<h3 id="7-krb_ap_rep-optional"><strong>7. KRB_AP_REP (Optional)</strong></h3>
+<p>The AP Back-End, now that it has received the <a href="/posts/demystify_kerberos_delegation/#6-krb_ap_req">KRB_AP_REQ packet</a> from the AP Front-End, in summary, after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, will allow the AP Front End access to the requested service (in this case the CIFS service hosted on the SQL01 machine); subsequently, depending on the requested service and if mutual authentication is required by the AP Front End (ex HTTP service), the AP Back-End (ex CIFS service) will send a KRB_AP_REP to the AP Front End (ex HTTP service).</p>
+<blockquote>
+<p>I This is what happens in my home lab,; <a href="https://www.youtube.com/watch?t=2735&amp;v=gzqq2r6cZjc&amp;feature=youtu.be">in another case</a>, instead, the &ldquo;KRB_AP_REP&rdquo; packet is first sent from the AP Back End to the AP Front End and then another &ldquo;KRB_AP_REP&rdquo; from the AP Front End to the Client.</p></blockquote>
+<p><strong>Finaly</strong> the AP Front-End successfully authenticated to the AP Back-End on behalf of the Client.</p>
+<h2 id="resource-based-constrained-delegation-rbcd"><strong>Resource Based Constrained Delegation&quot; (RBCD)</strong></h2>
+<p>Resource Based Constrained Delegation&quot; (RBCD) operates in a similar way to the classic &ldquo;Constrained Delegation&rdquo; (&ldquo;Kerberos Only&rdquo; &amp; &ldquo;Use Any Authentication Protocol&rdquo;) with the difference that the configuration is done directly on the AP Back-End (ex CIFS) rather than on the AP Front End (ex HTTP); in this way the responsibility is shifted to the Back-End service.</p>
+<p>Below is a diagram that explains how &ldquo;Constrained Delegation&rdquo; can be defined as a so-called &ldquo;Outgoing&rdquo; Constrained Delegation, because the configuration is done on the AP Front End, while &ldquo;RBCD&rdquo; can instead be defined as a so-called &ldquo;Incoming&rdquo; Constrained Delegation, since the configuration is instead done on the AP Back-End.</p>
+
+    <img src="/demystify_kerberos_delegation/42.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p><strong>The KDC, in order to use RBCD, requires 2 prerequisites:</strong></p>
+<ol>
+<li><strong>Configure RBCD on the AP Back-End</strong>
+<span id=60></li>
+</ol>
+<p>Since RBCD is executed by the KDC exclusively in case of a FallBack from a Constrained Delegation (&quot;<a href="/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only">Kerberos Only</a>&quot; or &ldquo;<a href="/posts/demystify_kerberos_delegation/#constrained-delegation-use-any-authentication-protocol--protocol-transition">Use Any Authentication Protocol</a>&rdquo;), the configuration consists ALSO of NOT configuring &ldquo;Constrained Delegation&rdquo; on the &ldquo;Computer&rdquo; object acting as AP Front End:</p>
+<span id=49>
+
+    <img src="/demystify_kerberos_delegation/43.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>So, now configure the RBDC by setting the attribute &ldquo;<a href="https://learn.microsoft.com/en-us/windows/win32/adschema/a-msds-allowedtoactonbehalfofotheridentity?ref=labs.lares.com">ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity</a>&rdquo; on the &ldquo;Computer&rdquo; object that acts as the AP Back End and entering as value the AP Front End (or rather its respective &ldquo;Computer Account&rdquo;) which is authorized to authenticate on behalf of a Client; this configuration can be executed exclusively using <a href="https://www.microsoft.com/en-us/download/details.aspx?id=45520">RSAT</a>, specifically with the command &ldquo;Set-ADComputer&rdquo;:
+<span id=63></p>
+<p>PS C:&gt; Set-ADComputer -Identity &lt;ComputerAccount_APBackEnd&gt; -PrincipalsAllowedToDelegateToAccount &lt;ComputerAccount_APFrontEnd&gt;</p>
+<span id=45>
+
+    <img src="/demystify_kerberos_delegation/44.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>To set the attribute &ldquo;ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity&rdquo; it is NOT necessary to have Domain Admin privileges as is required for the other Kerberos Delegations, instead, it is sufficient to have write rights (for ex GenericalAll, GenericWrite and so on) on that property.</p>
+<blockquote>
+<p>In reality, also an object of type &ldquo;User&rdquo; (domain account) can be configured with the Kerberos Resource Based Constrained Delegation (RBCD), however, to do so it is necessary that such account has at least 1 SPN configured.</p></blockquote>
+<p>In our <a href="/posts/demystify_kerberos_delegation/#45">example</a> the RBCD is configured on the Computer &ldquo;SQL01&rdquo; which will act as AP Back End, i want to highlight that this modification is actually reflected on the respective Computer Account since it is contained in the &ldquo;Computer&rdquo; object, so the Computer Account &ldquo;SQL01$&rdquo; will have the property &ldquo;<a href="https://learn.microsoft.com/en-us/windows/win32/adschema/a-msds-allowedtoactonbehalfofotheridentity?ref=labs.lares.com">ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity</a>&rdquo;, this means that any service started from that machine with the Service Account SQL01$ (Computer Account) will have the RBCD enabled (<a href="/posts/not_so_brief_overview_about_kerberos/#17">so, all services started with the Local Service account such as by default the CIFS service</a>); in this example, the AP Back End (SQL01$) will authorize exclusively the AP Front End (WEB01$) to authenticate on behalf of the Client.</p>
+<p>The value of the attribute ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity will be graphically represented via ADUC in numerical form:</p>
+
+    <img src="/demystify_kerberos_delegation/45.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Finally, it is possible to inspect this attribute also via CLI using the commands shown in the screenshot, it can therefore be observed that the attribute &ldquo;<a href="https://learn.microsoft.com/en-us/windows/win32/adschema/a-msds-allowedtoactonbehalfofotheridentity?ref=labs.lares.com">ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity</a>&rdquo; of the Computer object SQL01 (similarly also the respective Computer Account SQL01$) contains the Computer object WEB01 (or rather its respective computer account WEB01$)</p>
+
+    <img src="/demystify_kerberos_delegation/46.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p><strong>2. Configure the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP as &ldquo;relayable&rdquo;.</strong></p>
+<p>It is necessary that the domain user that performs Kerberos authentication to the &ldquo;Front-End&rdquo; AP does NOT have the &ldquo;NOT_DELEGATED&rdquo; flag set to &ldquo;TRUE&rdquo; / &ldquo;1&rdquo; in the &ldquo;UserAccountControl&rdquo; property; if it is, then that user is NOT delegable, by default ALL domain users do NOT have this flag enabled and are therefore relayable.</p>
+
+      <img src="/demystify_kerberos_delegation/5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p><strong>RBCD Flow</strong></p>
+<p>The RBCD works similar to the classic &ldquo;Constrained Delegation&rdquo; (&ldquo;Kerberos Only&rdquo; &amp; &ldquo;Use Any Authentication Protocol&rdquo;) and it should be highlighted that <strong>it intervenes exclusively in case of FallBack</strong>, so when the &ldquo;Constrained Delegation&rdquo; fails, since this scenario is more common when a &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; is initialized, we will analyze a Resource Based Constrained Delegation (RBCD) flow starting from a &ldquo;Constrained Delegation (Use any authentication Protocol)&rdquo; scenario.</p>
+<blockquote>
+<p>To analyze with Wireshark ALL the flows that occur during this RBCD, I would have had to create from scratch a laboratory composed of a Front End Service that accepts a Kerberos authentication and develop within it a logic that triggers a further Kerberos authentication towards the Back-End Server, since I did not find a quick method to do this, the screenshots you will see in this section come from this <a href="https://www.youtube.com/watch?v=vlKwCTvp5_w&amp;t=1246s">guide</a>.</p></blockquote>
+<blockquote>
+<p>Generally, all the integrity and authenticity verification operations that occur within traditional Kerberos authentication (sending &amp; analyzing the &ldquo;Authenticator&rdquo; along with the relevant &ldquo;Session Key&rdquo; used to encrypt &amp; decrypt parts of the packet) are also present with Kerberos Delegation enabled but in this case will NOT be mentioned, this is both because they have already been described  <a href="/posts/not_so_brief_overview_about_kerberos/">previously</a> and because it was preferred to instead emphasize the unique characteristics of RBCD.</p></blockquote>
+<blockquote>
+<p><a href="/posts/not_so_brief_overview_about_kerberos/#40">As already mentioned previously</a>, below we will describe the traditional process where Kerberos with RBCD is used, that is, from an Interactive Logon where a user enters their credentials within a WinLOGON GUI, and then subsequently uses Kerberos again in a Network Logon (roughly using cached credentials) to authenticate to a target service with Kerberos Unconstrained Delegation enabled; that said, in reality, the authentication process can also start in other types of authentications besides the traditional WinLOGON GUI (Interactive Logon).</p></blockquote>
+<h3 id="1-client-authenticates-to-an-ap-front-end-not-using-kerberos-1"><strong>1. Client authenticates to an AP Front End NOT using Kerberos.</strong></h3>
+<p>A domain account authenticates NOT using the Kerberos protocol (NTLM, Basic, etc.) to an AP Front End.</p>
+<p>If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will occur:
+<span id=47></p>
+<h3 id="2-krb_tgs_req-s4u2self--s4uself-request-1"><strong>2. KRB_TGS_REQ (S4U2Self) / S4USelf Request</strong></h3>
+<p>Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client&rsquo;s TGS Ticket and therefore CANNOT invoke S4U2Proxy as in the <a href="/posts/demystify_kerberos_delegation/#constrained-delegation-kerberos-only">Constrained Delegation (Kerberos Only) scenario</a>, consequently the AP Front End will resort to the &ldquo;S4U2Self&rdquo; extension, that is, it will send to the KDC a &ldquo;KRB_TGS_REQ&rdquo; packet containing, in summary,:</p>
+<blockquote>
+<p>The S4U2Self extension in summary serves to obtain a TGS Ticket belonging to a specific Client (ex CAPSULE.corp\vegeta) valid for the service itself, that is, to the AP Front End (ex HTTP)</p></blockquote>
+<ul>
+<li>
+<p><strong>The AP Front End shares its own TGT Ticket</strong></p>
+<p>Every domain machine during its startup will perform a Kerberos authentication using its respective Computer Account, consequently the WEB01 machine will also have stored in memory the TGT Ticket of the WEB01$ account.</p>
+<p>In this scenario the AP Front End will send the TGT Ticket of its Computer Account.</p>
+<p>
+      <img src="/demystify_kerberos_delegation/47.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=48></p>
+</li>
+<li>
+<p><strong>SPN containing the Service Account of the AP Front End (WEB01$)</strong></p>
+<p>As previously mentioned, the SPN field can validly accept different types of data, including the insertion of the Service Account instead of an SPN; in this case, the Service Account of the AP Front End (for ex HTTP) will be indicated, in this way the TGS Ticket issued will be valid for the AP Front End, that is, for itself; in this case it is the Computer Account WEB01$</p>
+
+      <img src="/demystify_kerberos_delegation/48.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+</li>
+<li>
+<p><strong>The name of the domain account that the AP Front End wants to impersonate (ex CAPSULE.corp\vegeta).</strong></p>
+<p>The AP Front End needs to have a TGS Ticket valid for itself that belongs to the Client (ex CAPSULE.corp\vegeta), consequently the AP Front End will specify the name of the domain account it wants to impersonate, that is, the account that connected to the AP Front End (ex CAPSULE.corp\vegeta):</p>
+<blockquote>
+<p>This data is inserted in both structures &ldquo;PA-S4U-X509-USER&rdquo; &amp; &ldquo;PA-FOR-USER&rdquo; (added through the S4UProxy extension)</p></blockquote>
+
+      <img src="/demystify_kerberos_delegation/49.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+
+      <img src="/demystify_kerberos_delegation/50.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>In this way, the TGS Ticket valid for the AP Front End will belong to the account specified here, that is, CAPSULE.corp\vegeta.</p>
+</li>
+</ul>
+<blockquote>
+<p>By analyzing the packet on my home lab through S4U Request with Rubeus I do NOT find the &ldquo;PA-S4U-X509-USER&rdquo; data structure BUT I do find &ldquo;PA-FOR-USER&rdquo;.</p></blockquote>
+<h3 id="3-krb_tgs_rep-s4u2self--s4uself-response-1"><strong>3. KRB_TGS_REP (S4U2Self) / S4USelf Response</strong></h3>
+<span id=80>
+<p>The KDC, after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, retrieves within the <a href="/posts/demystify_kerberos_delegation/#47">KRB_TGS_REQ (S4U2Self)</a> packet the Service Account contained in the <a href="/posts/demystify_kerberos_delegation/#48">SPN field</a> (ex WEB01$), then it will verify if this Service Account has the property &ldquo;TRUSTED_TO_AUTH_FOR_DELEGATION&rdquo; enabled; since in this case the <a href="/posts/demystify_kerberos_delegation/#49">result will be negative</a> as only RBCD was configured, <a href="/posts/demystify_kerberos_delegation/#76">as previously mentioned</a>, the KDC will still issue a TGS Ticket belonging to the Client (vegeta) valid for the AP Front End (HTTP) BUT it will NOT have the &ldquo;forwardable&rdquo; flag set to 1.</p>
+<span id=70>
+<blockquote>
+<p><strong>POST 2021</strong></p>
+<p>As explained before (<a href="/posts/demystify_kerberos_delegation/#50">1</a> &amp; <a href="/posts/demystify_kerberos_delegation/#behaviour-change-about-kerberos-delegation-on-modern-windows-system">2</a>), in POST 2021 scenario, the KDC will still issue a TGS Ticket with the FORWARDABLE flag set to 1.</p></blockquote>
+<p>Knowing this, therefore, the KDC sends a KRB_TGS_REP (S4U2Self) packet to the AP Front End containing, in summary:</p>
+<ul>
+<li>
+<p><strong>A TGS Ticket of the Client (ex CAPSULE.corp\vegeta) to access the AP Front End (HTTP)</strong></p>
+<p>The KDC therefore sends within a &ldquo;KRB_TGS_REP (S4U2Self)&rdquo; a TGS Ticket belonging to the Client (contains the PAC of the domain account that authenticated via NTLM or Basic to the Front End service, in this case CAPSULE.corp\vegeta) valid specifically for the AP Front End (HTTP).</p>
+
+      <img src="/demystify_kerberos_delegation/49.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=53>
+<p><a href="/posts/demystify_kerberos_delegation/#80">As already said</a> the TGS Ticket issued will NOT have the &ldquo;forwardable&rdquo; flag set to 1.</p>
+
+      <img src="/demystify_kerberos_delegation/52.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>This TGS Ticket belonging to the Client (ex CAPSULE.corp\vegeta) valid for the AP Front End (ex HTTP) will be used exclusively by the AP Front End as &ldquo;evidence&rdquo; to subsequently invoke the S4U2Proxy extension.</p>
+</li>
+</ul>
+<spain id=56>
+<h3 id="4-krb_tgs_req-s4u2proxy--s4uproxy-request-1"><strong>4. KRB_TGS_REQ (S4U2Proxy) / S4UProxy Request</strong></h3>
+<p>Now that the AP Front End has a TGS Ticket to use as &ldquo;evidence&rdquo; to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional &ldquo;S4UProxy&rdquo;, so, as previously seen, the AP Front End will send to the KDC a &ldquo;KRB_TGS_REQ (S4U2Proxy)&rdquo; packet containing, in summary,:</p>
+<ul>
+<li>
+<p><strong>The AP Front End shares its own TGT Ticket</strong></p>
+<p>Every domain machine during its startup will perform a Kerberos authentication using its respective Computer Account, consequently the WEB01 machine will also have stored in memory the TGT Ticket of the WEB01$ account.</p>
+<p>In this scenario the AP Front End will send the TGT Ticket of its Computer Account.</p>
+<p>
+      <img src="/demystify_kerberos_delegation/53.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=59></p>
+</li>
+<li>
+<p><strong>SPN of the Back-End service</strong></p>
+<p>The SPN related to / pointing to the Back-End service that the Front-End service needs to connect to on behalf of the Client is sent in plain-text; in this case it refers to the AP Back-End identified by the SPN &ldquo;CIFS/SQL01&rdquo;, that is, the CIFS service present on the &ldquo;SQL01&rdquo; machine.</p>
+<p>
+        <img src="/demystify_kerberos_delegation/54.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<span id=57></p>
+</li>
+<li>
+<p><strong>Client TGS Ticket (obtained via S4USelf)</strong></p>
+<p>The TGS Ticket that the AP Front End previously received from the KDC using the &ldquo;S4USelf&rdquo; extension will be sent; it serves as evidence that the Client (ex CAPSULE.corp\vegeta) has successfully accessed the AP Front End (HTTP service on the WEB01 machine) (and therefore the AP Front End can potentially impersonate the Client).</p>
+<p>This TGS Ticket is contained within the &ldquo;Additional Ticket&rdquo; field:</p>
+
+      <img src="/demystify_kerberos_delegation/55.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, since this Kerberos Ticket was obtained via the S4USelf extension, it can be observed that in the SPN field, instead of actually pointing to the SPN of the AP Front End, that is HTTP/WEB01, it points to the respective Service Account, that is WEB01$.</p>
+<p>
+      <img src="/demystify_kerberos_delegation/56.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=58></p>
+<p>I want to highlight that <a href="/posts/demystify_kerberos_delegation/#53">this TGS Ticket does NOT have the &ldquo;FORWARDABLE&rdquo; flag set</a>.</p>
+</li>
+</ul>
+<span id=61>
+<ul>
+<li>
+<p><strong>The flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both set to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;:</strong></p>
+<p>The AP Front End within the KRB_TGS_REQ packet will set the flags &ldquo;Resource-Based Constrained-Delegation&rdquo; &amp; &ldquo;Constrained-Delegation&rdquo; both to &ldquo;1&rdquo; / &ldquo;TRUE&rdquo;; this is done so that in case of FallBack, that is, if the &ldquo;Constrained Delegation (Kerberos only)&rdquo; fails, the Delegation can proceed with Resource Based Constrained Delegation - RBCD.</p>
+<p>
+      <img src="/demystify_kerberos_delegation/57.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<br>
+
+      <img src="/demystify_kerberos_delegation/58.png"  class="center"  style="border-radius: 8px;"  />
+  
+</p>
+</li>
+</ul>
+<h3 id="5-krb_tgs_rep-s4u2proxy--s4uproxy-response-1"><strong>5. KRB_TGS_REP (S4U2Proxy) / S4UProxy Response</strong></h3>
+<span id=64>
+<p>The KDC, after performing the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, analyzing the <a href="/posts/demystify_kerberos_delegation/#56">KRB_TGS_REQ (S4U2Proxy)</a> packet received from the AP Front End, will carry out further verifications <strong>sequentially</strong>:</p>
+<span id=90>
+<ol>
+<li>
+<p>The KDC verifies if the <a href="/posts/demystify_kerberos_delegation/#57">&ldquo;TGS Ticket&rdquo;</a> that the Client used to access the AP Front End (HTTP/WEB01) is present in the received <a href="/posts/demystify_kerberos_delegation/#56">KRB_TGS_REQ (S4U2Proxy) packet</a> (in this example it was obtained via the S4USelf extension), this would provide evidence to the KDC that the Client has actually authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); furthermore, it is necessary that this TGS Ticket has the &ldquo;FORWARDABLE&rdquo; flag set to &ldquo;1&rdquo; (NEGATIVE outcome in this case - <a href="/posts/demystify_kerberos_delegation/#53">1</a>, <a href="/posts/demystify_kerberos_delegation/#58">2</a>).</p>
+</li>
+<li>
+<p>The KDC, inspecting the <a href="/posts/demystify_kerberos_delegation/#59">SPN contained in the KRB_TGS_REQ (S4U2Proxy) packet</a>, will understand that the AP Front End (ex HTTP/WEB01) wants to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client, consequently the KDC retrieves the Service Account of the AP Front End (WEB01$) and verifies if within its property &ldquo;msds-allowedtodelegateto&rdquo; the SPN of the requested AP Back End (in this case CIFS/SQL01) is present (<a href="/posts/demystify_kerberos_delegation/#60">NEGATIVE outcome in this case</a>).</p>
+</li>
+</ol>
+<p>Since in this scenario the <a href="/posts/demystify_kerberos_delegation/#90">1</a> verification FAILS (The KDC performs the verification sequentially, consequently, although the 2nd step also fails, the KDC makes the decision on how to proceed immediately because step 1 fails) and in the &ldquo;KRB_TGS_REQ (S4UProxy)&rdquo; <a href="/posts/demystify_kerberos_delegation/#61">the RBDC flag was configured to use this Kerberos Delegation in case of FallBack</a>, the KDC proceeds to use the &ldquo;Resource Based Constrained Delegation (RBCD)&rdquo;, consequently, the KDC retrieves the Service Account (SQL01$) of the requested Back-End Service (CIFS) and verifies if it has the flag &ldquo;ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity&rdquo; containing the Service Account (WEB01$) of the Front End Service (HTTP) that is attempting authentication on behalf of the Client (vegeta); if, as in this case, the outcome <a href="/posts/demystify_kerberos_delegation/#63">is positive</a>, then the KDC sends a &ldquo;KRB_TGS_REP (S4U2Proxy)&rdquo; packet to the AP Front End containing, in summary:</p>
+<span id=65>
+<blockquote>
+<p><strong>POST 2021</strong>:</p>
+<p><a href="/posts/demystify_kerberos_delegation/#behaviour-change-about-kerberos-delegation-on-modern-windows-system">As explained before</a>, in POST 2021 scenario, the KDC will receive a TGS Ticket issued by the S4USelf Response with the FORWARDABLE flag set to 1, so when the KDC start to do <a href="/posts/demystify_kerberos_delegation/#64">its check</a>, the first verification will succeed BUT the second verification will FAIL because the AP Front End does NOT have Kerberos Delegation enabled, for this reason although the internals has been changed the KDC will switch to RBCD anyway.</p></blockquote>
+<span id=91>
+<ul>
+<li><strong>A Client TGS Ticket to access the AP in Back-End</strong></li>
+</ul>
+<p>The KDC then sends within a &ldquo;KRB_TGS_REP (S4U2Proxy)&rdquo; a TGS Ticket belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) valid for the AP Back-End (CIFS/SQL01)</p>
+
+      <img src="/demystify_kerberos_delegation/58.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Furthermore, i want to highlight that this TGS Ticket issued through the RBCD will have the &ldquo;Forwardable&rdquo; flag set to &ldquo;1&rdquo;, meaning it will be valid and equivalent to any other TGS Ticket normally issued by the KDC.</p>
+
+      <img src="/demystify_kerberos_delegation/58.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<h3 id="6-krb_ap_req-1"><strong>6. KRB_AP_REQ</strong>:</h3>
+<p>The AP Front End (HTTP service), after the <a href="/posts/demystify_kerberos_delegation/#2">usual checks</a>, in summary, sends a &ldquo;KRB_AP_REQ&rdquo; packet to the AP Back-End (CIFS service) containing in summary:</p>
+<ul>
+<li>The <a href="/posts/demystify_kerberos_delegation/#91">previously received</a> TGS Ticket, namely the one belonging to the Client (it contains the PAC of the domain user who authenticated to the AP Front End) and valid for the AP Back-End (CIFS/SQL01).</li>
+</ul>
+<h3 id="7-krb_ap_rep-optional-1"><strong>7. KRB_AP_REP (Optional)</strong></h3>
+<p>The AP Back-End, now that it has received the KRB_AP_REQ packet from the AP Front End, in summary, after the necessary checks, will allow (<a href="/posts/not_so_brief_overview_about_kerberos/#3">if the AUTHORIZATION phase goes correctly</a>) the AP Front End to access the requested service (in this case the CIFS service hosted on the SQL01 machine), subsequently, depending on the requested service and if mutual authentication is required by the AP Front End (e.g. HTTP service), the AP Back-End (e.g. CIFS service) will send a KRB_AP_REP to the AP Front End (e.g. HTTP service).</p>
+<blockquote>
+<p>I This is what happens in my home lab; <a href="https://www.youtube.com/watch?t=2735&amp;v=gzqq2r6cZjc&amp;feature=youtu.be">in another case</a>, instead, the &ldquo;KRB_AP_REP&rdquo; packet is first sent from the AP Back End to the AP Front End and then another &ldquo;KRB_AP_REP&rdquo; from the AP Front End to the Client.</p></blockquote>
+<p><strong>Finaly</strong> the AP Front End has succeeded in authenticating itself to the AP Back-End on behalf of the Client.</p>
+<h2 id="outro"><strong>Outro</strong></h2>
+<p>Kerberos Delegation is a beast to understand, and for this reason, if it&rsquo;s the first time you are studying this topic, take your time and re-read the article several times.</p>
+<p>Furthermore, i hope Microsoft will NOT change the Kerberos Delegation Internals anymore, but who knows 🤞​</p>
+<p>This article was written in synergy with &ldquo;Demystify Kerberos Delegation Attacks&rdquo;, so if you have understood everything and you are interested about how to abuse it go and check it! If you have made it this far, congratulations!</p>
+<h2 id="references"><strong>References</strong></h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=p9QFdITuvgU">1 - [English] You Do (Not) Understand Kerberos Delegation - Introduction</a></li>
+<li><a href="https://www.youtube.com/watch?v=xDFRUYv1-eU">2 - [English] You Do (Not) Understand Kerberos Delegation - Unconstrained Delegation</a></li>
+<li><a href="https://www.youtube.com/watch?v=gzqq2r6cZjc">3 - [English] You Do (Not) Understand Kerberos Delegation </a></li>
+<li><a href="https://www.youtube.com/watch?v=vlKwCTvp5_w&amp;t=799s">4 - [English] You Do (Not) Understand Kerberos Delegation - RBCD</a></li>
+<li><a href="https://labs.lares.com/fear-kerberos-pt4/">https://labs.lares.com/fear-kerberos-pt4/</a></li>
+<li><a href="https://zer1t0.gitlab.io/posts/attacking_ad/#kerberos-delegation">https://zer1t0.gitlab.io/posts/attacking_ad/#kerberos-delegation</a></li>
+<li><a href="https://adsecurity.org/?p=1667">https://adsecurity.org/?p=1667</a></li>
+<li><a href="https://en.hackndo.com/constrained-unconstrained-delegation/">https://en.hackndo.com/constrained-unconstrained-delegation/</a></li>
+</ul>
 ]]></content></item><item><title>Not So Brief Overview about Kerberos</title><link>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</link><pubDate>Thu, 11 Sep 2025 17:20:24 +0200</pubDate><guid>https://marcozufferli.com/posts/not_so_brief_overview_about_kerberos/</guid><description>&lt;img src="https://marcozufferli.com/not_so_brief_overview_about_kerberos/immagine.jpg" class="center" style="border-radius: 8px;" /&gt;
 &lt;h1 id="kerberos-authentication-protocol"&gt;&lt;strong&gt;Kerberos Authentication Protocol&lt;/strong&gt;&lt;/h1&gt;
 &lt;p&gt;Kerberos is the Windows network authentication protocol present by default in versions after Windows 2000; it replaces the NTLM protocol (specifically, &lt;a href="https://it.wikipedia.org/wiki/NTLM#NTLMv2"&gt;NTLMv2&lt;/a&gt;) but it should be noted that it can only operate in Active Directory contexts and NOT in &lt;a href="https://en.wikipedia.org/wiki/Workgroup_%28computer_networking%29"&gt;Workgroup&lt;/a&gt;.&lt;/p&gt;
