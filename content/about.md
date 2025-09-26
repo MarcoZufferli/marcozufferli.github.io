@@ -4,4 +4,4 @@ draft = false
 title = 'About'
 +++
 
-Ciao! I started this blog to share my thoughts and with the hope of helping someone to understand this crazy world of offensive security, just a little bit better.
+Ciao! I started this blog to share my thoughts & with the hope of helping someone to understand this crazy world of offensive security just a little bit better.

@@ -241,6 +241,8 @@ A traditional account performing Kerberos authentication, NOT knowing the hash t
   
 In reality the TGT Ticket also has a field dedicated to the "Server Signature" but having no meaning, since it is the TGS Ticket that is used to authenticate to services and not the TGT Ticket, a "symbolic" value will be present there which will have no relevance.
 
+<span id=178>
+
 ## **Kerberos Keys**
 
 ### **What's a Kerberos Key?**

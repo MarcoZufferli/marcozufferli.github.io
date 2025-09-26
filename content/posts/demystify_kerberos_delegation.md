@@ -1,25 +1,73 @@
 ---
 title: "Demystify Kerberos Delegation"
 date: 2025-09-16T14:50:00+02:00
-draft: true
+draft: false
 toc: false
 ---
 ---
 #### Table of Contents:
-- **[What's Kerberos Delegation](#whats-kerberos-delegation)**
-- **[Unconstrained Delegation](#unconstrained-delegation)**
-- **[Behaviour Change about Kerberos Delegation on Modern Windows System](#behaviour-change-about-kerberos-delegation-on-modern-windows-system)**
-- **[Constrained Delegation](#constrained-delegation)**
-  - **[Constrained Delegation (Kerberos only)](#constrained-delegation-kerberos-only)**
-  - **[Constrained Delegation (Use any authentication Protocol) / Protocol Transition](#constrained-delegation-use-any-authentication-protocol--protocol-transition)**
-- **[Resource Based Constrained Delegation (RBCD)](#resource-based-constrained-delegation-rbcd)**
-- **[Outro](#outro)**
-- **[References](#references)**
+- [What's Kerberos Delegation](#whats-kerberos-delegation)
+- [Unconstrained Delegation](#unconstrained-delegation)
+- [Behaviour Change about Kerberos Delegation on Modern Windows System](#behaviour-change-about-kerberos-delegation-on-modern-windows-system)
+- [Constrained Delegation](#constrained-delegation)
+  - [Constrained Delegation (Kerberos only)](#constrained-delegation-kerberos-only)
+  - [Constrained Delegation (Use any authentication Protocol) / Protocol Transition](#constrained-delegation-use-any-authentication-protocol--protocol-transition)
+- [Resource Based Constrained Delegation (RBCD)](#resource-based-constrained-delegation-rbcd)
+- [Outro](#outro)
+- [References](#references)
 ---
 
 # **Kerberos Delegation**
 
 {{< image src="/demystify_kerberos_delegation/immagine.jpg" position="center" style="border-radius: 8px;">}}
+
+## **Reading Guide**
+
+This first article "Demystify Kerberos Delegation" was written in synergy with "[Demystify Kerberos Delegation Attacks](./demystify_kerberos_delegation_attacks.md)", the first details the theory of Kerberos Delegation while the second the most common attacks that can be carried out on it.
+
+Being both articles particularly long, you could either read them individually in their entirety or follow a legend that i will provide shortly to directly move from theory (**T**) to practice (**P**) in the fastest possible way, which is the way i personally suggest to you:
+
+**Introduction:**
+
+  1. [T] - [What's Kerberos Delegation](#1000)
+
+**Unconstrained Delegation & Abuse:**
+
+  2. [T] - [Unconstrained Delegation](#unconstrained-delegation)
+  3. [P] - [Abuse Unconstrained Delegation](./demystify_kerberos_delegation_attacks.md#abuse-unconstrained-delegation-computer)
+  4. [P] - [Abuse Unconstrained Delegation (Computer) (1 method) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-unconstrained-delegation-computer-1-method---windows)
+  5. [P] - [Abuse Unconstrained Delegation (Computer) (2 method) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-unconstrained-delegation-computer-2-method---windows)
+  6. [P] - [Abuse Unconstrained Delegation - Detect & Mitigation](./demystify_kerberos_delegation_attacks.md#abuse-unconstrained-delegation---detect--mitigation)
+
+**Constrained Delegation (Protocol Transition) & Abuse:**
+
+  7. [T] - [Behaviour Change about Kerberos Delegation on Modern Windows System](#behaviour-change-about-kerberos-delegation-on-modern-windows-system)
+  8. [T] - [Constrained Delegation](#constrained-delegation)
+  9. [T] - [Constrained Delegation (Kerberos only)](#constrained-delegation-kerberos-only)
+  10. [T] - [Constrained Delegation (Use any authentication Protocol) / Protocol Transition](#constrained-delegation-use-any-authentication-protocol--protocol-transition)
+  11. [P] - [Abuse Protocol Transition](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition)
+  12. [P] - [Abuse Protocol Transition (Computer) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition-computer---windows)
+  13. [P] - [Abuse Protocol Transition (User) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition-user---windows)
+  14. [P] - [Abuse Protocol Transition (Computer) - Linux](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition-computer---linux)
+  15. [P] - [Abuse Protocol Transition (User) - Linux](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition-user---linux)
+  16. [P] - [Abuse Protocol Transition - Detect & Mitigation](./demystify_kerberos_delegation_attacks.md#abuse-protocol-transition---detect--mitigation)
+
+**Resource Based Constrained Delegation (RBCD) & Abuse:**
+
+  17. [T] - [Resource Based Constrained Delegation (RBCD)](#resource-based-constrained-delegation-rbcd)
+  18. [P] - [Abuse RBCD via DACL](./demystify_kerberos_delegation_attacks.md#abuse-rbcd-via-dacl)
+  19. [P] - [Abuse RBCD via DACL (Computer) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-rbcd-via-dacl-computer---windows)
+  20. [P] - [Abuse RBCD via DACL (Computer) - Linux](./demystify_kerberos_delegation_attacks.md#abuse-rbcd-via-dacl-computer---linux)
+  21. [P] - [Abuse RBCD via DACL - Detect & Mitigation](./demystify_kerberos_delegation_attacks.md#abuse-rbcd-via-dacl---detect--mitigation)
+
+**Constrained Delegation (Kerberos Only) & Abuse:**
+
+  22. [P] - [Abuse Kerberos Only](./demystify_kerberos_delegation_attacks.md#abuse-kerberos-only)
+  23. [P] - [Abuse Kerberos Only (Computer) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-kerberos-only-computer---windows)
+  24. [P] - [Abuse Kerberos Only (User) - Windows](./demystify_kerberos_delegation_attacks.md#abuse-kerberos-only-user---windows)
+  25. [P] - [Abuse Kerberos Only - Detect & Mitigation](./demystify_kerberos_delegation_attacks.md#abuse-kerberos-only---detect--mitigation)
+
+<span id=1000>
 
 ## **What's Kerberos Delegation?**
 
@@ -65,8 +113,10 @@ The KDC, in order to use the "Unconstrained Kerberos Delegation", requires 2 pre
   
   The "Unconstrained Kerberos Delegation" is configured via [ADUC](https://serveracademy.com/blog/active-directory-users-and-computers-aduc-installation-and-tutorial/) by enabling the property "Trust this computer for delegation to any service (Kerberos only)" on the "Computer" object that acts as the "Front-End" AP; since this configuration is potentially dangerous, such action can only be performed by a Domain Admin account or an account with the "[SeEnableDelegationPrivilege](https://harmj4.rssing.com/chan-30881824/article60.html)" permission.
 
-  > In reality, even an object of type "user" (domain account) can be configured with the Kerberos Unconstrained Delegation, in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the "Delegation" tab will appear inside the property of the user object.
+  <span id=244>
 
+  > In reality, even an object of type "user" (domain account) can be configured with the Kerberos Unconstrained Delegation, in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the "Delegation" tab will appear inside the property of the user object.
+  <span id=301>
   <span id=25> This configuration sets in the "UserAccountControl" property of the object in question the flag "TRUSTED\_FOR\_DELEGATION" to "TRUE" / "1".
 
 > <span id=11>Every object of type "User" and type "Computer" has an attribute called "[UserAccountControl](https://activedirectorypro.com/useraccountcontrol-check-and-manage-attribute-value/)", this attribute is a value that represents the set of [flags](https://learn.microsoft.com/en-us/windows/win32/adschema/a-useraccountcontrol?redirectedfrom=MSDN) (configurations) set on the object (the most common are DONT\_REQUIRE\_PREAUTH, NOT\_DELEGATE, etc.), for example 514 indicates that the domain user is disabled.
@@ -276,11 +326,14 @@ The KDC, in order to use the "Constrained Delegation (Kerberos only)", requires 
 
 Furthermore, it is mandatory to fill the section indicated just below; with it, the domain administrator is able to restrict (a.k.a constrain) which Back-End APs the Front-End AP can authenticate on behalf of the Client.
 
+<span id=298>
+
 This configuration sets in the [UserAccountControl](#11) property of the AP "Front End" object the flag "msds-allowedtodelegateto", which contains in the form of SPNs all the "Back End" APs for which the "Front End" AP has permission to authenticate on behalf of the Client.
 
 In our [example](#15), the Kerberos Delegation is configured on the Computer "WEB01" which will act as the Front-End AP, this modification is actually reflected on the related Computer Account since it is contained in the "Computer" object, so the Computer Account "WEB01\$" will have the "msds-allowedtodelegateto" property filled, this means that any service started by this computer with the Service Account WEB01\$ (Computer Account) will have "Kerberos Constrained Delegation (Kerberos Only)" enabled ([so, all services started with the Local Service account such as by default the CIFS service or HTTP like in this example](./not_so_brief_overview_about_kerberos/#17)).
-
+<span id=348>
 <span id=25>
+
 {{< image src="/demystify_kerberos_delegation/14.png" position="center" style="border-radius: 8px;">}}
 
 In conclusion, all services started with the WEB01\$ user, such as in this case the HTTP service (AP Front End), will have "Constrained Delegation (Kerberos only)" enabled; so, in this scenario, they will be able to authenticate on behalf of the Client exclusively on the CIFS service of the SQL01 computer (AP Back-End).
@@ -347,7 +400,7 @@ The AP Front End, now that it has received the KRB\_AP\_REQ packet, in summary, 
 
 ---
 
-### **5. KRB\_TGS\_REQ (S4U2Proxy) / S4USelf Request**
+### **5. KRB\_TGS\_REQ (S4U2Proxy) / S4U2Proxy Request**
 
 Occasionally, when the AP Front End (so the HTTP service) needs to authenticate to the Back End AP (so the CIFS service) on behalf of the Client, the AP Front End will send to the KDC a "KRB\_TGS\_REQ (S4U2Proxy)" packet containing, in summary:
 
@@ -391,9 +444,12 @@ Occasionally, when the AP Front End (so the HTTP service) needs to authenticate 
   <br>
   {{< image src="/demystify_kerberos_delegation/21.png" position="center" style="border-radius: 8px;">}}
 
-### **6. KRB_TGS_REP (S4U2Proxy) / S4USelf Response**
+<span id=333>
+
+### **6. KRB_TGS_REP (S4U2Proxy) / S4U2Proxy Response**
 
 The KDC, after performing authenticity checks and analyzing the KRB_TGS_REQ (S4U2Proxy) packet received from the AP Front, will perform further verifications **sequentially**:
+<span id=300>
 
 1. The KDC verifies if the ["TGS Ticket" used by the Client to access the AP Front End (HTTP/WEB01)](#20) is inside in the received [KRB_TGS_REQ (S4U2Proxy)](#5-krb_tgs_req-s4u2proxy--s4uself-request) packet, which would provide to the KDC the evidence that the Client has indeed authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and therefore that the AP Front End can potentially impersonate the Client); it also checks that this TGS Ticket has the "FORWARDABLE" flag set to "1") ([positive result in this case](#21))
 
@@ -445,6 +501,8 @@ The KDC, in order to use the "Constrained Delegation (Kerberos only)", requires 
 
   The "Constrained Delegation (Use any authentication protocol)" is configured via [ADUC](https://serveracademy.com/blog/active-directory-users-and-computers-aduc-installation-and-tutorial/) by enabling the property "Trust this computer for delegation to specified service only (Use any authentication protocol)" on the "Computer" object that acts as the "Front-End" AP; since this configuration is potentially dangerous, such action can only be performed by a Domain Admin account or an account with the "[SeEnableDelegationPrivilege](https://harmj4.rssing.com/chan-30881824/article60.html)" permission.
 
+  <span id=1001>
+
   > In reality, even an object of type "user" (domain account) can be configured with the "Constrained Delegation (Use any authentication protocol)", in this way such domain account will be able to impersonate another domain account to authenticate against target APs (services), however, to do this it is necessary that such account has at least 1 SPN configured, in fact only in this specific case the "Delegation" tab will appear inside the property of the user object; specifically, the "Kerberos Only" flow described later will remain unchanged with the only difference that when referring to the Service Account "Computer Account," the Service Account "User" will be used instead.
 
 Furthermore, it is mandatory to fill the section indicated just below; with it, the domain administrator is able to restrict (a.k.a constrain) which Back-End APs the Front-End AP can authenticate on behalf of the Client.
@@ -494,7 +552,9 @@ A domain user authenticates to an AP Front End NOT using the Kerberos protocol (
 
 **If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will take place:**
 
-### **2. KRB\_TGS\_REQ (S4U2Self) / S4USelf Request.**
+<span id=302>
+
+### **2. KRB\_TGS\_REQ (S4U2Self) / S4U2Self Request.**
 
 Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client’s TGS Ticket and therefore will NOT be able to invoke S4U2Proxy as in the [Constrained Delegation (Kerberos Only)](#constrained-delegation-kerberos-only) scenario, consequently the AP Front End will use the "S4U2Self" extension, so it will send to the KDC a "KRB\_TGS\_REQ" packet containing, in summary:
 
@@ -533,7 +593,9 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
 
   > By analyzing the packet on my home lab through S4U Request with Rubeus I do NOT find the "PA-S4U-X509-USER" data structure BUT I do find "PA-FOR-USER".
 
-### **3. KRB\_TGS\_REP (S4U2Self) / S4USelf Response.**
+<span id=303>
+
+### **3. KRB\_TGS\_REP (S4U2Self) / S4U2Self Response.**
 
 <span id=112>
 
@@ -567,7 +629,7 @@ After performing the [usual checks](#2), the KDC retrieves from the [KRB\_TGS\_R
 
 <span id=118>
 
-### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4UProxy Request**
+### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4U2Proxy Request**
 
 Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional "S4UProxy", so, [as previously seen](#5-krb_tgs_req-s4u2proxy--s4uself-request), the AP Front End will send to the KDC a "KRB\_TGS\_REQ (S4U2Proxy)" packet containing, in summary:
 
@@ -587,7 +649,7 @@ Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that th
 
 <span id=37>
 
-- **Client's TGS Ticket (obtained via S4USelf)**
+- **Client's TGS Ticket (obtained via S4U2Self)**
 
   The TGS Ticket that the AP Front End previously received from the KDC using the "S4USelf" extension will be sent; it's the evidence that the Client (ex CAPSULE.corp\vegeta) has successfully accessed the AP Front End (HTTP service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client)
 
@@ -609,10 +671,11 @@ Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that th
 
   {{< image src="/demystify_kerberos_delegation/38.png" position="center" style="border-radius: 8px;">}}
 
-### **5. KRB\_TGS\_REP (S4U2Proxy) / S4UProxy Response**
+### **5. KRB\_TGS\_REP (S4U2Proxy) / S4U2Proxy Response**
 
 The KDC, after performing the [usual checks](#2), analyzing the [KRB\_TGS\_REQ (S4U2Proxy)](#4-krb_tgs_req-s4u2proxy--s4uproxy-request) packet received from the AP Front End, will perform further verifications **sequentially**:
 <span id=51>
+
   1. The KDC checks whether the ["TGS Ticket"](#37) used by the Client to access the AP Front End (HTTP/WEB01) is present in the received [KRB\_TGS\_REQ (S4U2Proxy)](#4-krb_tgs_req-s4u2proxy--s4uproxy-request) packet (in this example it was obtained via the S4USelf extension); this would provide evidence to the KDC that the Client has indeed authenticated to the AP Front End (HTTP service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); additionally, [it is necessary that this TGS Ticket has the "FORWARDABLE" flag set to "1"](#40) ([positive outcome in this case](#40)).
 
   2. The KDC, [inspecting the SPN contained in the KRB\_TGS\_REQ (S4U2Proxy) packet](#42), will understand that the AP Front End (ex HTTP/WEB01) wants to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client; consequently, the KDC retrieves the Service Account of the AP Front End (WEB01\$) and will verify whether the "msds-allowedtodelegateto" property contains the SPN of the requested AP Back End (in this case CIFS/SQL01) ([positive outcome in this case](#30)).
@@ -712,11 +775,12 @@ A domain account authenticates NOT using the Kerberos protocol (NTLM, Basic, etc
 If the AP Front End needs to authenticate to an AP Back End on behalf of the Client, the following actions will occur:
 <span id=47>
 
-### **2. KRB\_TGS\_REQ (S4U2Self) / S4USelf Request**
+### **2. KRB\_TGS\_REQ (S4U2Self) / S4U2Self Request**
 
 Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to the AP Back End (ex CIFS service) on behalf of the Client (ex CAPSULE.corp\vegeta), since the Client (ex CAPSULE.corp\vegeta) authenticated using, for example, the NTLM protocol, the AP Front End will NOT have the Client's TGS Ticket and therefore CANNOT invoke S4U2Proxy as in the [Constrained Delegation (Kerberos Only) scenario](#constrained-delegation-kerberos-only), consequently the AP Front End will resort to the "S4U2Self" extension, that is, it will send to the KDC a "KRB\_TGS\_REQ" packet containing, in summary,:
 
 > The S4U2Self extension in summary serves to obtain a TGS Ticket belonging to a specific Client (ex CAPSULE.corp\vegeta) valid for the service itself, that is, to the AP Front End (ex HTTP)
+<span id=231>
 
 - **The AP Front End shares its own TGT Ticket**
 
@@ -736,6 +800,8 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
 
   The AP Front End needs to have a TGS Ticket valid for itself that belongs to the Client (ex CAPSULE.corp\vegeta), consequently the AP Front End will specify the name of the domain account it wants to impersonate, that is, the account that connected to the AP Front End (ex CAPSULE.corp\vegeta):
 
+  <span id=245>
+
   > This data is inserted in both structures "PA-S4U-X509-USER" & "PA-FOR-USER" (added through the S4UProxy extension)
 
   {{< image src="/demystify_kerberos_delegation/49.png" position="center" style="border-radius: 8px;">}}
@@ -748,7 +814,7 @@ Occasionally, when the AP Front End (ex HTTP service) needs to authenticate to t
 
 > By analyzing the packet on my home lab through S4U Request with Rubeus I do NOT find the "PA-S4U-X509-USER" data structure BUT I do find "PA-FOR-USER".
 
-### **3. KRB\_TGS\_REP (S4U2Self) / S4USelf Response**
+### **3. KRB\_TGS\_REP (S4U2Self) / S4U2Self Response**
 
 <span id=80>
 
@@ -778,7 +844,7 @@ Knowing this, therefore, the KDC sends a KRB\_TGS\_REP (S4U2Self) packet to the 
 
 <spain id=56>
 
-### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4UProxy Request**
+### **4. KRB\_TGS\_REQ (S4U2Proxy) / S4U2Proxy Request**
 
 Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that the Client (ex CAPSULE.corp\vegeta) has authenticated to it (HTTP) (even though in reality it authenticated NOT using Kerberos) it can invoke a traditional "S4UProxy", so, as previously seen, the AP Front End will send to the KDC a "KRB\_TGS\_REQ (S4U2Proxy)" packet containing, in summary,:
 
@@ -823,7 +889,9 @@ Now that the AP Front End has a TGS Ticket to use as "evidence" to prove that th
   <br>
   {{< image src="/demystify_kerberos_delegation/58.png" position="center" style="border-radius: 8px;">}}
 
-### **5. KRB\_TGS\_REP (S4U2Proxy) / S4UProxy Response**
+<span id=199>
+
+### **5. KRB\_TGS\_REP (S4U2Proxy) / S4U2Proxy Response**
 
 <span id=64>
 
@@ -834,6 +902,8 @@ The KDC, after performing the [usual checks](#2), analyzing the [KRB\_TGS\_REQ (
 1. The KDC verifies if the ["TGS Ticket"](#57) that the Client used to access the AP Front End (HTTP/WEB01) is present in the received [KRB\_TGS\_REQ (S4U2Proxy) packet](#56) (in this example it was obtained via the S4USelf extension), this would provide evidence to the KDC that the Client has actually authenticated to the AP Front End (HTTP Service on the WEB01 machine) (and that therefore the AP Front End can potentially impersonate the Client); furthermore, it is necessary that this TGS Ticket has the "FORWARDABLE" flag set to "1" (NEGATIVE outcome in this case - [1](#53), [2](#58)).
 
 2. The KDC, inspecting the [SPN contained in the KRB\_TGS\_REQ (S4U2Proxy) packet](#59), will understand that the AP Front End (ex HTTP/WEB01) wants to authenticate to a specific AP Back-End (ex CIFS/SQL01) on behalf of the Client, consequently the KDC retrieves the Service Account of the AP Front End (WEB01\$) and verifies if within its property "msds-allowedtodelegateto" the SPN of the requested AP Back End (in this case CIFS/SQL01) is present ([NEGATIVE outcome in this case](#60)).
+
+<span id=305>
 
 Since in this scenario the [1](#90) verification FAILS (The KDC performs the verification sequentially, consequently, although the 2nd step also fails, the KDC makes the decision on how to proceed immediately because step 1 fails) and in the "KRB\_TGS\_REQ (S4UProxy)" [the RBDC flag was configured to use this Kerberos Delegation in case of FallBack](#61), the KDC proceeds to use the "Resource Based Constrained Delegation (RBCD)", consequently, the KDC retrieves the Service Account (SQL01\$) of the requested Back-End Service (CIFS) and verifies if it has the flag "ms-DS-Allowed-To-Act-On-Behalf-Of-Other-Identity" containing the Service Account (WEB01\$) of the Front End Service (HTTP) that is attempting authentication on behalf of the Client (vegeta); if, as in this case, the outcome [is positive](#63), then the KDC sends a "KRB\_TGS\_REP (S4U2Proxy)" packet to the AP Front End containing, in summary:
 
@@ -875,7 +945,7 @@ Kerberos Delegation is a beast to understand, and for this reason, if it's the f
 
 Furthermore, i hope Microsoft will NOT change the Kerberos Delegation Internals anymore, but who knows 🤞​
 
-This article was written in synergy with "Demystify Kerberos Delegation Attacks", so if you have understood everything and you are interested about how to abuse it go and check it! If you have made it this far, congratulations!
+This article was written in synergy with "[Demystify Kerberos Delegation Attacks](./demystify_kerberos_delegation_attacks.md)", so if you have understood everything and you are interested about how to abuse it go and check it! If you have made it this far, congratulations!
 
 ## **References**
 
