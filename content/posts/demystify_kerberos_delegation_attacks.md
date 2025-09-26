@@ -1,6 +1,6 @@
 ---
 title: "Demystify Kerberos Delegation Attacks"
-date: 2025-09-16T14:56:19+02:00
+date: 2025-09-26T14:56:19+02:00
 draft: false
 toc: false
 ---
