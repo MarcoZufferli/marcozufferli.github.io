@@ -3,6 +3,12 @@ title: "Demystify Kerberos Delegation Attacks"
 date: 2025-09-26T14:56:19+02:00
 draft: false
 toc: false
+description: "Practical guide to Kerberos delegation attacks: common attack chains, detection signals and mitigation steps."
+author:
+  name: "Marco Zufferli"
+tags: ["kerberos delegation attack","constrained-delegation attack","resource-based-delegation attack","RBCD via DACL Attack"]
+keywords: ["kerberos delegation attacks","constrained-delegation attack","resource-based-delegation attack","RBCD via DACL Attack","Abuse Keberos Only"]
+summary: "Hands-on explanation of Kerberos delegation exploitation techniques and pragmatic detection and hardening advice for defenders."
 ---
 ---
 #### Table of Contents:

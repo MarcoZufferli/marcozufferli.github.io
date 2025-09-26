@@ -3,6 +3,12 @@ title: "Demystify Kerberos Delegation"
 date: 2025-09-26T14:50:00+02:00
 draft: false
 toc: false
+description: "Deep dive into Kerberos delegation types (unconstrained, constrained, resource-based): configuration, SPNs, best practices and defensive strategies."
+author:
+  name: "Marco Zufferli"
+tags: ["kerberos","delegation","constrained-delegation","resource-based-delegation","spn"]
+keywords: ["kerberos delegation","constrained delegation","resource based delegation","delegation configuration","spn delegation"]
+summary: "Explains unconstrained, constrained and resource-based delegation with configuration examples, failure modes and mitigation guidance."
 ---
 ---
 #### Table of Contents:

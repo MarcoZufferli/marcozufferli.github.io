@@ -3,6 +3,12 @@ title: "Not So Brief Overview about Kerberos"
 date: 2025-09-11T17:20:24+02:00
 draft: false
 toc: true
+description: "Comprehensive Kerberos overview for Windows AD covering TGT, TGS, SPNs, PAC and the full Kerberos authentication flow with packet examples."
+author:
+  name: "Marco Zufferli"
+tags: ["kerberos","active-directory","authentication","tgt","tgs"]
+keywords: ["kerberos overview","how kerberos works","ticket tgt","ticket tgs","service ticket","kerberos pac","service principal name","service principal name"]
+summary: "An in-depth walkthrough of Kerberos authentication: TGT/TGS lifecycle, SPNs, PAC and how to inspect Kerberos traffic."
 ---
 
 {{< image src="/not_so_brief_overview_about_kerberos/immagine.jpg" position="center" style="border-radius: 8px;">}}
