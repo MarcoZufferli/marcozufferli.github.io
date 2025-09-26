@@ -3,7 +3,7 @@ title: "Not So Brief Overview about Kerberos"
 date: 2025-09-11T17:20:24+02:00
 draft: false
 toc: true
-description: "Comprehensive Kerberos overview for Windows AD covering TGT, TGS, SPNs, PAC and the full Kerberos authentication flow with packet examples."
+description: "Deep dive into Kerberos Authentication covering the full flow with packet examples."
 author:
   name: "Marco Zufferli"
 tags: ["kerberos","active-directory","authentication","tgt","tgs"]
