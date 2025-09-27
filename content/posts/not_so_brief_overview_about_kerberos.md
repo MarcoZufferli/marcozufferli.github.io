@@ -6,7 +6,6 @@ toc: true
 description: "Deep dive into Kerberos Authentication covering the full flow with packet examples."
 author:
   name: "Marco Zufferli"
-tags: ["kerberos","active-directory","authentication","tgt","tgs"]
 keywords: ["kerberos overview","how kerberos works","ticket tgt","ticket tgs","service ticket","kerberos pac","service principal name","service principal name"]
 summary: "An in-depth walkthrough of Kerberos authentication: TGT/TGS lifecycle, SPNs, PAC and how to inspect Kerberos traffic."
 ---

@@ -43,6 +43,8 @@
 <h2 id="reading-guide"><strong>Reading Guide</strong></h2>
 <p>The first article &ldquo;<a href="/posts/demystify_kerberos_delegation/">Demystify Kerberos Delegation</a>&rdquo; was written in synergy with this article &ldquo;Demystify Kerberos Delegation Attacks&rdquo;, the first details the theory of Kerberos Delegation while the second the most common attacks that can be carried out on it.</p>
 <p>Being both articles particularly long, you could either read them individually in their entirety or follow a legend that i will provide shortly to directly move from theory (<strong>T</strong>) to practice (<strong>P</strong>) in the fastest possible way, which is the way i personally suggest to you:</p>
+<blockquote>
+<p>If it’s your first time opening the other article, the browser may need a moment to load all images, so if the link doesn’t jump to the right section, just wait a bit and try again. 😊</p></blockquote>
 <p><strong>Introduction:</strong></p>
 <ol>
 <li>[T] - <a href="/posts/demystify_kerberos_delegation/#1000">What&rsquo;s Kerberos Delegation</a></li>
@@ -1570,6 +1572,8 @@ $searcher.FindAll() | ForEach-Object {
 <h2 id="reading-guide"><strong>Reading Guide</strong></h2>
 <p>This first article &ldquo;Demystify Kerberos Delegation&rdquo; was written in synergy with &ldquo;<a href="/posts/demystify_kerberos_delegation_attacks/">Demystify Kerberos Delegation Attacks</a>&rdquo;, the first details the theory of Kerberos Delegation while the second the most common attacks that can be carried out on it.</p>
 <p>Being both articles particularly long, you could either read them individually in their entirety or follow a legend that i will provide shortly to directly move from theory (<strong>T</strong>) to practice (<strong>P</strong>) in the fastest possible way, which is the way i personally suggest to you:</p>
+<blockquote>
+<p>If it’s your first time opening the other article, the browser may need a moment to load all images, so if the link doesn’t jump to the right section, just wait a bit and try again. 😊</p></blockquote>
 <p><strong>Introduction:</strong></p>
 <ol>
 <li>[T] - <a href="/posts/demystify_kerberos_delegation/#1000">What&rsquo;s Kerberos Delegation</a></li>

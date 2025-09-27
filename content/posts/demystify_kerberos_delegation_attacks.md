@@ -6,7 +6,6 @@ toc: false
 description: "Deep dive into Kerberos Delegation Attacks: common attack chains, detection signals and mitigation steps."
 author:
   name: "Marco Zufferli"
-tags: ["kerberos delegation attack","constrained-delegation attack","resource-based-delegation attack","RBCD via DACL Attack"]
 keywords: ["kerberos delegation attacks","constrained-delegation attack","resource-based-delegation attack","RBCD via DACL Attack","Abuse Keberos Only"]
 summary: "Hands-on explanation of Kerberos delegation exploitation techniques and pragmatic detection and hardening advice for defenders."
 ---
@@ -43,6 +42,8 @@ summary: "Hands-on explanation of Kerberos delegation exploitation techniques an
 The first article "[Demystify Kerberos Delegation](./demystify_kerberos_delegation.md)" was written in synergy with this article "Demystify Kerberos Delegation Attacks", the first details the theory of Kerberos Delegation while the second the most common attacks that can be carried out on it.
 
 Being both articles particularly long, you could either read them individually in their entirety or follow a legend that i will provide shortly to directly move from theory (**T**) to practice (**P**) in the fastest possible way, which is the way i personally suggest to you:
+
+> If it’s your first time opening the other article, the browser may need a moment to load all images, so if the link doesn’t jump to the right section, just wait a bit and try again. 😊
 
 **Introduction:**
 

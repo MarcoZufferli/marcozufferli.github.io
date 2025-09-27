@@ -6,7 +6,6 @@ toc: false
 description: "Deep dive into Kerberos delegation types: unconstrained, constrained and resource-based."
 author:
   name: "Marco Zufferli"
-tags: ["kerberos","delegation","constrained-delegation","resource-based-delegation","spn"]
 keywords: ["kerberos delegation","constrained delegation","resource based delegation","delegation configuration","spn delegation"]
 summary: "Explains unconstrained, constrained and resource-based delegation with configuration examples, failure modes and mitigation guidance."
 ---
@@ -32,6 +31,8 @@ summary: "Explains unconstrained, constrained and resource-based delegation with
 This first article "Demystify Kerberos Delegation" was written in synergy with "[Demystify Kerberos Delegation Attacks](./demystify_kerberos_delegation_attacks.md)", the first details the theory of Kerberos Delegation while the second the most common attacks that can be carried out on it.
 
 Being both articles particularly long, you could either read them individually in their entirety or follow a legend that i will provide shortly to directly move from theory (**T**) to practice (**P**) in the fastest possible way, which is the way i personally suggest to you:
+
+> If it’s your first time opening the other article, the browser may need a moment to load all images, so if the link doesn’t jump to the right section, just wait a bit and try again. 😊
 
 **Introduction:**
 
