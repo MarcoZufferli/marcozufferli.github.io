@@ -20,6 +20,7 @@ toc: false
     - [SMISC5 -> Deep Dive](#22) - An Exploitation Edge Case.
 - [ScriptScout Tips & Tricks](#34)
 - [Outro](#35)
+- [Legal Disclaimer](#37)
 - [References](#36)
 ---
 
@@ -656,6 +657,12 @@ At the moment when the SPIDERMAN machine ([we know that every machine joined to 
 ## **Outro**
 
 It’s been a really interesting journey, what started as reading an [awesome article about misconfigured logon scripts](https://offsec.blog/hidden-menace-how-to-identify-misconfigured-and-dangerous-logon-scripts/) (made by [Spencer Alessi](https://x.com/techspence)) morphed into a deep dive on the topic which led me to write this article and create the ScriptScout tool, so, if this article sparks any new SMISC exploitation ideas or any variations in your mind, hit me up, let’s do community & research together!
+
+<span id=37>
+
+## **Legal Disclaimer**:
+
+ScriptScout is designed for authorized security testing, red team operations, and defensive blue team assessments only. By using this tool, you agree that you have obtained prior explicit and written consent from the owner of the target systems and that you will comply with all applicable laws and regulations. Use of this tool against any target without prior explicit and written consent is illegal. The author assumes no responsibility for any misuse, unlawful activity, or damage caused by this tool.
 
 <span id=36>
 

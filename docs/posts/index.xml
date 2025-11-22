@@ -24,6 +24,7 @@
 &lt;/li&gt;
 &lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#34"&gt;ScriptScout Tips &amp;amp; Tricks&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#35"&gt;Outro&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#37"&gt;Legal Disclaimer&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#36"&gt;References&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
@@ -57,6 +58,7 @@
 </li>
 <li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#34">ScriptScout Tips &amp; Tricks</a></li>
 <li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#35">Outro</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#37">Legal Disclaimer</a></li>
 <li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#36">References</a></li>
 </ul>
 <hr>
@@ -696,6 +698,9 @@
 <span id=35>
 <h2 id="outro"><strong>Outro</strong></h2>
 <p>It’s been a really interesting journey, what started as reading an <a href="https://offsec.blog/hidden-menace-how-to-identify-misconfigured-and-dangerous-logon-scripts/">awesome article about misconfigured logon scripts</a> (made by <a href="https://x.com/techspence">Spencer Alessi</a>) morphed into a deep dive on the topic which led me to write this article and create the ScriptScout tool, so, if this article sparks any new SMISC exploitation ideas or any variations in your mind, hit me up, let’s do community &amp; research together!</p>
+<span id=37>
+<h2 id="legal-disclaimer"><strong>Legal Disclaimer</strong>:</h2>
+<p>ScriptScout is designed for authorized security testing, red team operations, and defensive blue team assessments only. By using this tool, you agree that you have obtained prior explicit and written consent from the owner of the target systems and that you will comply with all applicable laws and regulations. Use of this tool against any target without prior explicit and written consent is illegal. The author assumes no responsibility for any misuse, unlawful activity, or damage caused by this tool.</p>
 <span id=36>
 <h2 id="references"><strong>References</strong></h2>
 <ul>
