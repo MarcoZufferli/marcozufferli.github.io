@@ -665,7 +665,7 @@ It’s been a really interesting journey, what started as reading an [awesome ar
 
 <span id=37>
 
-## **Legal Disclaimer**:
+## **Legal Disclaimer**
 
 ScriptScout is designed for authorized security testing, red team operations, and defensive blue team assessments only. By using this tool, you agree that you have obtained prior explicit and written consent from the owner of the target systems and that you will comply with all applicable laws and regulations. Use of this tool against any target without prior explicit and written consent is illegal. The author assumes no responsibility for any misuse, unlawful activity, or damage caused by this tool.
 
