@@ -268,7 +268,7 @@ If elevated privileges (typically administrative) are required to access an SMB 
 
 Although these actions are particularly convenient from an administrative standpoint for managing an infrastructure, since "Automation Scripts" are accessible to anyone, an attacker could retrieve these scripts and thus also obtain those credentials specified in plaintext.
 
-By running ScriptScout, it can be observed that it has identified two different Logon Scripts (one configured via [Group Policy Script](#1), the other one configured via the ["ScriptPath" property](#2)) that map network SMB shares specifying domain credentials in clear text such as: "helpdeskadmin"-"Password1234!" & "tstark"-"Password123" inside the "net use" command.
+By running ScriptScout, it can be observed that it has identified 1 Logon Script (probably configured via ["ScriptPath" property](#2)) and 1 StartUp Script (configured via [Group Policy Script](#1)) that map network SMB shares specifying domain credentials in clear text such as: "helpdeskadmin"-"Password1234!" & "tstark"-"Password123" inside the "net use" command.
 
 {{< image src="/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/1.png" position="center" style="border-radius: 8px;">}}
 
