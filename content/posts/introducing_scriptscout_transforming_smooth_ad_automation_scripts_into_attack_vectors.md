@@ -1,8 +1,13 @@
 ---
 title: "Introducing ScriptScout: Transforming Smooth AD Automation Scripts into Attack Vectors"
-date: 2025-11-14T00:05:40+01:00
+date: 2025-11-22T12:50:00+02:00
 draft: false
 toc: false
+description: "Identify exploitable misconfigurations in AD Automation Scripts with ScriptScout."
+author:
+  name: "Marco Zufferli"
+keywords: ["AD automation scripts","utomation scripts","ScriptScout","SMISC1","SMISC2","SMISC3","SMISC4","SMISC5"]
+summary: "This article introduces ScriptScout, a Python-based assessment tool that automatically identifies five classes of misconfigurations (SMISC1–SMISC5) - for now - in Active Directory \"Automation scripts\" (logon script, logoff script, startup script, shutdown script, GPO Scheduled Task script) stored on SYSVOL and NETLOGON, demonstrating how these weaknesses can be weaponized for privilege escalation and persistence and how defenders can detect and remediate them."
 ---
 ---
 #### Table of Contents:
@@ -33,7 +38,7 @@ toc: false
 ## **TL;DR** 
 In an Active Directory scenario, it is possible to configure the automatic execution of a specific script following a particular event, these scripts are called "AD Automation Script" which *typically* are: Logon Script, LogOff Script, StartUp Script and Shutdown Script; if they are configured incorrectly, an attacker, broadly speaking, is able to impersonate the user who executes such Automation Script and this allows the attacker to perform Privilege Escalation and / or Persistency.
 
-A total of 5 misconfigurations have been identified and they have been sequentially classified with the term SMISC (Script MISCconfiguration), in order to identify these SMISC automatically i have developed a Python tool called "ScriptScout".
+A total of 5 misconfigurations have been identified and they have been sequentially classified with the term SMISC (Script MISCconfiguration), in order to identify these SMISC automatically i have developed a Python tool called "[ScriptScout](https://github.com/MarcoZufferli/ScriptScout)".
 
 <span id=31>
 
@@ -246,7 +251,7 @@ These "Automation Scripts" are generally used to map file shares, add printers, 
 
 Since "Automation Scripts" configured using all methods (through "[Group Policy Script](#1)", "[ScriptPath](#2)" and "[GPO "Scheduled Task](#3)") are automatically placed inside the SYSVOL folder (so also inside NETLOGON), which i want to remind that's by default readable by the "Authenticated Users" group (and therefore by any authenticated "Principal" including an authenticated attacker), an attacker impersonating ANY domain user (even with minimal privileges) could retrieve these "Automation Scripts" and analyze them offline to identify potential misconfigurations.
 
-To automate these checks, i have developed "ScriptScout", a tool that will enumerate (it will NOT perform exploitation) the various misconfigurations identified within the infrastructure that i classified from SMISC1 (Script Misconfiguration 1) to SMISC5 (Script Misconfiguration 5).
+To automate these checks, i have developed "[ScriptScout](https://github.com/MarcoZufferli/ScriptScout)", a tool that will enumerate (it will NOT perform exploitation) the various misconfigurations identified within the infrastructure that i classified from SMISC1 (Script Misconfiguration 1) to SMISC5 (Script Misconfiguration 5).
 
 <span id=5>
 
