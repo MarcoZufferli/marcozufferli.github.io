@@ -8,6 +8,8 @@ author:
   name: "Marco Zufferli"
 keywords: ["AD automation scripts","utomation scripts","ScriptScout","SMISC1","SMISC2","SMISC3","SMISC4","SMISC5"]
 summary: "This article introduces ScriptScout, a Python-based assessment tool that automatically identifies five classes of misconfigurations (SMISC1–SMISC5) - for now - in Active Directory \"Automation scripts\" (logon script, logoff script, startup script, shutdown script, GPO Scheduled Task script) stored on SYSVOL and NETLOGON, demonstrating how these weaknesses can be weaponized for privilege escalation and persistence and how defenders can detect and remediate them."
+images:
+  - "/introducing_scripscout:transforming_smooth_ad_automation_scripts_into_attack_vectors/main_image.jpeg"
 ---
 ---
 #### Table of Contents:
